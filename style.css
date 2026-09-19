@@ -598,7 +598,9 @@ article p {
 .contact-info-upper-container {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     gap: 2rem;
+    row-gap: 1.2rem;
     border-radius: 2rem;
     background: rgba(255, 255, 255, 0.35);
     backdrop-filter: blur(20px);
@@ -606,7 +608,8 @@ article p {
     border: 1px solid rgba(255, 255, 255, 0.45);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03);
     margin: 2rem auto;
-    padding: 0.8rem 2.5rem;
+    padding: 1rem 2.5rem;
+    max-width: 90%;
 }
 
 .contact-info-container {
