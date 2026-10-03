@@ -455,7 +455,6 @@ function renderRhsTopics(vKey, searchQuery = '') {
                         <h2 class="topic-title">${escapeHtml(t.topic)}</h2>
                     </div>
                     <div class="card-badges">
-                        ${hasSyntax ? `<button class="btn-card-practice" onclick="practiceTopicInSandbox('${t.id}')">▶ Practice in Sandbox</button>` : ''}
                         <span class="topic-version-tag">${escapeHtml(t.version)}</span>
                     </div>
                 </div>
@@ -471,8 +470,8 @@ function renderRhsTopics(vKey, searchQuery = '') {
                     <div class="syntax-box">
                         <div class="syntax-label-row">
                             <span class="syntax-label">💻 Key Syntax & Example</span>
-                            <div style="display: flex; gap: 0.4rem;">
-                                <button class="btn-copy-code" onclick="practiceTopicInSandbox('${t.id}')">⚡ Practice</button>
+                            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                <button class="btn-card-practice" onclick="practiceTopicInSandbox('${t.id}')">⚡ Practice in Sandbox</button>
                                 <button class="btn-copy-code" onclick="copyCode(this, '${escapeHtml(t.syntax.replace(/'/g, "\\'").replace(/\n/g, '\\n'))}')">📋 Copy</button>
                             </div>
                         </div>
