@@ -844,34 +844,77 @@ function formatOutputValue(val) {
 function transpileCSharpToExecutableJs(source) {
     let code = source;
 
-    // Remove using statements
+    // 1. Convert XML doc comments / raw XML tags
+    code = code.replace(/^\s*\/\/\/(.*)$/gm, '// $1');
+    code = code.replace(/<summary>([\s\S]*?)<\/summary>/gi, '// <summary> $1 </summary>');
+    code = code.replace(/<param[^>]*>([\s\S]*?)<\/param>/gi, '// <param> $1 </param>');
+    code = code.replace(/<returns>([\s\S]*?)<\/returns>/gi, '// <returns> $1 </returns>');
+    code = code.replace(/^\s*<[a-zA-Z0-9_\-]+>.*<\/[a-zA-Z0-9_\-]+>\s*$/gm, '// $&');
+
+    // 2. Remove using directives & namespace declarations
     code = code.replace(/^\s*using\s+[^;]+;/gm, '');
+    code = code.replace(/^\s*global\s+using\s+[^;]+;/gm, '');
+    code = code.replace(/^\s*namespace\s+[^;{]+[{;]?/gm, '');
 
-    // Replace C# type declarations in variables (e.g. string x = "...", int y = 10, var z = ...)
-    code = code.replace(/\b(string|int|double|decimal|bool|var|float|long|short|byte|char)\b\s+([a-zA-Z_]\w*)\s*=/g, 'let $2 =');
+    // 3. Remove C# attributes e.g. [CallerMemberName], [Authorize]
+    code = code.replace(/^\s*\[[A-Za-z0-9_]+(?:\([^)]*\))?\]\s*$/gm, '');
 
-    // Replace new List<...>() with List([...])
+    // 4. Remove access modifiers EXCEPT static
+    code = code.replace(/\b(public|private|protected|internal|virtual|override|abstract|sealed|partial|readonly|unsafe)\s+/g, '');
+    
+    // 5. Convert C# methods (both static and instance, sync and async) to valid JS methods
+    code = code.replace(/\b(static\s+)?(async\s+)?(?:Task(?:<[^>]+>)?|void|int|string|bool|double|decimal|float|long|var|[A-Za-z0-9_<>]+)\s+([a-zA-Z_]\w*)\s*\(([^)]*)\)\s*\{/g, (match, isStatic, isAsync, fnName, params) => {
+        if (['if', 'for', 'while', 'switch', 'catch', 'lock', 'using', 'return', 'class', 'new', 'get', 'set'].includes(fnName)) return match;
+        const cleanParams = params.replace(/\b(?:string|int|bool|double|decimal|var|object|float|[A-Za-z0-9_<>]+)\s+/g, '');
+        const prefix = `${isStatic ? 'static ' : ''}${isAsync ? 'async ' : ''}`;
+        return `${prefix}${fnName}(${cleanParams}) {`;
+    });
+
+    // 6. Handle Properties with getters/setters: public string Title { get; set; }
+    code = code.replace(/\b(?:string|int|bool|double|decimal|var|object|[A-Za-z0-9_<>]+)\s+([a-zA-Z_]\w*)\s*\{\s*get\s*;\s*set\s*;\s*\}/g, '$1 = null;');
+    code = code.replace(/\b(?:string|int|bool|double|decimal|var|object|[A-Za-z0-9_<>]+)\s+([a-zA-Z_]\w*)\s*\{\s*get\s*;\s*init\s*;\s*\}/g, '$1 = null;');
+    code = code.replace(/\b(?:string|int|bool|double|decimal|var|object|[A-Za-z0-9_<>]+)\s+([a-zA-Z_]\w*)\s*=>\s*([^;]+);/g, 'get $1() { return $2; }');
+
+    // 7. Handle Records: record Person(string Name, int Age);
+    code = code.replace(/\brecord\s+(?:class\s+|struct\s+)?([a-zA-Z_]\w*)\s*\(([^)]*)\)\s*;/g, (match, recName, params) => {
+        const paramNames = params.split(',').map(p => p.trim().split(/\s+/).pop()).filter(Boolean);
+        const assigns = paramNames.map(p => `this.${p} = ${p};`).join(' ');
+        const strFormat = paramNames.map(p => `${p}: \${this.${p}}`).join(', ');
+        return `class ${recName} { constructor(${paramNames.join(', ')}) { ${assigns} } toString() { return "${recName} { " + \`${strFormat}\` + " }"; } }`;
+    });
+
+    // 8. Handle Variables with types: int x = 10, string s = "hi", var z = 5
+    code = code.replace(/\b(?:string|int|double|decimal|bool|var|float|long|short|byte|char|dynamic|object)\s+([a-zA-Z_]\w*)\s*=/g, 'let $1 =');
+    code = code.replace(/\b(?:List<[^>]+>|Dictionary<[^>]+>|HashSet<[^>]+>)\s+([a-zA-Z_]\w*)\s*=/g, 'let $1 =');
+
+    // 9. Handle Collections
     code = code.replace(/new\s+List<[^>]*>\s*\(([^)]*)\)/g, 'List($1)');
     code = code.replace(/new\s+List<[^>]*>\s*\{([^}]*)\}/g, 'List([$1])');
+    code = code.replace(/new\s+Dictionary<[^>]*>\s*\(\)/g, 'new Map()');
 
-    // Replace object initializers: new Order { Id = 101, Customer = "ABC" } -> { Id: 101, Customer: "ABC" }
+    // 10. Object initializers: new Order { Id = 1, Name = "A" } -> { Id: 1, Name: "A" }
     code = code.replace(/new\s+([a-zA-Z_]\w*)\s*\{([^}]*)\}/g, (match, cls, props) => {
         const formattedProps = props.replace(/([a-zA-Z_]\w*)\s*=/g, '$1:');
         return `{ __type: "${cls}", ${formattedProps} }`;
     });
 
-    // Replace decimal literals e.g. 4500m -> 4500
+    // 11. Decimal literals: 420.50m -> 420.50
     code = code.replace(/(\d+(?:\.\d+)?)m\b/g, '$1');
 
-    // Replace C# string interpolation: $"...{expr}..." -> `...${expr}...`
+    // 12. String interpolation: $"...{expr}..." -> `...${expr}...`
     code = code.replace(/\$"(.*?)"/g, (match, content) => {
-        const formatted = content.replace(/:[NnCcDdFf]\d*/g, ''); // strip C# number format specifiers
+        const formatted = content.replace(/:[NnCcDdFf]\d*/g, '');
         return '`' + formatted + '`';
     });
 
-    // Replace class Program with Main runner call
-    if (code.includes('class Program') && code.includes('Main')) {
-        code += '\nif (typeof Program !== "undefined" && Program.Main) { Program.Main(); } else if (typeof Main !== "undefined") { Main(); }';
+    // 13. Lock statement: lock(obj) { ... } -> { ... }
+    code = code.replace(/\block\s*\([^)]*\)\s*\{/g, '{');
+
+    // 14. Auto call Main if class Program exists
+    if (code.includes('class Program')) {
+        code += '\nif (typeof Program !== "undefined" && typeof Program.Main === "function") { Program.Main(); } else if (typeof Main === "function") { Main(); }';
+    } else if (code.includes('Main()')) {
+        code += '\nif (typeof Main === "function") { Main(); }';
     }
 
     return code;
