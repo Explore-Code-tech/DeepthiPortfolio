@@ -14,6 +14,7 @@
         <div>
             <ul class="nav-links">
                 <li><a href="#about">About</a></li>
+                <li><a href="#csharp">C# 1–15</a></li>
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#contact">Contact</a></li>
@@ -32,6 +33,7 @@
             </div>
 <div class="menu-links">
     <li><a href="#about" onclick = "toggleMenu()">About</a></li>
+    <li><a href="#csharp" onclick = "toggleMenu()">C# 1–15</a></li>
     <li><a href="#experience" onclick = "toggleMenu()">Experience</a></li>
     <li><a href="#projects" onclick = "toggleMenu()">Projects</a></li>
     <li><a href="#contact" onclick = "toggleMenu()">Contact</a></li>
@@ -114,10 +116,440 @@
         </div>
     </div>
 </div>
-<img src="./assets/arrow.png" alt="Arrow icon" class="icon arrow" onclick="location.href='#experience'">
+<img src="./assets/arrow.png" alt="Arrow icon" class="icon arrow" onclick="location.href='#csharp'">
 </div>
 
 
+</section>
+
+<section id="csharp">
+    <p class="section__text_p1">Language Evolution & Lead Architect Guide</p>
+    <h1 class="title">C# 1 to 15 Architecture & Features</h1>
+    
+    <div class="csharp-container">
+        <!-- Interactive Controls (Search & Filters) -->
+        <div class="csharp-controls">
+            <div class="csharp-search-wrapper">
+                <span class="csharp-search-icon">🔍</span>
+                <input type="text" id="csharp-search" class="csharp-search-input" placeholder="Search C# features, keywords, or syntax (e.g. records, async, span, lock, pattern matching, generics)..." oninput="searchCSharp(this.value)">
+            </div>
+
+            <!-- Era Filter Buttons -->
+            <div class="csharp-era-filters">
+                <button class="csharp-filter-btn active" data-era="all" onclick="filterCSharpEra('all', this)">⚡ All Generations (1–15)</button>
+                <button class="csharp-filter-btn" data-era="foundations" onclick="filterCSharpEra('foundations', this)">🏛 Foundations (C# 1–4)</button>
+                <button class="csharp-filter-btn" data-era="async-roslyn" onclick="filterCSharpEra('async-roslyn', this)">🚀 Async & Roslyn (C# 5–7)</button>
+                <button class="csharp-filter-btn" data-era="core" onclick="filterCSharpEra('core', this)">⚡ Modern .NET Core (C# 8–11)</button>
+                <button class="csharp-filter-btn" data-era="modern-future" onclick="filterCSharpEra('modern-future', this)">🔮 Next-Gen & Future (C# 12–15)</button>
+            </div>
+
+            <!-- Quick Jump Version Pills -->
+            <div class="csharp-version-pills">
+                <button class="csharp-pill-btn" onclick="filterCSharpVersion(1, this)">C# 1.0</button>
+                <button class="csharp-pill-btn" onclick="filterCSharpVersion(2, this)">C# 2.0</button>
+                <button class="csharp-pill-btn" onclick="filterCSharpVersion(3, this)">C# 3.0</button>
+                <button class="csharp-pill-btn" onclick="filterCSharpVersion(4, this)">C# 4.0</button>
+                <button class="csharp-pill-btn" onclick="filterCSharpVersion(5, this)">C# 5.0</button>
+                <button class="csharp-pill-btn" onclick="filterCSharpVersion(6, this)">C# 6.0</button>
+                <button class="csharp-pill-btn" onclick="filterCSharpVersion(7, this)">C# 7.x</button>
+                <button class="csharp-pill-btn" onclick="filterCSharpVersion(8, this)">C# 8.0</button>
+                <button class="csharp-pill-btn" onclick="filterCSharpVersion(9, this)">C# 9.0</button>
+                <button class="csharp-pill-btn" onclick="filterCSharpVersion(10, this)">C# 10</button>
+                <button class="csharp-pill-btn" onclick="filterCSharpVersion(11, this)">C# 11</button>
+                <button class="csharp-pill-btn" onclick="filterCSharpVersion(12, this)">C# 12</button>
+                <button class="csharp-pill-btn" onclick="filterCSharpVersion(13, this)">C# 13</button>
+                <button class="csharp-pill-btn" onclick="filterCSharpVersion(14, this)">C# 14</button>
+                <button class="csharp-pill-btn" onclick="filterCSharpVersion(15, this)">C# 15</button>
+            </div>
+        </div>
+
+        <!-- 15 Cards Grid -->
+        <div class="csharp-cards-grid">
+            
+            <!-- C# 1.0 / 1.2 -->
+            <div class="csharp-card" data-version="1" data-era="foundations" data-keywords="c# 1.0 1.2 oop classes structs interfaces delegates events properties indexers il clr garbage collection .net framework 1.0 1.1">
+                <div class="csharp-card-header">
+                    <div class="csharp-version-tag">📌 C# 1.0 / 1.2</div>
+                    <div class="csharp-badges-group">
+                        <span class="csharp-runtime-badge">.NET 1.0 / 1.1</span>
+                        <span class="csharp-year-badge">2002</span>
+                    </div>
+                </div>
+                <div class="csharp-card-title">OOP Foundation & Managed CLR Execution</div>
+                <ul class="csharp-feature-list">
+                    <li>Full Object-Oriented foundation: Classes, Structs, Interfaces, Abstract types</li>
+                    <li>Type-safe Delegates, Events, Properties, and Indexers</li>
+                    <li>Common Language Runtime (CLR), MSIL bytecode compilation & Garbage Collection</li>
+                    <li>Core Collections (ArrayList, Hashtable) & I/O Streams</li>
+                </ul>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// Type-safe delegate & event model</span>
+<span class="csharp-highlight-kw">public delegate void</span> <span class="csharp-highlight-type">LogHandler</span>(<span class="csharp-highlight-type">string</span> msg);
+<span class="csharp-highlight-kw">public class</span> <span class="csharp-highlight-type">OrderProcessor</span> {
+    <span class="csharp-highlight-kw">public event</span> <span class="csharp-highlight-type">LogHandler</span> OnLog;
+    <span class="csharp-highlight-kw">public string</span> Title { <span class="csharp-highlight-kw">get</span>; <span class="csharp-highlight-kw">set</span>; }
+}</code></div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> Enterprise Object-Oriented paradigm & managed memory runtime.</div>
+            </div>
+
+            <!-- C# 2.0 -->
+            <div class="csharp-card" data-version="2" data-era="foundations" data-keywords="c# 2.0 generics list dictionary yield return iterators nullable value types anonymous methods partial classes static classes .net 2.0">
+                <div class="csharp-card-header">
+                    <div class="csharp-version-tag">📌 C# 2.0</div>
+                    <div class="csharp-badges-group">
+                        <span class="csharp-runtime-badge">.NET 2.0</span>
+                        <span class="csharp-year-badge">2005</span>
+                    </div>
+                </div>
+                <div class="csharp-card-title">Generics, Iterators & Nullable Types</div>
+                <ul class="csharp-feature-list">
+                    <li>Strong-typed Generics (<code>List&lt;T&gt;</code>, <code>Dictionary&lt;K,V&gt;</code>) eliminating boxing/unboxing overhead</li>
+                    <li>Nullable Value Types (<code>Nullable&lt;T&gt;</code>, <code>int?</code>, <code>bool?</code>)</li>
+                    <li>Iterators with state-machine driven <code>yield return</code> & <code>yield break</code></li>
+                    <li>Anonymous Methods, Partial Classes, and Static Classes</li>
+                </ul>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// Generics, yield return & Nullables</span>
+<span class="csharp-highlight-kw">public</span> <span class="csharp-highlight-type">IEnumerable</span>&lt;<span class="csharp-highlight-type">int</span>&gt; <span class="csharp-highlight-fn">GenerateIds</span>() {
+    <span class="csharp-highlight-kw">yield return</span> 101;
+    <span class="csharp-highlight-kw">yield return</span> 102;
+}
+<span class="csharp-highlight-type">int?</span> optionalTimeout = <span class="csharp-highlight-kw">null</span>;
+<span class="csharp-highlight-type">List</span>&lt;<span class="csharp-highlight-type">string</span>&gt; list = <span class="csharp-highlight-kw">new</span> <span class="csharp-highlight-type">List</span>&lt;<span class="csharp-highlight-type">string</span>&gt;();</code></div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> Type safety, zero boxing/unboxing penalties & lazy stream iteration.</div>
+            </div>
+
+            <!-- C# 3.0 -->
+            <div class="csharp-card" data-version="3" data-era="foundations" data-keywords="c# 3.0 linq lambda expressions extension methods anonymous types var auto implemented properties expression trees .net 3.5">
+                <div class="csharp-card-header">
+                    <div class="csharp-version-tag">📌 C# 3.0</div>
+                    <div class="csharp-badges-group">
+                        <span class="csharp-runtime-badge">.NET 3.5</span>
+                        <span class="csharp-year-badge">2007</span>
+                    </div>
+                </div>
+                <div class="csharp-card-title">LINQ & Declarative Functional Programming</div>
+                <ul class="csharp-feature-list">
+                    <li>Language Integrated Query (LINQ to Objects, SQL, XML, Entities)</li>
+                    <li>Lambda Expressions (<code>x =&gt; x.Active</code>) & Expression Trees</li>
+                    <li>Extension Methods & Local Variable Type Inference (<code>var</code>)</li>
+                    <li>Auto-Implemented Properties, Object Initializers & Anonymous Types</li>
+                </ul>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// Declarative LINQ & Lambdas</span>
+<span class="csharp-highlight-kw">var</span> topOrders = orders
+    .<span class="csharp-highlight-fn">Where</span>(o =&gt; o.Total &gt; 1000)
+    .<span class="csharp-highlight-fn">Select</span>(o =&gt; <span class="csharp-highlight-kw">new</span> { o.Id, o.Customer });</code></div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> Unified query syntax transforming relational & in-memory data processing.</div>
+            </div>
+
+            <!-- C# 4.0 -->
+            <div class="csharp-card" data-version="4" data-era="foundations" data-keywords="c# 4.0 dynamic dlr named optional parameters covariance contravariance com interop .net 4.0">
+                <div class="csharp-card-header">
+                    <div class="csharp-version-tag">📌 C# 4.0</div>
+                    <div class="csharp-badges-group">
+                        <span class="csharp-runtime-badge">.NET 4.0</span>
+                        <span class="csharp-year-badge">2010</span>
+                    </div>
+                </div>
+                <div class="csharp-card-title">Dynamic Language Runtime & Variance</div>
+                <ul class="csharp-feature-list">
+                    <li><code>dynamic</code> keyword & Dynamic Language Runtime (DLR) integration</li>
+                    <li>Named & Optional Arguments for expressive method signatures</li>
+                    <li>Generic Covariance (<code>out T</code>) & Contravariance (<code>in T</code>)</li>
+                    <li>Enhanced COM Interop and Office automation features</li>
+                </ul>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// Named arguments & dynamic runtime</span>
+<span class="csharp-highlight-kw">public void</span> <span class="csharp-highlight-fn">Export</span>(<span class="csharp-highlight-type">string</span> path, <span class="csharp-highlight-type">bool</span> compress = <span class="csharp-highlight-kw">true</span>) {
+    <span class="csharp-highlight-kw">dynamic</span> payload = <span class="csharp-highlight-fn">GetDynamicJson</span>();
+    <span class="csharp-highlight-type">Console</span>.<span class="csharp-highlight-fn">WriteLine</span>(payload.Status);
+}</code></div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> Dynamic typing interoperability & flexible polymorphic interfaces.</div>
+            </div>
+
+            <!-- C# 5.0 -->
+            <div class="csharp-card" data-version="5" data-era="async-roslyn" data-keywords="c# 5.0 async await task tpl caller info attributes non blocking io .net 4.5">
+                <div class="csharp-card-header">
+                    <div class="csharp-version-tag">📌 C# 5.0</div>
+                    <div class="csharp-badges-group">
+                        <span class="csharp-runtime-badge">.NET 4.5</span>
+                        <span class="csharp-year-badge">2012</span>
+                    </div>
+                </div>
+                <div class="csharp-card-title">Async / Await Asynchronous Revolution</div>
+                <ul class="csharp-feature-list">
+                    <li><code>async</code> and <code>await</code> keywords (Task-based Asynchronous Pattern - TAP)</li>
+                    <li>Compiler-generated state machines for non-blocking asynchronous I/O</li>
+                    <li>Caller Information Attributes (<code>[CallerMemberName]</code>, <code>[CallerLineNumber]</code>)</li>
+                    <li>Eliminated complex async callbacks & thread pool starvation</li>
+                </ul>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// Task-based Asynchronous Pattern (TAP)</span>
+<span class="csharp-highlight-kw">public async</span> <span class="csharp-highlight-type">Task</span>&lt;<span class="csharp-highlight-type">Patient</span>&gt; <span class="csharp-highlight-fn">GetPatientAsync</span>(<span class="csharp-highlight-type">int</span> id, [<span class="csharp-highlight-type">CallerMemberName</span>] <span class="csharp-highlight-type">string</span> caller = <span class="csharp-highlight-str">""</span>) {
+    <span class="csharp-highlight-kw">var</span> res = <span class="csharp-highlight-kw">await</span> _client.<span class="csharp-highlight-fn">GetFromJsonAsync</span>&lt;<span class="csharp-highlight-type">Patient</span>&gt;($<span class="csharp-highlight-str">"/api/{id}"</span>);
+    <span class="csharp-highlight-kw">return</span> res;
+}</code></div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> High-throughput concurrent backend microservices and UI responsiveness.</div>
+            </div>
+
+            <!-- C# 6.0 -->
+            <div class="csharp-card" data-version="6" data-era="async-roslyn" data-keywords="c# 6.0 roslyn string interpolation null conditional operator nameof expression bodied members exception filters using static .net 4.6">
+                <div class="csharp-card-header">
+                    <div class="csharp-version-tag">📌 C# 6.0</div>
+                    <div class="csharp-badges-group">
+                        <span class="csharp-runtime-badge">.NET 4.6 / Roslyn</span>
+                        <span class="csharp-year-badge">2015</span>
+                    </div>
+                </div>
+                <div class="csharp-card-title">Roslyn Compiler & Syntactic Elegance</div>
+                <ul class="csharp-feature-list">
+                    <li>String Interpolation (<code>$"Hello {user.Name}"</code>)</li>
+                    <li>Null-Conditional Operator (<code>patient?.PrimaryAddress?.City</code>)</li>
+                    <li>Expression-Bodied Members (<code>public int Area =&gt; Width * Height;</code>)</li>
+                    <li><code>nameof()</code> operator, Exception Filters (<code>when</code>), <code>using static</code></li>
+                </ul>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// String interpolation, null-conditional & nameof</span>
+<span class="csharp-highlight-kw">public string</span> FullName =&gt; $<span class="csharp-highlight-str">"{FirstName} {LastName}"</span>.<span class="csharp-highlight-fn">Trim</span>();
+<span class="csharp-highlight-type">string</span> city = patient?.Address?.City ?? <span class="csharp-highlight-str">"N/A"</span>;
+<span class="csharp-highlight-kw">if</span> (user == <span class="csharp-highlight-kw">null</span>) <span class="csharp-highlight-kw">throw new</span> <span class="csharp-highlight-type">ArgumentNullException</span>(<span class="csharp-highlight-kw">nameof</span>(user));</code></div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> Roslyn open-source compiler architecture & clean, safe syntax.</div>
+            </div>
+
+            <!-- C# 7.0–7.3 -->
+            <div class="csharp-card" data-version="7" data-era="async-roslyn" data-keywords="c# 7.0 7.1 7.2 7.3 tuples deconstruction pattern matching local functions out variables span readonlyspan ref struct ref readonly .net core 2.0 2.1">
+                <div class="csharp-card-header">
+                    <div class="csharp-version-tag">📌 C# 7.0–7.3</div>
+                    <div class="csharp-badges-group">
+                        <span class="csharp-runtime-badge">.NET Core 2.x</span>
+                        <span class="csharp-year-badge">2017–2018</span>
+                    </div>
+                </div>
+                <div class="csharp-card-title">High-Performance Structs, Tuples & Spans</div>
+                <ul class="csharp-feature-list">
+                    <li>ValueTuples & Deconstruction (<code>var (id, name) = record</code>)</li>
+                    <li>Pattern Matching (<code>is</code> type patterns, <code>switch</code> case guards)</li>
+                    <li>Local Functions, <code>out</code> variables (<code>int.TryParse(s, out var v)</code>)</li>
+                    <li><code>Span&lt;T&gt;</code>, <code>ReadOnlySpan&lt;T&gt;</code>, <code>ref struct</code> & <code>ref readonly</code></li>
+                </ul>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// Tuples, pattern matching & local functions</span>
+<span class="csharp-highlight-kw">if</span> (item <span class="csharp-highlight-kw">is</span> <span class="csharp-highlight-type">PatientRecord</span> { IsDischarged: <span class="csharp-highlight-kw">false</span> } record) {
+    <span class="csharp-highlight-kw">var</span> (mrn, name) = record;
+}
+<span class="csharp-highlight-type">int</span> <span class="csharp-highlight-fn">Calculate</span>() =&gt; <span class="csharp-highlight-fn">LocalWorker</span>(10);
+<span class="csharp-highlight-type">int</span> <span class="csharp-highlight-fn">LocalWorker</span>(<span class="csharp-highlight-type">int</span> v) =&gt; v * 4;</code></div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> High-speed zero-allocation memory abstractions for modern .NET Core.</div>
+            </div>
+
+            <!-- C# 8.0 -->
+            <div class="csharp-card" data-version="8" data-era="core" data-keywords="c# 8.0 nullable reference types switch expressions async streams iasyncenumerable await foreach default interface methods using declarations .net core 3.0">
+                <div class="csharp-card-header">
+                    <div class="csharp-version-tag">📌 C# 8.0</div>
+                    <div class="csharp-badges-group">
+                        <span class="csharp-runtime-badge">.NET Core 3.x</span>
+                        <span class="csharp-year-badge">2019</span>
+                    </div>
+                </div>
+                <div class="csharp-card-title">Nullable Reference Types & Async Streams</div>
+                <ul class="csharp-feature-list">
+                    <li>Nullable Reference Types (<code>#nullable enable</code>, <code>string?</code> vs <code>string</code>)</li>
+                    <li>Pattern Matching Switch Expressions (<code>status switch { ... }</code>)</li>
+                    <li>Async Streams with <code>IAsyncEnumerable&lt;T&gt;</code> & <code>await foreach</code></li>
+                    <li>Default Interface Methods & un-nested <code>using</code> declarations</li>
+                </ul>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// Nullable reference types & switch expressions</span>
+<span class="csharp-highlight-kw">using var</span> conn = <span class="csharp-highlight-kw">new</span> <span class="csharp-highlight-type">SqlConnection</span>(connStr);
+<span class="csharp-highlight-type">string</span> status = code <span class="csharp-highlight-kw">switch</span> {
+    200 =&gt; <span class="csharp-highlight-str">"Processed"</span>,
+    404 =&gt; <span class="csharp-highlight-str">"Not Found"</span>,
+    _ =&gt; <span class="csharp-highlight-str">"Unknown Error"</span>
+};
+<span class="csharp-highlight-kw">await foreach</span> (<span class="csharp-highlight-kw">var</span> item <span class="csharp-highlight-kw">in</span> <span class="csharp-highlight-fn">StreamQueueAsync</span>()) { /* ... */ }</code></div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> NullReferenceException prevention at compile time & asynchronous streaming.</div>
+            </div>
+
+            <!-- C# 9.0 -->
+            <div class="csharp-card" data-version="9" data-era="core" data-keywords="c# 9.0 records init only setters top level statements pattern matching relational and or not target typed new source generators .net 5">
+                <div class="csharp-card-header">
+                    <div class="csharp-version-tag">📌 C# 9.0</div>
+                    <div class="csharp-badges-group">
+                        <span class="csharp-runtime-badge">.NET 5.0</span>
+                        <span class="csharp-year-badge">2020</span>
+                    </div>
+                </div>
+                <div class="csharp-card-title">Records, Immutability & Minimalist Syntax</div>
+                <ul class="csharp-feature-list">
+                    <li><code>record</code> class types with value equality & <code>with</code> non-destructive mutation</li>
+                    <li><code>init</code>-only property setters for immutable object creation</li>
+                    <li>Top-Level Statements for lightweight microservices & scripts</li>
+                    <li>Relational & Logical Pattern Matching (<code>is &gt;= 80 and &lt;= 100</code>)</li>
+                    <li>Target-typed <code>new()</code> expressions (<code>List&lt;User&gt; queue = new();</code>)</li>
+                </ul>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// Records & non-destructive mutation</span>
+<span class="csharp-highlight-kw">public record</span> <span class="csharp-highlight-type">TradeOrder</span>(<span class="csharp-highlight-type">string</span> Symbol, <span class="csharp-highlight-type">decimal</span> Price, <span class="csharp-highlight-type">int</span> Qty);
+<span class="csharp-highlight-kw">var</span> updated = originalOrder <span class="csharp-highlight-kw">with</span> { Price = 152.50m };
+
+<span class="csharp-highlight-kw">if</span> (score <span class="csharp-highlight-kw">is</span> &gt;= 80 <span class="csharp-highlight-kw">and</span> &lt;= 100) <span class="csharp-highlight-fn">ProcessGrant</span>();
+<span class="csharp-highlight-type">Dictionary</span>&lt;<span class="csharp-highlight-type">string</span>, <span class="csharp-highlight-type">int</span>&gt; lookup = <span class="csharp-highlight-kw">new</span>();</code></div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> Immutable Domain-Driven Design (DDD) & clean pattern matching.</div>
+            </div>
+
+            <!-- C# 10 -->
+            <div class="csharp-card" data-version="10" data-era="core" data-keywords="c# 10 global using file scoped namespaces record struct interpolated string handlers extended property patterns constant string interpolation .net 6">
+                <div class="csharp-card-header">
+                    <div class="csharp-version-tag">📌 C# 10</div>
+                    <div class="csharp-badges-group">
+                        <span class="csharp-runtime-badge">.NET 6.0 LTS</span>
+                        <span class="csharp-year-badge">2021</span>
+                    </div>
+                </div>
+                <div class="csharp-card-title">Global Usings & Clean File-Scoped Syntax</div>
+                <ul class="csharp-feature-list">
+                    <li>Global Using Directives (<code>global using System;</code>) across projects</li>
+                    <li>File-Scoped Namespaces (<code>namespace App;</code>) eliminating nested indentation</li>
+                    <li><code>record struct</code> and <code>readonly record struct</code> value-type records</li>
+                    <li>Interpolated String Handler performance boosts & Extended Property Patterns</li>
+                </ul>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// Global using, file-scoped namespace & record struct</span>
+<span class="csharp-highlight-comment">// GlobalUsings.cs: global using Microsoft.AspNetCore.Mvc;</span>
+<span class="csharp-highlight-kw">namespace</span> Healthcare.Api;
+
+<span class="csharp-highlight-kw">public readonly record struct</span> <span class="csharp-highlight-type">GeoCoord</span>(<span class="csharp-highlight-type">double</span> Lat, <span class="csharp-highlight-type">double</span> Lng);
+<span class="csharp-highlight-kw">if</span> (claim <span class="csharp-highlight-kw">is</span> { Patient.Policy.IsActive: <span class="csharp-highlight-kw">true</span> }) <span class="csharp-highlight-fn">Approve</span>();</code></div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> Significant boilerplate reduction & modern minimalist microservice structure.</div>
+            </div>
+
+            <!-- C# 11 -->
+            <div class="csharp-card" data-version="11" data-era="core" data-keywords="c# 11 raw string literals generic math static abstract members in interfaces required modifier list patterns file local types utf8 string literals .net 7">
+                <div class="csharp-card-header">
+                    <div class="csharp-version-tag">📌 C# 11</div>
+                    <div class="csharp-badges-group">
+                        <span class="csharp-runtime-badge">.NET 7.0</span>
+                        <span class="csharp-year-badge">2022</span>
+                    </div>
+                </div>
+                <div class="csharp-card-title">Generic Math, Raw Strings & List Patterns</div>
+                <ul class="csharp-feature-list">
+                    <li>Raw String Literals (<code>"""multi-line JSON / SQL"""</code>) with clean whitespace</li>
+                    <li>Generic Math via static abstract interface members (<code>INumber&lt;T&gt;</code>)</li>
+                    <li><code>required</code> modifier for mandatory compile-time property initialization</li>
+                    <li>List Patterns (<code>[1, 2, ..var rest, 10]</code>) & UTF-8 String Literals (<code>"API"u8</code>)</li>
+                </ul>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// Raw string literal, required & list patterns</span>
+<span class="csharp-highlight-kw">public class</span> <span class="csharp-highlight-type">AuditLog</span> {
+    <span class="csharp-highlight-kw">public required string</span> TraceId { <span class="csharp-highlight-kw">get</span>; <span class="csharp-highlight-kw">init</span>; }
+}
+<span class="csharp-highlight-type">string</span> json = <span class="csharp-highlight-str">"""
+{ "tenant": "AptInfoSoft", "status": 200 }
+"""</span>;
+<span class="csharp-highlight-kw">if</span> (tokens <span class="csharp-highlight-kw">is</span> [<span class="csharp-highlight-str">"GET"</span>, <span class="csharp-highlight-kw">var</span> path, <span class="csharp-highlight-str">"HTTP/1.1"</span>]) <span class="csharp-highlight-fn">Handle</span>(path);</code></div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> Generic mathematical algorithms & effortless JSON/SQL template embedding.</div>
+            </div>
+
+            <!-- C# 12 -->
+            <div class="csharp-card" data-version="12" data-era="modern-future" data-keywords="c# 12 primary constructors collection expressions spread operator ref readonly parameters alias any type default lambda parameters inline arrays .net 8">
+                <div class="csharp-card-header">
+                    <div class="csharp-version-tag">📌 C# 12</div>
+                    <div class="csharp-badges-group">
+                        <span class="csharp-runtime-badge">.NET 8.0 LTS</span>
+                        <span class="csharp-year-badge">2023</span>
+                    </div>
+                </div>
+                <div class="csharp-card-title">Collection Expressions & Primary Constructors</div>
+                <ul class="csharp-feature-list">
+                    <li>Primary Constructors for all Classes & Structs (streamlined DI injection)</li>
+                    <li>Collection Expressions (<code>[1, 2, 3]</code>) & Spread Operator (<code>[..a, ..b]</code>)</li>
+                    <li><code>ref readonly</code> parameters for zero-copy reference safety</li>
+                    <li>Alias any type (<code>using Coord = (int X, int Y);</code>) & Inline Arrays</li>
+                </ul>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// Primary constructor & collection expressions</span>
+<span class="csharp-highlight-kw">public class</span> <span class="csharp-highlight-type">OrderService</span>(<span class="csharp-highlight-type">IDbContext</span> db, <span class="csharp-highlight-type">ILogger</span>&lt;<span class="csharp-highlight-type">OrderService</span>&gt; logger) {
+    <span class="csharp-highlight-kw">public</span> <span class="csharp-highlight-type">int</span>[] <span class="csharp-highlight-fn">MergeIds</span>(<span class="csharp-highlight-type">int</span>[] a, <span class="csharp-highlight-type">int</span>[] b) =&gt; [..a, ..b, 999];
+}
+<span class="csharp-highlight-kw">using</span> Point3D = (<span class="csharp-highlight-type">double</span> X, <span class="csharp-highlight-type">double</span> Y, <span class="csharp-highlight-type">double</span> Z);</code></div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> Clean Dependency Injection architectures & unified collection handling.</div>
+            </div>
+
+            <!-- C# 13 -->
+            <div class="csharp-card" data-version="13" data-era="modern-future" data-keywords="c# 13 params collections params span system threading lock allows ref struct escape sequence method group natural type .net 9">
+                <div class="csharp-card-header">
+                    <div class="csharp-version-tag">📌 C# 13</div>
+                    <div class="csharp-badges-group">
+                        <span class="csharp-runtime-badge">.NET 9.0</span>
+                        <span class="csharp-year-badge">2024</span>
+                    </div>
+                </div>
+                <div class="csharp-card-title">params Spans & System.Threading.Lock</div>
+                <ul class="csharp-feature-list">
+                    <li><code>params</code> Collections (<code>params ReadOnlySpan&lt;T&gt;</code>, <code>params List&lt;T&gt;</code>)</li>
+                    <li>Dedicated <code>System.Threading.Lock</code> object for high-efficiency thread safety</li>
+                    <li><code>ref struct</code> anti-constraint in generics (<code>where T : allows ref struct</code>)</li>
+                    <li>Enhanced <code>\e</code> escape sequence for ANSI console styling & method group typing</li>
+                </ul>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// System.Threading.Lock & params ReadOnlySpan</span>
+<span class="csharp-highlight-kw">private readonly</span> <span class="csharp-highlight-type">System.Threading.Lock</span> _gate = <span class="csharp-highlight-kw">new</span>();
+
+<span class="csharp-highlight-kw">public void</span> <span class="csharp-highlight-fn">SafeLog</span>(<span class="csharp-highlight-kw">params</span> <span class="csharp-highlight-type">ReadOnlySpan</span>&lt;<span class="csharp-highlight-type">string</span>&gt; messages) {
+    <span class="csharp-highlight-kw">lock</span> (_gate) {
+        <span class="csharp-highlight-kw">foreach</span> (<span class="csharp-highlight-kw">var</span> msg <span class="csharp-highlight-kw">in</span> messages) <span class="csharp-highlight-type">Console</span>.<span class="csharp-highlight-fn">WriteLine</span>(msg);
+    }
+}</code></div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> Zero-allocation params span calls & hardware-optimized synchronization.</div>
+            </div>
+
+            <!-- C# 14 -->
+            <div class="csharp-card" data-version="14" data-era="modern-future" data-keywords="c# 14 field keyword semi auto properties field backed properties implicit span conversions extension roles extension everything .net 10 preview">
+                <div class="csharp-card-header">
+                    <div class="csharp-version-tag">📌 C# 14</div>
+                    <div class="csharp-badges-group">
+                        <span class="csharp-runtime-badge">.NET 10 (Preview / GA)</span>
+                        <span class="csharp-year-badge">2025–2026</span>
+                    </div>
+                </div>
+                <div class="csharp-card-title">Field-Backed Properties & Extension Roles</div>
+                <ul class="csharp-feature-list">
+                    <li>Field-Backed / Semi-Auto Properties (the <code>field</code> contextual keyword)</li>
+                    <li>Implicit Span Conversions for array and string segments</li>
+                    <li>Extension Everything / Roles (Static & instance extension properties/indexers)</li>
+                    <li>Compound assignments & null-coalescing on <code>ref</code> variables</li>
+                </ul>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// Field-backed property with field keyword</span>
+<span class="csharp-highlight-kw">public class</span> <span class="csharp-highlight-type">PatientRecord</span> {
+    <span class="csharp-highlight-kw">public string</span> MRN {
+        <span class="csharp-highlight-kw">get</span> =&gt; field;
+        <span class="csharp-highlight-kw">set</span> =&gt; field = value?.<span class="csharp-highlight-fn">Trim</span>() ?? <span class="csharp-highlight-kw">throw new</span> <span class="csharp-highlight-type">ArgumentException</span>(<span class="csharp-highlight-str">"MRN required"</span>);
+    }
+}</code></div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> Encapsulated validation without manual backing fields & full extension models.</div>
+            </div>
+
+            <!-- C# 15 -->
+            <div class="csharp-card" data-version="15" data-era="modern-future" data-keywords="c# 15 discriminated unions sum types enum class native aot hardware simd ai tensor language primitives .net next future">
+                <div class="csharp-card-header">
+                    <div class="csharp-version-tag">📌 C# 15</div>
+                    <div class="csharp-badges-group">
+                        <span class="csharp-runtime-badge">.NET Next / Horizon</span>
+                        <span class="csharp-year-badge">Roadmap</span>
+                    </div>
+                </div>
+                <div class="csharp-card-title">Discriminated Unions & AI Hardware SIMD</div>
+                <ul class="csharp-feature-list">
+                    <li>Discriminated Unions / First-Class Sum Types (<code>enum class Result&lt;T&gt;</code>)</li>
+                    <li>Exhaustive Pattern Matching checked by compiler without reflection</li>
+                    <li>Zero-Overhead Hardware SIMD & Tensor primitives for on-device AI pipelines</li>
+                    <li>Native AOT code emission & ultra-low latency memory architectures</li>
+                </ul>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// Discriminated Unions (Sum Types)</span>
+<span class="csharp-highlight-kw">public enum class</span> <span class="csharp-highlight-type">OperationResult</span>&lt;<span class="csharp-highlight-type">T</span>&gt; {
+    Success(<span class="csharp-highlight-type">T</span> Value),
+    Failure(<span class="csharp-highlight-type">string</span> Reason, <span class="csharp-highlight-type">int</span> ErrorCode)
+}
+<span class="csharp-highlight-kw">var</span> status = result <span class="csharp-highlight-kw">switch</span> {
+    OperationResult.Success(<span class="csharp-highlight-kw">var</span> val) =&gt; $<span class="csharp-highlight-str">"Success: {val}"</span>,
+    OperationResult.Failure(<span class="csharp-highlight-kw">var</span> err, _) =&gt; $<span class="csharp-highlight-str">"Failed: {err}"</span>
+};</code></div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> Type-safe algebraic sum types & high-density AI acceleration pipelines.</div>
+            </div>
+
+        </div>
+    </div>
+    
+    <img src="./assets/arrow.png" alt="Arrow icon" class="icon arrow" onclick="location.href='#experience'">
 </section>
 
 <section id="experience">
@@ -586,6 +1018,7 @@
         <div class="nav-links-container">
             <ul class="nav-links">
                 <li><a href="#about">About</a></li>
+                <li><a href="#csharp">C# 1–15</a></li>
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#contact">Contact</a></li>
@@ -602,6 +1035,7 @@
           strings: [
             ".NET Technical Lead",
             "Senior .NET Software Engineer",
+            "C# 1–15 Specialist & Architect",
             "Full-Stack .NET & Python Developer",
             "Algorithmic Trading & FinTech Architect",
             "AI & RPA Automation Specialist",

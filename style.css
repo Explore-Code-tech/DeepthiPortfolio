@@ -668,3 +668,309 @@ footer p {
     font-size: 0.9rem;
     color: #777;
 }
+
+/* =========================================
+   C# 1–15 EVOLUTION & ARCHITECTURE TAB STYLES
+   ========================================= */
+#csharp {
+    min-height: fit-content;
+    height: auto;
+    position: relative;
+    padding-bottom: 8vh;
+}
+
+.csharp-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2.2rem;
+    margin-top: 2rem;
+}
+
+.csharp-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    background: rgba(255, 255, 255, 0.38);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 1.8rem;
+    padding: 1.6rem 2.2rem;
+    box-shadow: 0 8px 32px 0 rgba(167, 114, 125, 0.06);
+}
+
+.csharp-search-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.csharp-search-input {
+    width: 100%;
+    padding: 0.85rem 1.4rem 0.85rem 2.8rem;
+    border-radius: 2rem;
+    border: 1px solid rgba(167, 114, 125, 0.25);
+    background: rgba(255, 255, 255, 0.75);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    color: #2d1c24;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.csharp-search-input:focus {
+    border-color: #6366f1;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+}
+
+.csharp-search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    color: #A7727D;
+    pointer-events: none;
+}
+
+.csharp-era-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+}
+
+.csharp-filter-btn {
+    padding: 0.55rem 1.2rem;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(167, 114, 125, 0.25);
+    background: rgba(255, 255, 255, 0.55);
+    color: #4a3e43;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.csharp-filter-btn:hover {
+    background: rgba(167, 114, 125, 0.15);
+    color: #A7727D;
+    transform: translateY(-2px);
+}
+
+.csharp-filter-btn.active {
+    background: linear-gradient(135deg, #A7727D 0%, #6366f1 100%);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.csharp-version-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    border-top: 1px dashed rgba(167, 114, 125, 0.2);
+    padding-top: 1rem;
+}
+
+.csharp-pill-btn {
+    padding: 0.38rem 0.85rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    background: rgba(255, 255, 255, 0.45);
+    color: #555;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.csharp-pill-btn:hover {
+    background: rgba(99, 102, 241, 0.15);
+    color: #6366f1;
+    border-color: #6366f1;
+}
+
+.csharp-pill-btn.active {
+    background: #6366f1;
+    color: #ffffff;
+    border-color: #6366f1;
+    box-shadow: 0 2px 10px rgba(99, 102, 241, 0.25);
+}
+
+.csharp-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 2rem;
+}
+
+.csharp-card {
+    background: rgba(255, 255, 255, 0.38);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 1.8rem;
+    padding: 2rem;
+    box-shadow: 0 8px 30px rgba(167, 114, 125, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.2rem;
+    transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.csharp-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #A7727D 0%, #6366f1 100%);
+    opacity: 0.7;
+    transition: height 0.3s ease;
+}
+
+.csharp-card:hover {
+    transform: translateY(-6px);
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 16px 40px rgba(99, 102, 241, 0.15);
+}
+
+.csharp-card:hover::before {
+    height: 6px;
+    opacity: 1;
+}
+
+.csharp-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.csharp-version-tag {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2d1c24;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.csharp-badges-group {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+}
+
+.csharp-runtime-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+    padding: 0.25rem 0.65rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.csharp-year-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    background: rgba(167, 114, 125, 0.1);
+    color: #A7727D;
+    padding: 0.25rem 0.6rem;
+    border-radius: 1rem;
+}
+
+.csharp-card-title {
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: #A7727D;
+    line-height: 1.4;
+}
+
+.csharp-feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+.csharp-feature-list li {
+    font-size: 0.9rem;
+    color: #4a3e43;
+    line-height: 1.55;
+    position: relative;
+    padding-left: 1.3rem;
+}
+
+.csharp-feature-list li::before {
+    content: '✦';
+    position: absolute;
+    left: 0;
+    color: #6366f1;
+    font-size: 0.8rem;
+    top: 1px;
+}
+
+.csharp-code-box {
+    background: #181824;
+    color: #cdd6f4;
+    border-radius: 1rem;
+    padding: 1rem 1.1rem;
+    font-family: 'Consolas', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    overflow-x: auto;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.csharp-code-box code {
+    white-space: pre;
+    display: block;
+}
+
+.csharp-card-footer {
+    font-size: 0.82rem;
+    color: #6b5e64;
+    border-top: 1px solid rgba(167, 114, 125, 0.12);
+    padding-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 500;
+}
+
+.csharp-card-footer span {
+    color: #A7727D;
+    font-weight: 600;
+}
+
+.csharp-highlight-kw {
+    color: #f38ba8;
+    font-weight: 600;
+}
+.csharp-highlight-type {
+    color: #89b4fa;
+}
+.csharp-highlight-str {
+    color: #a6e3a1;
+}
+.csharp-highlight-fn {
+    color: #f9e2af;
+}
+.csharp-highlight-comment {
+    color: #6c7086;
+    font-style: italic;
+}
