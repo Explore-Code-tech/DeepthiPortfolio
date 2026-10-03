@@ -11,38 +11,37 @@
 
     <!-- Top Navigation Bar -->
     <nav class="guide-nav">
-        <a href="index.html" class="logo-link">
-            <span class="logo-text">Deepthi T</span>
-            <span class="logo-badge">C# 1–15 Master Guide</span>
-        </a>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <button class="btn-nav-action" id="btn-toggle-sidebar" onclick="toggleLhsSidebar()" title="Toggle Sidebar (Ctrl + B)">
+                <span id="sidebar-toggle-icon">◀</span>
+                <span id="sidebar-toggle-text">Sidebar</span>
+            </button>
+            <a href="index.html" class="logo-link">
+                <span class="logo-text">Deepthi T</span>
+                <span class="logo-badge">C# 1–15 Guide</span>
+            </a>
+        </div>
+        
         <div class="nav-actions">
-            <a href="index.html" class="btn-back">← Back to Portfolio</a>
+            <button class="btn-nav-action btn-nav-sandbox" onclick="openSandbox()" title="Open Interactive C# Code Sandbox">
+                <span>⚡ Live C# Sandbox</span>
+            </button>
+            <a href="index.html" class="btn-nav-action">← Portfolio</a>
         </div>
     </nav>
 
-    <!-- Guide Hero Header -->
-    <header class="guide-header">
-        <h1 class="guide-title">C# 1 to 15 Architecture & Interview Guide</h1>
-        <p class="guide-subtitle">
-            A comprehensive, production-grade encyclopedia of <strong>332 core topics, syntax blueprints, and senior/tech lead interview articulations</strong> covering every C# language milestone from C# 1.0 to C# 15.
-        </p>
-        <div class="stats-bar">
-            <span class="stat-pill">📚 <strong>332</strong> Topics Analyzed</span>
-            <span class="stat-pill">🏛 <strong>18</strong> C# Releases</span>
-            <span class="stat-pill">🎯 <strong>Tech Lead</strong> Design Articulations</span>
-            <span class="stat-pill">⚡ <strong>Zero-Copy & AI</strong> Innovations</span>
-        </div>
-    </header>
-
     <!-- Split Master Layout -->
-    <main class="master-layout">
+    <main class="master-layout" id="master-layout">
         
         <!-- LHS Ribbon (Sidebar Accordion Tree) -->
         <aside class="lhs-ribbon" id="lhs-ribbon">
             <div class="lhs-header">
                 <div class="lhs-title-row">
                     <span class="lhs-title">📑 Language Versions</span>
-                    <button class="btn-lhs-expand-toggle" id="btn-lhs-expand-all" onclick="toggleAllLhsVersions()">📂 Expand All</button>
+                    <div class="lhs-header-actions">
+                        <button class="btn-lhs-expand-toggle" id="btn-lhs-expand-all" onclick="toggleAllLhsVersions()">📂 Expand All</button>
+                        <button class="btn-lhs-expand-toggle" onclick="toggleLhsSidebar()" title="Collapse Sidebar">◀ Hide</button>
+                    </div>
                 </div>
                 
                 <!-- Quick Filter for LHS Tree -->
@@ -78,6 +77,7 @@
                         <span style="position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: #A7727D; font-size: 0.85rem; pointer-events: none;">🔍</span>
                         <input type="text" class="rhs-search-input" id="rhs-search" placeholder="Search syntax, concepts, patterns..." oninput="onRhsSearch(this.value)">
                     </div>
+                    <button class="btn-toggle-all" onclick="openSandbox()">⚡ Practice in Sandbox</button>
                     <button class="btn-toggle-all" id="btn-toggle-all" onclick="toggleAllLeadArticulations()">Collapse Lead Notes</button>
                 </div>
             </div>
@@ -91,8 +91,102 @@
 
     </main>
 
+    <!-- Floating Button to Re-open Sidebar when collapsed -->
+    <button class="btn-floating-sidebar-toggle" id="btn-floating-sidebar-show" onclick="expandSidebar()">
+        <span>📑 Show Sidebar</span>
+    </button>
+
     <!-- Floating Back to Top Button -->
     <button class="btn-floating-top" id="btn-back-to-top" title="Back to top">↑</button>
+
+    <!-- =========================================
+         INTERACTIVE C# LIVE SANDBOX MODAL
+         ========================================= -->
+    <div class="sandbox-overlay" id="sandbox-overlay" onclick="handleSandboxOverlayClick(event)">
+        <div class="sandbox-modal" id="sandbox-modal">
+            
+            <!-- Header -->
+            <div class="sandbox-header">
+                <div class="sandbox-header-left">
+                    <span class="sandbox-title">⚡ C# Live Practice Sandbox</span>
+                    <span class="sandbox-badge">.NET C# Runner</span>
+                </div>
+                <div class="sandbox-header-controls">
+                    <select class="sandbox-template-select" id="sandbox-template-select" onchange="onTemplateChange(this.value)">
+                        <option value="custom">-- Choose Starter Template --</option>
+                        <option value="hello">👋 Hello World & Classes (C# 1–2)</option>
+                        <option value="linq">🔍 LINQ & Lambda Queries (C# 3)</option>
+                        <option value="async">🚀 Async / Await Task (C# 5)</option>
+                        <option value="records">💎 Records & Pattern Matching (C# 9–10)</option>
+                        <option value="primary">🧩 Primary Constructors & Collections (C# 12)</option>
+                        <option value="lock">🔒 params Spans & Lock Object (C# 13)</option>
+                        <option value="field">🏷 Field-Backed Properties (C# 14)</option>
+                        <option value="unions">🔮 Discriminated Unions & AI (C# 15)</option>
+                    </select>
+                    <a href="https://dotnetfiddle.net/" target="_blank" class="btn-open-external" title="Open full Roslyn compiler in .NET Fiddle">
+                        <span>🌐 .NET Fiddle ↗</span>
+                    </a>
+                    <button class="btn-close-sandbox" onclick="closeSandbox()" title="Close Sandbox (Esc)">✕</button>
+                </div>
+            </div>
+
+            <!-- Body (Split Editor & Output Console) -->
+            <div class="sandbox-body">
+                
+                <!-- Code Editor Panel -->
+                <div class="sandbox-editor-panel">
+                    <div class="sandbox-panel-header">
+                        <span>📝 C# Source Code Editor</span>
+                        <span style="font-size: 0.72rem; color: #6c7086;">Auto-indents & Tab support</span>
+                    </div>
+                    <div class="sandbox-editor-container">
+                        <textarea class="sandbox-textarea" id="sandbox-code-editor" spellcheck="false" placeholder="// Write or paste C# code here...
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program {
+    static void Main() {
+        Console.WriteLine(&quot;Hello from C# Live Sandbox!&quot;);
+    }
+}"></textarea>
+                    </div>
+                </div>
+
+                <!-- Console Output Panel -->
+                <div class="sandbox-console-panel">
+                    <div class="sandbox-panel-header">
+                        <span>💻 Execution Output & Terminal Console</span>
+                        <button class="btn-sandbox-action" style="padding: 0.15rem 0.6rem; font-size: 0.72rem;" onclick="clearSandboxOutput()">🧹 Clear Console</button>
+                    </div>
+                    <div class="sandbox-console-output" id="sandbox-output">
+<span class="console-line-info">$ dotnet run Program.cs</span>
+<span class="console-line-success">Ready. Click [▶ Run Code] to execute your C# code or practice any topic snippet!</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer Bar -->
+            <div class="sandbox-footer">
+                <div class="sandbox-footer-left">
+                    <button class="btn-sandbox-run" id="btn-run-code" onclick="runSandboxCode()">
+                        <span>▶ Run Code</span>
+                    </button>
+                    <button class="btn-sandbox-action" onclick="resetSandboxCode()">
+                        <span>↺ Reset</span>
+                    </button>
+                    <button class="btn-sandbox-action" onclick="copySandboxCode()">
+                        <span>📋 Copy Code</span>
+                    </button>
+                </div>
+                <div>
+                    <span class="sandbox-status-text" id="sandbox-status">⚡ Status: Ready (Press Ctrl + Enter to Run)</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="csharp-data.js"></script>
