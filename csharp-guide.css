@@ -197,31 +197,31 @@ body::after {
    LHS RIBBON (SIDEBAR) STYLES
    ========================================= */
 .lhs-ribbon {
-    width: 340px;
-    min-width: 320px;
-    max-width: 360px;
-    background: rgba(255, 255, 255, 0.45);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    width: 370px;
+    min-width: 340px;
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(167, 114, 125, 0.3);
     border-radius: 1.6rem;
     padding: 1.4rem;
-    box-shadow: 0 8px 32px 0 rgba(167, 114, 125, 0.06);
+    box-shadow: 0 10px 35px 0 rgba(167, 114, 125, 0.08);
     position: sticky;
     top: calc(10vh + 15px);
     height: calc(90vh - 35px);
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.9rem;
     z-index: 100;
 }
 
 .lhs-header {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
-    border-bottom: 1px dashed rgba(167, 114, 125, 0.25);
-    padding-bottom: 1rem;
+    gap: 0.75rem;
+    border-bottom: 1px dashed rgba(167, 114, 125, 0.3);
+    padding-bottom: 0.9rem;
 }
 
 .lhs-title-row {
@@ -233,21 +233,48 @@ body::after {
 .lhs-title {
     font-size: 1.15rem;
     font-weight: 700;
-    color: #2d1c24;
+    color: #1a1016;
     display: flex;
     align-items: center;
     gap: 0.4rem;
+}
+
+.lhs-header-actions {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.btn-lhs-expand-toggle {
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    color: #6366f1;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-lhs-expand-toggle:hover {
+    background: #6366f1;
+    color: #ffffff;
+}
+
+.lhs-search-wrapper {
+    position: relative;
+    width: 100%;
 }
 
 .lhs-search-input {
     width: 100%;
     padding: 0.65rem 1rem 0.65rem 2.2rem;
     border-radius: 1.5rem;
-    border: 1px solid rgba(167, 114, 125, 0.25);
-    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(167, 114, 125, 0.3);
+    background: #ffffff;
     font-family: 'Poppins', sans-serif;
     font-size: 0.85rem;
-    color: #2d1c24;
+    color: #1a1016;
     outline: none;
     transition: all 0.3s ease;
 }
@@ -255,12 +282,7 @@ body::after {
 .lhs-search-input:focus {
     border-color: #6366f1;
     background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-}
-
-.lhs-search-wrapper {
-    position: relative;
-    width: 100%;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
 }
 
 .lhs-search-icon {
@@ -277,22 +299,24 @@ body::after {
     width: 100%;
     padding: 0.65rem 1rem;
     border-radius: 1rem;
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    background: rgba(255, 255, 255, 0.65);
-    color: #2d1c24;
+    border: 1px solid rgba(99, 102, 241, 0.35);
+    background: #ffffff;
+    color: #1a1016;
     font-family: 'Poppins', sans-serif;
     font-size: 0.88rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
     align-items: center;
     transition: all 0.25s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 .lhs-all-btn:hover {
     background: rgba(99, 102, 241, 0.12);
     color: #6366f1;
+    border-color: #6366f1;
 }
 
 .lhs-all-btn.active {
@@ -306,121 +330,174 @@ body::after {
 .lhs-tree-container {
     flex: 1;
     overflow-y: auto;
-    padding-right: 0.4rem;
+    padding-right: 0.35rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.6rem;
 }
 
 /* Custom Scrollbar for LHS */
 .lhs-tree-container::-webkit-scrollbar {
-    width: 5px;
+    width: 6px;
 }
 .lhs-tree-container::-webkit-scrollbar-thumb {
-    background: rgba(167, 114, 125, 0.25);
+    background: rgba(167, 114, 125, 0.35);
     border-radius: 10px;
 }
 .lhs-tree-container::-webkit-scrollbar-thumb:hover {
-    background: rgba(99, 102, 241, 0.4);
+    background: rgba(99, 102, 241, 0.6);
 }
 
 .version-accordion-item {
     border-radius: 1rem;
-    background: rgba(255, 255, 255, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.55);
+    background: #ffffff;
+    border: 1px solid rgba(167, 114, 125, 0.25);
     overflow: hidden;
     transition: all 0.25s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
 }
 
 .version-accordion-item:hover {
-    background: rgba(255, 255, 255, 0.7);
-    border-color: rgba(99, 102, 241, 0.3);
+    border-color: #6366f1;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.12);
 }
 
 .version-accordion-item.active {
-    background: rgba(255, 255, 255, 0.85);
     border-color: #6366f1;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.1);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2), 0 4px 15px rgba(99, 102, 241, 0.1);
 }
 
 .version-item-header {
-    padding: 0.65rem 0.9rem;
+    padding: 0.75rem 0.95rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
     user-select: none;
+    background: #ffffff;
+    transition: background 0.2s ease;
+}
+
+.version-item-header:hover {
+    background: rgba(99, 102, 241, 0.05);
 }
 
 .version-name-group {
     display: flex;
     align-items: center;
+    gap: 0.6rem;
+}
+
+.version-icon {
+    font-size: 1.1rem;
+}
+
+.version-title-stack {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.version-main-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #1a1016;
+}
+
+.version-sub-title {
+    font-size: 0.72rem;
+    color: #777;
+    font-weight: 500;
+}
+
+.version-right-group {
+    display: flex;
+    align-items: center;
     gap: 0.5rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #2d1c24;
 }
 
 .version-badge-count {
     font-size: 0.72rem;
     background: rgba(167, 114, 125, 0.12);
     color: #A7727D;
-    padding: 0.15rem 0.5rem;
+    padding: 0.2rem 0.55rem;
     border-radius: 0.8rem;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .version-chevron {
     font-size: 0.75rem;
-    color: #777;
+    color: #888;
     transition: transform 0.25s ease;
 }
 
 .version-accordion-item.expanded .version-chevron {
-    transform: rotate(90deg);
+    transform: rotate(180deg);
 }
 
 /* Subtopics List inside version accordion */
 .subtopics-list {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
-    background: rgba(255, 255, 255, 0.5);
-    border-top: 1px solid rgba(0, 0, 0, 0.04);
+    display: none;
+    background: #faf8fb;
+    border-top: 1px solid rgba(167, 114, 125, 0.15);
+    padding: 0.5rem 0.6rem;
+    max-height: none;
 }
 
 .version-accordion-item.expanded .subtopics-list {
-    max-height: 1200px;
-    overflow-y: auto;
-    padding: 0.4rem 0.6rem 0.6rem 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 }
 
 .subtopic-nav-link {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.35rem 0.6rem;
+    gap: 0.5rem;
+    padding: 0.42rem 0.65rem;
     border-radius: 0.6rem;
-    font-size: 0.8rem;
-    color: #4a3e43;
+    font-size: 0.82rem;
+    color: #2d1c24;
     text-decoration: none;
     cursor: pointer;
     transition: all 0.2s ease;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    border: 1px solid transparent;
 }
 
 .subtopic-nav-link:hover {
-    background: rgba(99, 102, 241, 0.12);
+    background: #ffffff;
     color: #6366f1;
-    transform: translateX(3px);
+    border-color: rgba(99, 102, 241, 0.25);
+    transform: translateX(4px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.subtopic-id {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #A7727D;
+    background: rgba(167, 114, 125, 0.1);
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.4rem;
+    flex-shrink: 0;
+}
+
+.subtopic-title {
+    font-weight: 500;
+    white-space: normal;
+    word-break: break-word;
+    text-align: left;
 }
 
 .subtopic-nav-link.active-subtopic {
     background: #6366f1;
     color: #ffffff;
     font-weight: 600;
+}
+
+.subtopic-nav-link.active-subtopic .subtopic-id {
+    background: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
 }
 
 /* =========================================

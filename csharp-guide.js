@@ -38,6 +38,8 @@ function highlightCSharpSyntax(code) {
 }
 
 // 1. Initialize LHS Ribbon
+let areAllLhsExpanded = false;
+
 function initLhsRibbon() {
     const treeContainer = document.getElementById('lhs-tree');
     if (!treeContainer || typeof CSHARP_DATA === 'undefined') return;
@@ -54,24 +56,28 @@ function initLhsRibbon() {
         if (index === 0) accordion.classList.add('expanded'); // expand C# 1.0 initially
 
         const icon = vObj.meta.icon || '📌';
+        const subTitle = vObj.meta.title || '';
 
         // Header
         accordion.innerHTML = `
             <div class="version-item-header" onclick="toggleVersionAccordion('${vKey}', event)">
                 <div class="version-name-group">
-                    <span>${icon}</span>
-                    <span>${vKey}</span>
+                    <span class="version-icon">${icon}</span>
+                    <div class="version-title-stack">
+                        <span class="version-main-title">${vKey}</span>
+                        <span class="version-sub-title">${escapeHtml(subTitle)}</span>
+                    </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                <div class="version-right-group">
                     <span class="version-badge-count">${vObj.topics.length}</span>
-                    <span class="version-chevron">▶</span>
+                    <span class="version-chevron">▼</span>
                 </div>
             </div>
             <div class="subtopics-list" id="subtopics-${sanitizeId(vKey)}">
                 ${vObj.topics.map(t => `
                     <a class="subtopic-nav-link" href="#topic-${t.id}" onclick="onSubtopicClick('${vKey}', '${t.id}', event)">
-                        <span style="font-size: 0.7rem; opacity: 0.6;">#${t.id}</span>
-                        <span>${escapeHtml(t.topic)}</span>
+                        <span class="subtopic-id">#${t.id}</span>
+                        <span class="subtopic-title">${escapeHtml(t.topic)}</span>
                     </a>
                 `).join('')}
             </div>
@@ -79,6 +85,23 @@ function initLhsRibbon() {
 
         treeContainer.appendChild(accordion);
     });
+}
+
+function toggleAllLhsVersions() {
+    areAllLhsExpanded = !areAllLhsExpanded;
+    const items = document.querySelectorAll('.version-accordion-item');
+    items.forEach(item => {
+        if (areAllLhsExpanded) {
+            item.classList.add('expanded');
+        } else {
+            item.classList.remove('expanded');
+        }
+    });
+
+    const btn = document.getElementById('btn-lhs-expand-all');
+    if (btn) {
+        btn.innerText = areAllLhsExpanded ? '📁 Collapse All' : '📂 Expand All';
+    }
 }
 
 function sanitizeId(str) {
