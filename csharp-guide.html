@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C# 1 to 15 Master Architecture & Interview Guide | Deepthi T</title>
+    <link rel="stylesheet" href="csharp-guide.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <nav class="guide-nav">
+        <a href="index.html" class="logo-link">
+            <span class="logo-text">Deepthi T</span>
+            <span class="logo-badge">C# 1–15 Master Guide</span>
+        </a>
+        <div class="nav-actions">
+            <a href="index.html" class="btn-back">← Back to Portfolio</a>
+        </div>
+    </nav>
+
+    <!-- Guide Hero Header -->
+    <header class="guide-header">
+        <h1 class="guide-title">C# 1 to 15 Architecture & Interview Guide</h1>
+        <p class="guide-subtitle">
+            A comprehensive, production-grade encyclopedia of <strong>332 core topics, syntax blueprints, and senior/tech lead interview articulations</strong> covering every C# language milestone from C# 1.0 to C# 15.
+        </p>
+        <div class="stats-bar">
+            <span class="stat-pill">📚 <strong>332</strong> Topics Analyzed</span>
+            <span class="stat-pill">🏛 <strong>18</strong> C# Releases</span>
+            <span class="stat-pill">🎯 <strong>Tech Lead</strong> Design Articulations</span>
+            <span class="stat-pill">⚡ <strong>Zero-Copy & AI</strong> Innovations</span>
+        </div>
+    </header>
+
+    <!-- Split Master Layout -->
+    <main class="master-layout">
+        
+        <!-- LHS Ribbon (Sidebar Accordion Tree) -->
+        <aside class="lhs-ribbon" id="lhs-ribbon">
+            <div class="lhs-header">
+                <div class="lhs-title-row">
+                    <span class="lhs-title">📑 Language Versions</span>
+                </div>
+                
+                <!-- Quick Filter for LHS Tree -->
+                <div class="lhs-search-wrapper">
+                    <span class="lhs-search-icon">🔍</span>
+                    <input type="text" class="lhs-search-input" placeholder="Filter versions / topics..." oninput="filterLhsSearch(this.value)">
+                </div>
+
+                <!-- All Versions Button -->
+                <button class="lhs-all-btn active" id="lhs-btn-all" onclick="selectVersion('all')">
+                    <span>⚡ All Generations (1.0 to 15)</span>
+                    <span class="version-badge-count" style="background: rgba(255,255,255,0.3); color: inherit;">332</span>
+                </button>
+            </div>
+
+            <!-- Dynamic Version & Topic Tree Container -->
+            <div class="lhs-tree-container" id="lhs-tree">
+                <!-- Injected dynamically via csharp-guide.js -->
+            </div>
+        </aside>
+
+        <!-- RHS Content (Cards Display) -->
+        <section class="rhs-container">
+            
+            <!-- RHS Control & Filter Bar -->
+            <div class="rhs-control-bar">
+                <div class="rhs-view-info">
+                    <h2 class="rhs-active-version-title" id="rhs-active-title">⚡ All C# Versions (1.0 to 15)</h2>
+                    <span class="rhs-count-label" id="rhs-count-label">Showing 332 Topics</span>
+                </div>
+                <div class="rhs-tools">
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: #A7727D; font-size: 0.85rem; pointer-events: none;">🔍</span>
+                        <input type="text" class="rhs-search-input" id="rhs-search" placeholder="Search syntax, concepts, patterns..." oninput="onRhsSearch(this.value)">
+                    </div>
+                    <button class="btn-toggle-all" id="btn-toggle-all" onclick="toggleAllLeadArticulations()">Collapse Lead Notes</button>
+                </div>
+            </div>
+
+            <!-- Topic Cards List Container -->
+            <div class="topics-cards-container" id="topics-cards-container">
+                <!-- Cards injected dynamically via csharp-guide.js -->
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Floating Back to Top Button -->
+    <button class="btn-floating-top" id="btn-back-to-top" title="Back to top">↑</button>
+
+    <!-- Scripts -->
+    <script src="csharp-data.js"></script>
+    <script src="csharp-guide.js"></script>
+</body>
+</html>
