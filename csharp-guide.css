@@ -382,6 +382,8 @@ body::after {
 }
 
 .version-accordion-item {
+    flex-shrink: 0 !important;
+    min-height: fit-content;
     border-radius: 1rem;
     background: #ffffff;
     border: 1px solid rgba(167, 114, 125, 0.25);
@@ -401,6 +403,8 @@ body::after {
 }
 
 .version-item-header {
+    flex-shrink: 0 !important;
+    min-height: 52px;
     padding: 0.75rem 0.95rem;
     display: flex;
     justify-content: space-between;
@@ -419,6 +423,7 @@ body::after {
     display: flex;
     align-items: center;
     gap: 0.6rem;
+    flex-shrink: 0;
 }
 
 .version-icon {
@@ -447,6 +452,7 @@ body::after {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    flex-shrink: 0;
 }
 
 .version-badge-count {
@@ -471,6 +477,7 @@ body::after {
 /* Subtopics List inside version accordion */
 .subtopics-list {
     display: none;
+    flex-shrink: 0 !important;
     background: #faf8fb;
     border-top: 1px solid rgba(167, 114, 125, 0.15);
     padding: 0.5rem 0.6rem;
@@ -484,6 +491,8 @@ body::after {
 }
 
 .subtopic-nav-link {
+    flex-shrink: 0 !important;
+    min-height: 32px;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -1152,19 +1161,24 @@ body::after {
 @media screen and (max-width: 1100px) {
     .master-layout {
         flex-direction: column;
-        padding: 1rem 1.5rem 3rem 1.5rem;
+        padding: 1rem 1.2rem 3rem 1.2rem;
     }
 
     .lhs-ribbon {
         width: 100%;
         max-width: 100%;
-        height: auto;
-        max-height: 420px;
+        height: 520px;
         position: static;
     }
 
+    .lhs-tree-container {
+        flex: 1;
+        overflow-y: auto;
+        max-height: 380px;
+    }
+
     .guide-nav {
-        padding: 0 1.5rem;
+        padding: 0 1.2rem;
     }
 
     .sandbox-body {
@@ -1179,8 +1193,6 @@ body::after {
 
     .sandbox-console-panel {
         height: 50%;
-    }
-}
     }
 }
 
