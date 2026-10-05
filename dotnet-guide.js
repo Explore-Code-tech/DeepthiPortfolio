@@ -209,6 +209,34 @@ class Program {
         Console.WriteLine("Result: High Semantic Correlation (0.942)");
         Console.WriteLine("Zero Python overhead: Direct hardware silicon acceleration.");
     }
+}`,
+
+    net11_union: `using System;
+
+// .NET 11 & C# 15 (2026) - Native Union Types & Exhaustive Switch
+// C# 15 provides 'union' keyword & compiler exhaustiveness; .NET 11 provides IUnion & UnionAttribute runtime support.
+class Program {
+    static void Main() {
+        Console.WriteLine("=== .NET 11 & C# 15 Native Union Types ===");
+        
+        var payment1 = new PaymentMethod.CreditCard("4111-XXXX-XXXX-1111", 120.50m);
+        var payment2 = new PaymentMethod.Crypto("0x71C...B29", 0.045m);
+        
+        Console.WriteLine(ProcessPayment(payment1));
+        Console.WriteLine(ProcessPayment(payment2));
+    }
+
+    public abstract record PaymentMethod {
+        public record CreditCard(string CardNumber, decimal Amount) : PaymentMethod;
+        public record Crypto(string WalletAddress, decimal Amount) : PaymentMethod;
+        public record Cash(decimal Amount) : PaymentMethod;
+    }
+
+    static string ProcessPayment(PaymentMethod method) => method switch {
+        PaymentMethod.CreditCard cc => $"Processed Visa/MasterCard: {cc.Amount:C}",
+        PaymentMethod.Crypto cr     => $"Processed Web3 Crypto transfer: {cr.Amount} ETH",
+        PaymentMethod.Cash ca       => $"Processed Cash tender: {ca.Amount:C}"
+    };
 }`
 };
 
@@ -261,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Switch between Evolution Journey, Abbreviation Index, and Combined view
+// Switch between Evolution Journey, Abbreviation Index, Combined view, and Sandbox Integration
 function switchViewMode(mode) {
     currentViewMode = mode;
 
@@ -270,13 +298,22 @@ function switchViewMode(mode) {
     if (activeBtn) activeBtn.classList.add('active');
 
     const abbrCategoryBar = document.getElementById('abbr-category-bar');
+    const sandboxLhsBtn = document.getElementById('lhs-btn-sandbox');
+    const allLhsBtn = document.getElementById('lhs-btn-all');
 
     if (mode === 'evolution') {
         if (abbrCategoryBar) abbrCategoryBar.style.display = 'none';
+        if (sandboxLhsBtn) sandboxLhsBtn.classList.remove('active');
     } else if (mode === 'abbreviations') {
         if (abbrCategoryBar) abbrCategoryBar.style.display = 'flex';
+        if (sandboxLhsBtn) sandboxLhsBtn.classList.remove('active');
+    } else if (mode === 'sandbox') {
+        if (abbrCategoryBar) abbrCategoryBar.style.display = 'none';
+        if (sandboxLhsBtn) sandboxLhsBtn.classList.add('active');
+        if (allLhsBtn) allLhsBtn.classList.remove('active');
     } else { // 'all'
         if (abbrCategoryBar) abbrCategoryBar.style.display = 'flex';
+        if (sandboxLhsBtn) sandboxLhsBtn.classList.remove('active');
     }
 
     renderActiveView();
@@ -299,6 +336,8 @@ function renderActiveView() {
         renderRhsTopics(currentActiveVersion, currentSearchQuery);
     } else if (currentViewMode === 'abbreviations') {
         renderAbbreviationCards(currentSearchQuery, currentAbbrCategory);
+    } else if (currentViewMode === 'sandbox') {
+        renderSandboxIntegrationView();
     } else {
         renderCombinedView(currentSearchQuery);
     }
@@ -1112,6 +1151,451 @@ function renderCombinedView(searchQuery = '') {
         </div>
     `;
     restoreSelfChecks();
+}
+
+// 6. Master Sandbox Architecture & Integration Guide View
+function renderSandboxIntegrationView() {
+    const container = document.getElementById('topics-cards-container');
+    const titleEl = document.getElementById('rhs-active-title');
+    const countEl = document.getElementById('rhs-count-label');
+    if (!container) return;
+
+    if (titleEl) {
+        titleEl.innerHTML = `⚡ Interactive .NET Sandbox — Architecture & Integration Guide`;
+    }
+    if (countEl) {
+        countEl.innerText = `Full Architecture, Live Embedded Runner & 5-Step Integration Blueprint`;
+    }
+
+    container.innerHTML = `
+        <div class="sandbox-guide-container">
+            
+            <!-- Hero Banner -->
+            <div class="sandbox-guide-hero">
+                <div class="hero-badge-row" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                    <span class="nl-badge-primary">⚡ Sandbox System Architecture</span>
+                    <span class="nl-category-tag">Runtime & Execution Infrastructure</span>
+                    <span class="nl-fullform-text">— Technical Lead Implementation Blueprint</span>
+                </div>
+                <h2 class="sandbox-hero-title">How To Integrate an Interactive C# / .NET Sandbox Into Your Web App</h2>
+                <p class="sandbox-hero-desc">
+                    An interactive code sandbox bridges theoretical architecture and hands-on practice. Below is the <strong>complete architecture</strong>, <strong>live embedded runner</strong>, and <strong>step-by-step implementation guide</strong> for integrating client-side, WebAssembly, and containerized .NET code execution engines into any web application or portfolio.
+                </p>
+            </div>
+
+            <!-- 1. LIVE EMBEDDED PLAYGROUND (Hands-On Experience) -->
+            <div class="embedded-sandbox-card">
+                <div class="embedded-sandbox-header">
+                    <div class="embedded-header-left">
+                        <span class="embedded-header-title">⚡ Live Embedded .NET Sandbox Playground</span>
+                        <span class="embedded-header-badge">Interactive In-Page Runner</span>
+                    </div>
+                    <div class="embedded-header-controls">
+                        <select class="sandbox-template-select" id="embedded-template-select" onchange="onEmbeddedTemplateChange(this.value)">
+                            <option value="net1">🏛 .NET 1.0: CLR Managed Code & Boxing</option>
+                            <option value="net2">🏛 .NET 2.0: Generics & Iterators (yield)</option>
+                            <option value="net3">🏛 .NET 3.5: Declarative LINQ & Lambdas</option>
+                            <option value="net4">🏛 .NET 4.0: Task Parallel Library (TPL)</option>
+                            <option value="netcore_span">⚡ .NET Core 2.1: Span&lt;T&gt; Zero-Allocation</option>
+                            <option value="netcore_channels">⚡ .NET Core 3.1: High-Speed Channels Queue</option>
+                            <option value="net6_minimal">🚀 .NET 6: Minimal APIs & Dynamic PGO</option>
+                            <option value="net8_frozen">💎 .NET 8: FrozenDictionary & Native AOT</option>
+                            <option value="net9_hybrid">🔮 .NET 9: HybridCache & Server GC DATAS</option>
+                            <option value="net10_tensor">🔮 .NET 10: AI Tensor&lt;T&gt; Hardware SIMD</option>
+                            <option value="net11_union" selected>🔮 .NET 11: Native Union Types & Exhaustive Switch</option>
+                        </select>
+                        <button class="btn-card-practice" onclick="openSandboxFromEmbedded()" title="Open in Fullscreen Modal">
+                            <span>⛶ Fullscreen Modal</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="embedded-sandbox-body">
+                    <!-- Code Editor Side -->
+                    <div class="embedded-editor-panel">
+                        <div class="sandbox-panel-header">
+                            <span>📝 C# / .NET Source Code Editor</span>
+                            <span style="font-size: 0.72rem; color: #89b4fa;">Edit freely • Tab indents 4 spaces</span>
+                        </div>
+                        <div class="sandbox-editor-container" style="flex: 1; min-height: 280px;">
+                            <textarea class="sandbox-textarea" id="embedded-sandbox-editor" spellcheck="false"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Terminal Output Side -->
+                    <div class="embedded-console-panel">
+                        <div class="sandbox-panel-header">
+                            <span>💻 Execution Output & Terminal Console</span>
+                            <button class="btn-sandbox-action" style="padding: 0.15rem 0.5rem; font-size: 0.72rem;" onclick="clearEmbeddedSandboxOutput()">🧹 Clear</button>
+                        </div>
+                        <div class="sandbox-console-output" id="embedded-sandbox-output">
+<span class="console-line-info">$ dotnet run Program.cs</span>
+<span class="console-line-success">Ready. Click [▶ Run Code] or press Ctrl + Enter to execute in the embedded runner!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="embedded-sandbox-footer">
+                    <div class="embedded-footer-left">
+                        <button class="btn-sandbox-run" id="btn-embedded-run" onclick="runEmbeddedSandboxCode()">
+                            <span>▶ Run Code</span>
+                        </button>
+                        <button class="btn-sandbox-action" onclick="resetEmbeddedSandboxCode()">
+                            <span>↺ Reset</span>
+                        </button>
+                        <button class="btn-sandbox-action" onclick="copyEmbeddedSandboxCode(this)">
+                            <span>📋 Copy Code</span>
+                        </button>
+                        <a href="https://dotnetfiddle.net/" target="_blank" class="btn-open-external" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; background: #252538; border: 1px solid rgba(255,255,255,0.15); border-radius: 0.6rem; color: #89b4fa; text-decoration: none;">
+                            <span>🌐 .NET Fiddle ↗</span>
+                        </a>
+                    </div>
+                    <div>
+                        <span class="sandbox-status-text" id="embedded-sandbox-status">⚡ Status: Ready (Press Ctrl + Enter to Run)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. ARCHITECTURAL BLUEPRINT & FLOW -->
+            <div class="sandbox-section-card">
+                <h3 class="sandbox-section-title">🏛️ 1. High-Level Architecture & End-to-End Data Flow</h3>
+                <p style="color: #4b5563; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.2rem;">
+                    When a user clicks <strong>"⚡ Sandbox"</strong> on any .NET or C# card on this site, or types and runs code in the editor, here is the exact 5-stage architectural pipeline:
+                </p>
+
+                <!-- Visual Flow Box -->
+                <div class="sandbox-flow-diagram">
+                    <div class="flow-stage">
+                        <div class="flow-stage-box">
+                            <strong>1. Card Trigger</strong>
+                            <span>Topic Card Button</span>
+                            <code>practiceTopicRawCode(id)</code>
+                        </div>
+                        <div class="flow-arrow">➔</div>
+                        <div class="flow-stage-box">
+                            <strong>2. Cache Lookup</strong>
+                            <span>RAW_CODE_CACHE[id]</span>
+                            <code>O(1) Memory Fetch</code>
+                        </div>
+                        <div class="flow-arrow">➔</div>
+                        <div class="flow-stage-box">
+                            <strong>3. Buffer Load</strong>
+                            <span>Source Code Editor</span>
+                            <code>editor.value = snippet</code>
+                        </div>
+                        <div class="flow-arrow">➔</div>
+                        <div class="flow-stage-box">
+                            <strong>4. Engine Execution</strong>
+                            <span>Sim / WASM / Docker API</span>
+                            <code>Roslyn & RyuJIT Pipeline</code>
+                        </div>
+                        <div class="flow-arrow">➔</div>
+                        <div class="flow-stage-box highlight">
+                            <strong>5. Terminal Console</strong>
+                            <span>Terminal Output Stream</span>
+                            <code>$ dotnet run Output</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. THE 3 CORE INTEGRATION APPROACHES -->
+            <div class="sandbox-section-card">
+                <h3 class="sandbox-section-title">⚙️ 2. The 3 Core Execution Models (Trade-offs & Comparison)</h3>
+                <div class="arch-models-grid">
+                    <div class="arch-model-card">
+                        <div>
+                            <span class="arch-model-tag tag-green">Client-Side Micro-Runner (Used Here)</span>
+                            <h4 class="arch-model-title">Model A: In-Browser Simulated Engine</h4>
+                        </div>
+                        <ul class="arch-model-list">
+                            <li><strong>How it Works:</strong> Pure JavaScript parses <code>Console.WriteLine</code>, simulates MSIL Roslyn compile output, and renders terminal logs.</li>
+                            <li><strong>Latency:</strong> &lt; 15ms (Instantaneous feedback).</li>
+                            <li><strong>Hosting Cost:</strong> $0 / month (Runs on static CDNs like Netlify, GitHub Pages, Vercel).</li>
+                            <li><strong>Best For:</strong> Architectural portfolios, rapid syntax exploration, zero-budget serverless sites.</li>
+                        </ul>
+                    </div>
+
+                    <div class="arch-model-card">
+                        <div>
+                            <span class="arch-model-tag tag-blue">WebAssembly (WASM)</span>
+                            <h4 class="arch-model-title">Model B: Blazor / Roslyn In-Browser WASM</h4>
+                        </div>
+                        <ul class="arch-model-list">
+                            <li><strong>How it Works:</strong> Downloads the official <code>dotnet.wasm</code> runtime and Roslyn compiler directly into the browser. Real C# executes on the client's CPU!</li>
+                            <li><strong>Latency:</strong> Cold boot download (~12MB), then ~80ms per compile.</li>
+                            <li><strong>Hosting Cost:</strong> $0 / month (Static WASM assets).</li>
+                            <li><strong>Best For:</strong> High-fidelity offline playgrounds, real C# compilers without server management.</li>
+                        </ul>
+                    </div>
+
+                    <div class="arch-model-card">
+                        <div>
+                            <span class="arch-model-tag tag-purple">Enterprise Cloud Sandbox</span>
+                            <h4 class="arch-model-title">Model C: Docker / gVisor Microservice API</h4>
+                        </div>
+                        <ul class="arch-model-list">
+                            <li><strong>How it Works:</strong> ASP.NET Core Web API dispatches code to ephemeral Linux containers with <code>cgroups</code> (64MB RAM limit, 3s execution timeout, no network).</li>
+                            <li><strong>Latency:</strong> ~400ms – 1.2s (Network round-trip + process spin-up).</li>
+                            <li><strong>Hosting Cost:</strong> Requires Azure Container Apps / AWS ECS ($15–$50/mo).</li>
+                            <li><strong>Best For:</strong> Full NuGet package support, LeetCode-style multi-file test suites.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. STEP-BY-STEP IMPLEMENTATION GUIDE -->
+            <div class="sandbox-section-card">
+                <h3 class="sandbox-section-title">📋 3. Step-by-Step Implementation Guide (From Scratch)</h3>
+                <div class="steps-vertical-list">
+                    
+                    <!-- Step 1 -->
+                    <div class="step-item">
+                        <div class="step-num-circle">1</div>
+                        <div class="step-content">
+                            <h4 class="step-heading">Step 1: Build the UI Shell (HTML & Split Dark Terminal CSS)</h4>
+                            <p class="step-desc">Create a split layout containing a monospace code editor on the left and an ANSI-compatible output terminal on the right:</p>
+                            <div class="step-code-box">
+                                <pre><code>&lt;!-- Editor & Output Shell --&gt;
+&lt;div class="sandbox-body"&gt;
+  &lt;div class="sandbox-editor-panel"&gt;
+    &lt;textarea id="sandbox-code-editor" spellcheck="false" placeholder="// Write C# code here..."&gt;&lt;/textarea&gt;
+  &lt;/div&gt;
+  &lt;div class="sandbox-console-panel"&gt;
+    &lt;div id="sandbox-output" class="sandbox-console-output"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="step-item">
+                        <div class="step-num-circle">2</div>
+                        <div class="step-content">
+                            <h4 class="step-heading">Step 2: Bind Topic Cards to Sandbox State (RAW_CODE_CACHE)</h4>
+                            <p class="step-desc">Store clean executable snippets in a global dictionary keyed by sanitized topic IDs. When any card's "⚡ Sandbox" button is clicked, look up the snippet and load it into the editor buffer:</p>
+                            <div class="step-code-box">
+                                <pre><code>const RAW_CODE_CACHE = {};
+
+// When rendering cards:
+function registerCardCode(topicId, codeString) {
+    RAW_CODE_CACHE[topicId] = codeString;
+}
+
+// When user clicks '⚡ Sandbox' on any card:
+function practiceTopicRawCode(topicId) {
+    const code = RAW_CODE_CACHE[topicId];
+    if (code) {
+        document.getElementById('sandbox-code-editor').value = code;
+        openSandbox();
+    }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="step-item">
+                        <div class="step-num-circle">3</div>
+                        <div class="step-content">
+                            <h4 class="step-heading">Step 3: Handle Developer Ergonomics (Tab Indent & Ctrl + Enter)</h4>
+                            <p class="step-desc">Native HTML textareas lose focus when pressing the <kbd>Tab</kbd> key. Intercept the keydown event to insert 4 spaces at the cursor, and listen for <kbd>Ctrl + Enter</kbd> (or <kbd>Cmd + Enter</kbd>) to trigger execution:</p>
+                            <div class="step-code-box">
+                                <pre><code>textarea.addEventListener('keydown', function(e) {
+    if (e.key === 'Tab') {
+        e.preventDefault();
+        const start = this.selectionStart;
+        const end = this.selectionEnd;
+        this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
+        this.selectionStart = this.selectionEnd = start + 4;
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        runSandboxCode();
+    }
+});</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="step-item">
+                        <div class="step-num-circle">4</div>
+                        <div class="step-content">
+                            <h4 class="step-heading">Step 4: Stream Build Diagnostics & Output to Terminal</h4>
+                            <p class="step-desc">Emulate the genuine .NET CLI build pipeline (<span style="color: #6366f1;">$ dotnet build</span> ➔ MSIL Assembly Emit ➔ RyuJIT Native Compile ➔ Execution) so users experience authentic runtime behavior:</p>
+                            <div class="step-code-box">
+                                <pre><code>function runSandboxCode() {
+    const output = document.getElementById('sandbox-output');
+    output.innerHTML = 
+        '&lt;span class="console-line-info"&gt;$ dotnet build Program.csproj -c Release&lt;/span&gt;\\n' +
+        '&lt;span class="console-line-info"&gt;[MSBuild] Emitting MSIL assembly & metadata... (0.09s)&lt;/span&gt;\\n' +
+        '&lt;span class="console-line-info"&gt;[RyuJIT] Compiling MSIL to native machine code... (0.03s)&lt;/span&gt;\\n' +
+        '&lt;span class="console-line-info"&gt;$ dotnet run --no-build&lt;/span&gt;\\n' +
+        '&lt;span style="color: #6c7086;"&gt;--------------------------------------------------&lt;/span&gt;\\n';
+    
+    setTimeout(() => {
+        const result = simulateDotNetExecution(editor.value);
+        output.innerHTML += result;
+        output.scrollTop = output.scrollHeight;
+    }, 280);
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="step-item">
+                        <div class="step-num-circle">5</div>
+                        <div class="step-content">
+                            <h4 class="step-heading">Step 5: Enterprise Backend Runner API (ASP.NET Core Minimal API + Docker)</h4>
+                            <p class="step-desc">If you need real cloud execution with external NuGet packages, create a secure sandboxed Minimal API endpoint in ASP.NET Core that spawns an ephemeral Docker container with tight resource bounds:</p>
+                            <div class="step-code-box">
+                                <pre><code>// Program.cs - ASP.NET Core Minimal API Sandbox Endpoint
+app.MapPost("/api/sandbox/execute", async ([FromBody] CodeRequest req) => {
+    // 1. AST Validation using Roslyn to block forbidden namespaces
+    var syntaxTree = CSharpSyntaxTree.ParseText(req.SourceCode);
+    if (HasForbiddenImports(syntaxTree)) {
+        return Results.BadRequest(new { error = "Unauthorized namespace detected (System.IO, System.Net.Sockets)" });
+    }
+
+    // 2. Execute inside ephemeral container with 3s timeout & 64MB memory limit
+    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+    var result = await DockerSandboxRunner.RunIsolatedAsync(req.SourceCode, cts.Token);
+    
+    return Results.Ok(new { stdout = result.Output, exitCode = result.ExitCode });
+});</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 5. ARCHITECTURAL INTERVIEW & SECURITY DEEP DIVE -->
+            <div class="sandbox-section-card" style="border-left: 5px solid #6366f1;">
+                <h3 class="sandbox-section-title">🔒 4. Lead / Architect Interview Question: Sandbox Security & Isolation</h3>
+                <p style="color: #4b5563; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1rem;">
+                    <strong>Interviewer asks:</strong> <em>"If you build an online code execution runner like LeetCode or .NET Fiddle, how do you prevent users from crashing your servers with infinite loops, fork bombs, or malicious disk access (<code>File.Delete('/etc/passwd')</code>)?"</em>
+                </p>
+                <div class="security-defense-grid">
+                    <div class="sec-defense-card">
+                        <div class="sec-badge">Layer 1: Pre-Compile AST Inspection</div>
+                        <p>Use Roslyn's <code>CSharpSyntaxTree</code> to inspect the Abstract Syntax Tree before compiling. Ban identifiers like <code>System.Diagnostics.Process</code>, <code>System.IO.File</code>, <code>System.Reflection.Emit</code>, and unsafe pointers.</p>
+                    </div>
+                    <div class="sec-defense-card">
+                        <div class="sec-badge">Layer 2: Kernel cgroups & CPU Quotas</div>
+                        <p>Use Linux Control Groups (<code>cgroups v2</code>) to strictly limit CPU usage to 0.5 cores and RAM to 64MB. If an algorithm allocates memory greedily, the Linux OOM Killer terminates the process instantly without affecting neighbors.</p>
+                    </div>
+                    <div class="sec-defense-card">
+                        <div class="sec-badge">Layer 3: Network & Syscall Isolation</div>
+                        <p>Run the container with <code>--network none</code> and a read-only root filesystem. Use <strong>gVisor (runsc)</strong> or <strong>seccomp</strong> to intercept and block arbitrary Linux syscalls, preventing container escapes.</p>
+                    </div>
+                    <div class="sec-defense-card">
+                        <div class="sec-badge">Layer 4: Execution Watchdogs</div>
+                        <p>Attach a <code>CancellationTokenSource</code> with a strict 3,000ms deadline. If the code enters an infinite <code>while(true)</code> loop, the watchdog issues a <code>SIGKILL</code> and returns a clean <em>"Time Limit Exceeded"</em> status.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    `;
+
+    // Initialize Embedded Sandbox Editor with default template
+    initEmbeddedSandbox();
+}
+
+function initEmbeddedSandbox() {
+    const editor = document.getElementById('embedded-sandbox-editor');
+    const select = document.getElementById('embedded-template-select');
+    if (!editor) return;
+
+    const initialTemplate = (select && select.value && SANDBOX_TEMPLATES[select.value]) 
+        ? SANDBOX_TEMPLATES[select.value] 
+        : (SANDBOX_TEMPLATES.net11_union || SANDBOX_TEMPLATES.net1);
+
+    editor.value = initialTemplate;
+
+    // Tab and run key handling
+    editor.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            const start = this.selectionStart;
+            const end = this.selectionEnd;
+            this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
+            this.selectionStart = this.selectionEnd = start + 4;
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            runEmbeddedSandboxCode();
+        }
+    });
+}
+
+function onEmbeddedTemplateChange(val) {
+    const editor = document.getElementById('embedded-sandbox-editor');
+    if (!editor) return;
+    if (SANDBOX_TEMPLATES[val]) {
+        editor.value = SANDBOX_TEMPLATES[val];
+        clearEmbeddedSandboxOutput();
+        const status = document.getElementById('embedded-sandbox-status');
+        if (status) status.innerText = '⚡ Status: Loaded Template (Ctrl + Enter to Run)';
+    }
+}
+
+function runEmbeddedSandboxCode() {
+    const editor = document.getElementById('embedded-sandbox-editor');
+    const output = document.getElementById('embedded-sandbox-output');
+    const status = document.getElementById('embedded-sandbox-status');
+    if (!editor || !output) return;
+
+    const rawCode = editor.value;
+    if (status) status.innerText = '⚡ Status: Compiling MSIL & Executing in CLR runtime...';
+
+    output.innerHTML = `<span class="console-line-info">$ dotnet build Program.csproj -c Release</span>\n<span class="console-line-info">[MSBuild] Emitting MSIL assembly & metadata... (0.09s)</span>\n<span class="console-line-info">[RyuJIT] Compiling MSIL to native machine code... (0.03s)</span>\n<span class="console-line-info">$ dotnet run --no-build</span>\n<span style="color: #6c7086;">--------------------------------------------------</span>\n`;
+
+    setTimeout(() => {
+        try {
+            const simulatedOutput = simulateDotNetExecution(rawCode);
+            output.innerHTML += simulatedOutput;
+            output.scrollTop = output.scrollHeight;
+            if (status) status.innerText = '⚡ Status: Execution Finished (Return Code: 0)';
+        } catch (err) {
+            output.innerHTML += `<span class="console-line-error">[Runtime Error] ${escapeHtml(err.message)}</span>`;
+            if (status) status.innerText = '⚡ Status: Execution Failed';
+        }
+    }, 280);
+}
+
+function resetEmbeddedSandboxCode() {
+    const select = document.getElementById('embedded-template-select');
+    const editor = document.getElementById('embedded-sandbox-editor');
+    if (editor && select && SANDBOX_TEMPLATES[select.value]) {
+        editor.value = SANDBOX_TEMPLATES[select.value];
+    }
+}
+
+function copyEmbeddedSandboxCode(btn) {
+    const editor = document.getElementById('embedded-sandbox-editor');
+    if (!editor) return;
+    navigator.clipboard.writeText(editor.value).then(() => {
+        const oldText = btn.innerText;
+        btn.innerText = '✓ Copied';
+        setTimeout(() => { btn.innerText = oldText; }, 1800);
+    });
+}
+
+function clearEmbeddedSandboxOutput() {
+    const output = document.getElementById('embedded-sandbox-output');
+    if (output) {
+        output.innerHTML = `<span class="console-line-info">$ dotnet run Program.cs</span>\n<span class="console-line-success">Ready. Click [▶ Run Code] to execute in the embedded runner!</span>`;
+    }
+}
+
+function openSandboxFromEmbedded() {
+    const editor = document.getElementById('embedded-sandbox-editor');
+    const code = editor ? editor.value : '';
+    openSandbox(code);
 }
 
 // Helpers for Code Running & Copying in Natural Cards

@@ -2564,5 +2564,403 @@ body::after {
     margin: 0;
 }
 
+/* ==========================================================================
+   ⚡ SANDBOX INTEGRATION TAB & EMBEDDED RUNNER STYLES
+   ========================================================================== */
+
+.sandbox-guide-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+}
+
+.sandbox-guide-hero {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(255, 255, 255, 0.95) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 1.5rem;
+    padding: 1.8rem 2rem;
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.06);
+}
+
+.sandbox-hero-title {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #1e1b4b;
+    margin: 0.6rem 0 0.5rem;
+    line-height: 1.3;
+}
+
+.sandbox-hero-desc {
+    color: #4b5563;
+    font-size: 1rem;
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* Live Embedded Sandbox Card */
+.embedded-sandbox-card {
+    background: #1e1e2e;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1.25rem;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+    display: flex;
+    flex-direction: column;
+}
+
+.embedded-sandbox-header {
+    background: #181825;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.9rem 1.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.embedded-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.embedded-header-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.embedded-header-badge {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.5rem;
+}
+
+.embedded-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.embedded-sandbox-body {
+    display: flex;
+    min-height: 380px;
+    background: #11111b;
+}
+
+.embedded-editor-panel {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    background: #181825;
+}
+
+.embedded-console-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #11111b;
+}
+
+.embedded-sandbox-footer {
+    background: #181825;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.75rem 1.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.embedded-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* Sandbox Section Cards */
+.sandbox-section-card {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 1.25rem;
+    padding: 1.8rem 2rem;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+}
+
+.sandbox-section-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #1e1b4b;
+    margin: 0 0 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Visual Flow Diagram */
+.sandbox-flow-diagram {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.2rem 1.4rem;
+    overflow-x: auto;
+}
+
+.flow-stage {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-width: 780px;
+}
+
+.flow-stage-box {
+    flex: 1;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.75rem;
+    padding: 0.8rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.flow-stage-box strong {
+    font-size: 0.82rem;
+    color: #6366f1;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.flow-stage-box span {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.flow-stage-box code {
+    font-size: 0.75rem;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.3rem;
+}
+
+.flow-stage-box.highlight {
+    border-color: #10b981;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.06), #ffffff);
+}
+
+.flow-stage-box.highlight strong {
+    color: #059669;
+}
+
+.flow-arrow {
+    font-size: 1.2rem;
+    color: #94a3b8;
+    font-weight: 700;
+}
+
+/* Architecture Models Comparison Grid */
+.arch-models-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1rem;
+}
+
+.arch-model-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.arch-model-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.arch-model-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.2rem 0.55rem;
+    border-radius: 0.4rem;
+    margin-bottom: 0.35rem;
+}
+
+.tag-green {
+    background: rgba(16, 185, 129, 0.15);
+    color: #047857;
+}
+
+.tag-blue {
+    background: rgba(59, 130, 246, 0.15);
+    color: #1d4ed8;
+}
+
+.tag-purple {
+    background: rgba(168, 85, 247, 0.15);
+    color: #7e22ce;
+}
+
+.arch-model-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.arch-model-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    font-size: 0.88rem;
+    color: #475569;
+    line-height: 1.5;
+}
+
+.arch-model-list strong {
+    color: #0f172a;
+}
+
+/* Step-by-Step Vertical List */
+.steps-vertical-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.step-item {
+    display: flex;
+    gap: 1.2rem;
+    align-items: flex-start;
+}
+
+.step-num-circle {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: #6366f1;
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+}
+
+.step-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.step-heading {
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: #1e1b4b;
+    margin: 0;
+}
+
+.step-desc {
+    font-size: 0.92rem;
+    color: #4b5563;
+    line-height: 1.55;
+    margin: 0;
+}
+
+.step-code-box {
+    background: #181825;
+    border-radius: 0.75rem;
+    padding: 0.9rem 1.1rem;
+    overflow-x: auto;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 0.4rem;
+}
+
+.step-code-box pre {
+    margin: 0;
+}
+
+.step-code-box code {
+    font-family: 'Consolas', 'Fira Code', monospace;
+    font-size: 0.84rem;
+    color: #cdd6f4;
+    line-height: 1.55;
+}
+
+/* Security Grid */
+.security-defense-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-top: 0.8rem;
+}
+
+.sec-defense-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.85rem;
+    padding: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.sec-badge {
+    font-size: 0.76rem;
+    font-weight: 800;
+    color: #4f46e5;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.sec-defense-card p {
+    font-size: 0.88rem;
+    color: #475569;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Responsive adjustments for embedded sandbox */
+@media screen and (max-width: 900px) {
+    .embedded-sandbox-body {
+        flex-direction: column;
+    }
+    .embedded-editor-panel {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        min-height: 240px;
+    }
+    .embedded-console-panel {
+        min-height: 180px;
+    }
+}
+
 
 

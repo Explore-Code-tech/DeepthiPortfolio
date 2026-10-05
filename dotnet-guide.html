@@ -58,6 +58,10 @@
                     <span>🌐 All Eras & Runtime Pillars</span>
                     <span class="version-badge-count" style="background: rgba(255,255,255,0.3); color: inherit;">45+</span>
                 </button>
+                <button class="lhs-all-btn" id="lhs-btn-sandbox" onclick="switchViewMode('sandbox')" style="margin-top: 0.4rem; background: rgba(99, 102, 241, 0.08); border-color: rgba(99, 102, 241, 0.25); color: #4f46e5;">
+                    <span>⚡ Sandbox Integration</span>
+                    <span class="version-badge-count" style="background: #6366f1; color: white;">Steps</span>
+                </button>
             </div>
 
             <!-- Dynamic Version & Topic Tree Container -->
@@ -79,6 +83,9 @@
                 </button>
                 <button class="view-mode-btn" id="btn-mode-all" onclick="switchViewMode('all')">
                     <span>⚡ Combined Master View</span>
+                </button>
+                <button class="view-mode-btn" id="btn-mode-sandbox" onclick="switchViewMode('sandbox')">
+                    <span>⚡ Sandbox Integration & Steps</span>
                 </button>
             </div>
 
@@ -158,6 +165,7 @@
                         <option value="net8_frozen">💎 .NET 8: FrozenDictionary & Native AOT</option>
                         <option value="net9_hybrid">🔮 .NET 9: HybridCache & Server GC DATAS</option>
                         <option value="net10_tensor">🔮 .NET 10: AI Tensor&lt;T&gt; Hardware SIMD</option>
+                        <option value="net11_union">🔮 .NET 11: Native Union Types & Exhaustive Switch</option>
                     </select>
                     <a href="https://dotnetfiddle.net/" target="_blank" class="btn-open-external" title="Open full Roslyn & .NET compiler in .NET Fiddle">
                         <span>🌐 .NET Fiddle ↗</span>
