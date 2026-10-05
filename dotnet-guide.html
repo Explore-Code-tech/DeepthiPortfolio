@@ -69,6 +69,30 @@
         <!-- RHS Content (Cards Display) -->
         <section class="rhs-container">
             
+            <!-- View Mode Switcher -->
+            <div class="view-mode-bar">
+                <button class="view-mode-btn active" id="btn-mode-evolution" onclick="switchViewMode('evolution')">
+                    <span>🗺️ Evolution Journey (.NET 1.0 ↓ 11)</span>
+                </button>
+                <button class="view-mode-btn" id="btn-mode-abbreviations" onclick="switchViewMode('abbreviations')">
+                    <span>🔤 Abbreviation & Architect Interview Index (60+)</span>
+                </button>
+                <button class="view-mode-btn" id="btn-mode-all" onclick="switchViewMode('all')">
+                    <span>⚡ Combined Master View</span>
+                </button>
+            </div>
+
+            <!-- Abbreviation Category Quick-Filter Bar (active in Abbreviation mode) -->
+            <div class="abbr-category-bar" id="abbr-category-bar" style="display: none;">
+                <button class="abbr-category-btn active" onclick="filterAbbrCategory('All', this)">All (60+)</button>
+                <button class="abbr-category-btn" onclick="filterAbbrCategory('Runtime', this)">⚙️ Runtime (CLR, JIT, AOT, GC, LOH...)</button>
+                <button class="abbr-category-btn" onclick="filterAbbrCategory('ASP.NET Core & Web', this)">🌐 ASP.NET Core & Kestrel</button>
+                <button class="abbr-category-btn" onclick="filterAbbrCategory('Security & Auth', this)">🔒 Security & JWT/OAuth</button>
+                <button class="abbr-category-btn" onclick="filterAbbrCategory('Data & EF Core', this)">🗄️ EF Core & SQL</button>
+                <button class="abbr-category-btn" onclick="filterAbbrCategory('Architecture & Design', this)">🏛️ SOLID, DDD, CQRS, ADR</button>
+                <button class="abbr-category-btn" onclick="filterAbbrCategory('Cloud & DevOps', this)">☁️ Cloud, PaaS & DevOps</button>
+            </div>
+
             <!-- RHS Control & Filter Bar -->
             <div class="rhs-control-bar">
                 <div class="rhs-view-info">
@@ -78,7 +102,7 @@
                 <div class="rhs-tools">
                     <div style="position: relative;">
                         <span style="position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: #A7727D; font-size: 0.85rem; pointer-events: none;">🔍</span>
-                        <input type="text" class="rhs-search-input" id="rhs-search" placeholder="Search CLR, GC, ASP.NET Core, EF Core, AOT, Aspire..." oninput="onRhsSearch(this.value)">
+                        <input type="text" class="rhs-search-input" id="rhs-search" placeholder="Search abbreviations (CLR, JIT, JWT...), topics, questions..." oninput="onRhsSearch(this.value)">
                     </div>
                     <button class="btn-toggle-all" onclick="openSandbox()">⚡ Practice in Sandbox</button>
                     <button class="btn-toggle-all" id="btn-toggle-all" onclick="toggleAllLeadArticulations()">Collapse Lead Notes</button>
@@ -86,7 +110,7 @@
             </div>
 
             <!-- Chronological Evolution Learning Journey Roadmap Banner -->
-            <div class="learning-roadmap-banner">
+            <div class="learning-roadmap-banner" id="evolution-roadmap-banner">
                 <div class="roadmap-header-row">
                     <div class="roadmap-title">
                         <span>🗺️ Chronological .NET Evolution Learning Journey</span>
@@ -278,6 +302,7 @@ class Program {
 
     <!-- Scripts -->
     <script src="dotnet-data.js"></script>
+    <script src="dotnet-abbreviations.js"></script>
     <script src="dotnet-guide.js"></script>
 </body>
 </html>

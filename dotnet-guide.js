@@ -1,10 +1,12 @@
-// .NET Master Architecture Guide Logic with Chronological Journey, Collapsible Sidebar & Live Practice Sandbox
+// .NET Master Architecture Guide Logic with Chronological Journey, Abbreviation Index & Live Practice Sandbox
 let currentActiveVersion = 'all';
 let currentSearchQuery = '';
 let isLeadExpanded = true;
 let isSidebarCollapsed = false;
 let lastLoadedSnippet = '';
 let areAllLhsExpanded = false;
+let currentViewMode = 'evolution'; // 'evolution', 'abbreviations', 'all'
+let currentAbbrCategory = 'All';
 
 const SANDBOX_TEMPLATES = {
     net1: `using System;
@@ -213,7 +215,7 @@ class Program {
 // Initialize on DOM load
 document.addEventListener('DOMContentLoaded', () => {
     initLhsTree();
-    renderRhsTopics('all');
+    renderActiveView();
 
     // Setup Back to top button
     const backToTopBtn = document.getElementById('btn-back-to-top');
@@ -258,44 +260,161 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Switch between Evolution Journey, Abbreviation Index, and Combined view
+function switchViewMode(mode) {
+    currentViewMode = mode;
+
+    document.querySelectorAll('.view-mode-btn').forEach(btn => btn.classList.remove('active'));
+    const activeBtn = document.getElementById(`btn-mode-${mode}`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const roadmapBanner = document.getElementById('evolution-roadmap-banner');
+    const abbrCategoryBar = document.getElementById('abbr-category-bar');
+
+    if (mode === 'evolution') {
+        if (roadmapBanner) roadmapBanner.style.display = 'flex';
+        if (abbrCategoryBar) abbrCategoryBar.style.display = 'none';
+    } else if (mode === 'abbreviations') {
+        if (roadmapBanner) roadmapBanner.style.display = 'none';
+        if (abbrCategoryBar) abbrCategoryBar.style.display = 'flex';
+    } else { // 'all'
+        if (roadmapBanner) roadmapBanner.style.display = 'flex';
+        if (abbrCategoryBar) abbrCategoryBar.style.display = 'flex';
+    }
+
+    renderActiveView();
+}
+
+function filterAbbrCategory(category, btn) {
+    currentAbbrCategory = category;
+    document.querySelectorAll('.abbr-category-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    if (currentViewMode !== 'abbreviations' && currentViewMode !== 'all') {
+        switchViewMode('abbreviations');
+    } else {
+        renderActiveView();
+    }
+}
+
+function renderActiveView() {
+    if (currentViewMode === 'evolution') {
+        renderRhsTopics(currentActiveVersion, currentSearchQuery);
+    } else if (currentViewMode === 'abbreviations') {
+        renderAbbreviationCards(currentSearchQuery, currentAbbrCategory);
+    } else {
+        renderCombinedView(currentSearchQuery);
+    }
+}
+
 // 1. Initialize LHS Tree
 function initLhsTree() {
     const treeContainer = document.getElementById('lhs-tree');
-    if (!treeContainer || typeof DOTNET_DATA === 'undefined') return;
+    if (!treeContainer) return;
 
     treeContainer.innerHTML = '';
 
-    DOTNET_VERSION_ORDER.forEach(vKey => {
-        const vObj = DOTNET_DATA[vKey];
-        if (!vObj) return;
+    // Section 1: Chronological Evolution Versions
+    const versionHeaderSection = document.createElement('div');
+    versionHeaderSection.style.padding = '0.5rem 0.6rem 0.2rem';
+    versionHeaderSection.innerHTML = `<span style="font-size: 0.72rem; font-weight: 700; color: #A7727D; text-transform: uppercase; letter-spacing: 0.05em;">🗺️ Chronological Versions</span>`;
+    treeContainer.appendChild(versionHeaderSection);
 
-        const count = vObj.topics ? vObj.topics.length : 0;
-        const meta = vObj.meta || {};
+    if (typeof DOTNET_VERSION_ORDER !== 'undefined' && typeof DOTNET_DATA !== 'undefined') {
+        DOTNET_VERSION_ORDER.forEach(vKey => {
+            const vObj = DOTNET_DATA[vKey];
+            if (!vObj) return;
 
-        const accordion = document.createElement('div');
-        accordion.className = 'version-accordion-item';
-        accordion.setAttribute('data-version', vKey);
+            const count = vObj.topics ? vObj.topics.length : 0;
+            const meta = vObj.meta || {};
 
-        accordion.innerHTML = `
-            <div class="version-accordion-header" onclick="toggleVersionAccordion('${vKey}', event)">
+            const accordion = document.createElement('div');
+            accordion.className = 'version-accordion-item';
+            accordion.setAttribute('data-version', vKey);
+
+            accordion.innerHTML = `
+                <div class="version-accordion-header" onclick="onLhsVersionClick('${vKey}', event)">
+                    <div class="version-header-left">
+                        <span class="version-chevron">▶</span>
+                        <span class="version-title">${meta.icon || '📌'} ${vKey}</span>
+                    </div>
+                    <span class="version-badge-count">${count}</span>
+                </div>
+                <div class="subtopics-list" id="subtopics-${sanitizeId(vKey)}">
+                    ${vObj.topics.map(t => `
+                        <a class="subtopic-nav-link" href="#topic-${t.id}" onclick="onSubtopicClick('${vKey}', '${t.id}', event)">
+                            <span class="subtopic-id">#${t.id}</span>
+                            <span class="subtopic-title">${escapeHtml(t.topic)}</span>
+                        </a>
+                    `).join('')}
+                </div>
+            `;
+
+            treeContainer.appendChild(accordion);
+        });
+    }
+
+    // Section 2: Abbreviation & Interview Index in LHS
+    if (typeof DOTNET_ABBREVIATIONS !== 'undefined') {
+        const abbrHeaderSection = document.createElement('div');
+        abbrHeaderSection.style.padding = '1.2rem 0.6rem 0.2rem';
+        abbrHeaderSection.innerHTML = `<span style="font-size: 0.72rem; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 0.05em;">🔤 Abbreviation Index (${DOTNET_ABBREVIATIONS.length}+)</span>`;
+        treeContainer.appendChild(abbrHeaderSection);
+
+        const abbrAccordion = document.createElement('div');
+        abbrAccordion.className = 'version-accordion-item expanded';
+        abbrAccordion.setAttribute('data-version', 'abbreviations');
+
+        abbrAccordion.innerHTML = `
+            <div class="version-accordion-header" onclick="switchViewMode('abbreviations')">
                 <div class="version-header-left">
                     <span class="version-chevron">▶</span>
-                    <span class="version-title">${meta.icon || '📌'} ${vKey}</span>
+                    <span class="version-title">🔤 All Interview Abbreviations</span>
                 </div>
-                <span class="version-badge-count">${count}</span>
+                <span class="version-badge-count" style="background: rgba(99,102,241,0.15); color: #6366f1;">${DOTNET_ABBREVIATIONS.length}</span>
             </div>
-            <div class="subtopics-list" id="subtopics-${sanitizeId(vKey)}">
-                ${vObj.topics.map(t => `
-                    <a class="subtopic-nav-link" href="#topic-${t.id}" onclick="onSubtopicClick('${vKey}', '${t.id}', event)">
-                        <span class="subtopic-id">#${t.id}</span>
-                        <span class="subtopic-title">${escapeHtml(t.topic)}</span>
+            <div class="subtopics-list" style="display: flex;">
+                ${DOTNET_ABBREVIATIONS.map(a => `
+                    <a class="subtopic-nav-link" href="#abbr-${a.abbr}" onclick="onAbbrLhsClick('${a.abbr}', event)">
+                        <span class="subtopic-id" style="font-weight: 700; color: #6366f1;">${a.abbr}</span>
+                        <span class="subtopic-title">${escapeHtml(a.fullForm)}</span>
                     </a>
                 `).join('')}
             </div>
         `;
 
-        treeContainer.appendChild(accordion);
-    });
+        treeContainer.appendChild(abbrAccordion);
+    }
+}
+
+function onLhsVersionClick(vKey, event) {
+    if (event) event.stopPropagation();
+    if (currentViewMode !== 'evolution' && currentViewMode !== 'all') {
+        switchViewMode('evolution');
+    }
+    toggleVersionAccordion(vKey, event);
+}
+
+function onAbbrLhsClick(abbrKey, event) {
+    if (event) event.preventDefault();
+
+    if (currentViewMode !== 'abbreviations' && currentViewMode !== 'all') {
+        switchViewMode('abbreviations');
+    }
+
+    document.querySelectorAll('.subtopic-nav-link').forEach(link => link.classList.remove('active-subtopic'));
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active-subtopic');
+    }
+
+    setTimeout(() => {
+        const card = document.getElementById(`abbr-${abbrKey}`);
+        if (card) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            card.classList.add('highlight-target');
+            setTimeout(() => card.classList.remove('highlight-target'), 2500);
+        }
+    }, 100);
 }
 
 function toggleAllLhsVersions() {
@@ -333,6 +452,10 @@ function toggleVersionAccordion(vKey, event) {
 function selectVersion(vKey) {
     currentActiveVersion = vKey;
 
+    if (currentViewMode !== 'evolution' && currentViewMode !== 'all') {
+        switchViewMode('evolution');
+    }
+
     const allBtn = document.getElementById('lhs-btn-all');
     if (allBtn) {
         if (vKey === 'all') {
@@ -365,6 +488,10 @@ function selectVersion(vKey) {
 function onSubtopicClick(vKey, topicId, event) {
     if (event) event.preventDefault();
 
+    if (currentViewMode !== 'evolution' && currentViewMode !== 'all') {
+        switchViewMode('evolution');
+    }
+
     if (currentActiveVersion !== 'all' && currentActiveVersion !== vKey) {
         selectVersion(vKey);
     }
@@ -384,7 +511,7 @@ function onSubtopicClick(vKey, topicId, event) {
     }, 100);
 }
 
-// 2. Render RHS Topics with Structured Breakdown
+// 2. Render Chronological Evolution Topics
 function renderRhsTopics(vKey, searchQuery = '') {
     const container = document.getElementById('topics-cards-container');
     const titleEl = document.getElementById('rhs-active-title');
@@ -427,175 +554,374 @@ function renderRhsTopics(vKey, searchQuery = '') {
     }
 
     if (countEl) {
-        countEl.innerText = `Showing ${topicsToRender.length} Comprehensive Evolution Milestone${topicsToRender.length === 1 ? '' : 's'}`;
+        countEl.innerText = `Showing ${topicsToRender.length} Evolution Milestone${topicsToRender.length === 1 ? '' : 's'}`;
     }
 
     if (topicsToRender.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
                 <h3>🔍 No topics found</h3>
-                <p>Try searching for another keyword or select a different .NET version from the roadmap above.</p>
+                <p>Try searching for another keyword or switch to the Abbreviation & Interview Index.</p>
             </div>
         `;
         return;
     }
 
-    container.innerHTML = topicsToRender.map(t => {
-        const hasSyntax = t.syntax && t.syntax.trim().length > 0;
-        const hasLead = t.myArticulation && t.myArticulation.trim().length > 0;
-        const hasConcepts = t.keyConcepts && t.keyConcepts.length > 0;
-        const hasWhatsNew = t.whatsNew && t.whatsNew.length > 0;
-        const hasFollowUp = t.architectFollowUp && t.architectFollowUp.question;
-
-        return `
-            <article class="topic-card evolutionary-version-card" id="topic-${t.id}">
-                
-                <!-- Card Header -->
-                <div class="topic-card-header">
-                    <div class="topic-header-meta">
-                        <span class="topic-version-badge">${escapeHtml(t.version)}</span>
-                        <span class="topic-id-badge">#${t.id}</span>
-                    </div>
-                    <div style="display: flex; gap: 0.5rem; align-items: center;">
-                        ${hasSyntax ? `
-                            <button class="btn-card-practice" onclick="practiceTopicCode('${t.id}')" title="Open and run this snippet in Live Sandbox">
-                                <span>⚡ Practice in Sandbox</span>
-                            </button>
-                        ` : ''}
-                        <button class="btn-copy-code" onclick="copyTopicCard('${t.id}', this)" title="Copy Topic Summary & Code">📋 Copy</button>
-                    </div>
-                </div>
-
-                <!-- Title -->
-                <h3 class="topic-title">${escapeHtml(t.topic)}</h3>
-
-                <!-- 1. What's New & Core Purpose -->
-                ${hasWhatsNew ? `
-                    <div class="topic-section">
-                        <div class="section-badge whats-new-badge">
-                            <span>🚀 What's New & Core Purpose</span>
-                        </div>
-                        <ul class="whats-new-list">
-                            ${t.whatsNew.map(item => `<li>${escapeHtml(item)}</li>`).join('')}
-                        </ul>
-                    </div>
-                ` : ''}
-
-                <!-- 2. Runtime Engine & Under The Hood -->
-                ${t.runtimeEngine ? `
-                    <div class="topic-section">
-                        <div class="section-badge runtime-engine-badge">
-                            <span>⚙️ Runtime Engine & Execution Model</span>
-                        </div>
-                        <p class="runtime-engine-text">${escapeHtml(t.runtimeEngine)}</p>
-                    </div>
-                ` : ''}
-
-                <!-- 3. Key Concepts / Essential Checklist -->
-                ${hasConcepts ? `
-                    <div class="topic-section">
-                        <div class="section-badge concepts-badge">
-                            <span>⭐ Essential Concept Checklist (Interview Mastery)</span>
-                        </div>
-                        <div class="key-concepts-grid">
-                            ${t.keyConcepts.map(c => `<span class="concept-item-pill">${escapeHtml(c)}</span>`).join('')}
-                        </div>
-                    </div>
-                ` : ''}
-
-                <!-- 4. Architectural Standard -->
-                <div class="topic-section">
-                    <div class="section-badge standard-badge">
-                        <span>📖 Architectural Standard Breakdown</span>
-                    </div>
-                    <p class="articulation-text">${escapeHtml(t.articulation)}</p>
-                </div>
-
-                <!-- 5. One Executable Program -->
-                ${hasSyntax ? `
-                    <div class="syntax-wrapper">
-                        <div class="syntax-bar">
-                            <span class="syntax-lang-label">💻 RUNNABLE C# PROGRAM (ONE PROGRAM PER VERSION)</span>
-                            <div style="display: flex; gap: 0.5rem;">
-                                <button class="btn-copy-code" onclick="practiceTopicCode('${t.id}')">⚡ Run in Sandbox</button>
-                                <button class="btn-copy-code" onclick="copySnippetOnly('${t.id}', this)">Copy Code</button>
-                            </div>
-                        </div>
-                        <pre class="syntax-block"><code>${highlightDotNetSyntax(t.syntax)}</code></pre>
-                    </div>
-                ` : ''}
-
-                <!-- 6. Technical Lead Interview Articulation -->
-                ${hasLead ? `
-                    <div class="topic-section lead-articulation-section ${isLeadExpanded ? 'expanded' : ''}" id="lead-section-${t.id}">
-                        <div class="lead-header-toggle" onclick="toggleSingleLead('${t.id}')">
-                            <div class="section-badge lead-badge">
-                                <span>🎯 How I Explain This in Interviews (Technical Lead Answer)</span>
-                            </div>
-                            <span class="lead-toggle-icon">${isLeadExpanded ? '▲' : '▼'}</span>
-                        </div>
-                        <div class="lead-content-box">
-                            <p class="lead-text">${escapeHtml(t.myArticulation)}</p>
-                        </div>
-                    </div>
-                ` : ''}
-
-                <!-- 7. Architect-Level Follow-Up Questions -->
-                ${hasFollowUp ? `
-                    <div class="topic-section architect-followup-box">
-                        <div class="followup-header">
-                            <span class="followup-badge">💡 Architect-Level Follow-Up</span>
-                            <strong class="followup-question">Q: ${escapeHtml(t.architectFollowUp.question)}</strong>
-                        </div>
-                        <div class="followup-answer">
-                            <p><strong>A: </strong>${escapeHtml(t.architectFollowUp.answer)}</p>
-                        </div>
-                    </div>
-                ` : ''}
-
-                <!-- 8. Five-Pass Mastery Indicator -->
-                <div class="pass-mastery-footer">
-                    <span class="pass-mastery-label">5-Pass Study Loop:</span>
-                    <span class="pass-pill" title="Pass 1: Read and understand core mechanics">Pass 1: Understand</span>
-                    <span class="pass-pill" title="Pass 2: Recall the numbered concepts without notes">Pass 2: Recall</span>
-                    <span class="pass-pill" title="Pass 3: Run and modify the executable program">Pass 3: Code</span>
-                    <span class="pass-pill" title="Pass 4: Articulate the Tech Lead response fluently">Pass 4: Explain</span>
-                    <span class="pass-pill" title="Pass 5: Confidently answer the senior architect follow-up">Pass 5: Follow-Up</span>
-                </div>
-
-            </article>
-        `;
-    }).join('');
+    container.innerHTML = topicsToRender.map(t => renderSingleTopicHtml(t)).join('');
 }
 
-// 3. Search and Filtering
+function renderSingleTopicHtml(t) {
+    const hasSyntax = t.syntax && t.syntax.trim().length > 0;
+    const hasLead = t.myArticulation && t.myArticulation.trim().length > 0;
+    const hasConcepts = t.keyConcepts && t.keyConcepts.length > 0;
+    const hasWhatsNew = t.whatsNew && t.whatsNew.length > 0;
+    const hasFollowUp = t.architectFollowUp && t.architectFollowUp.question;
+
+    return `
+        <article class="topic-card evolutionary-version-card" id="topic-${t.id}">
+            
+            <!-- Card Header -->
+            <div class="topic-card-header">
+                <div class="topic-header-meta">
+                    <span class="topic-version-badge">${escapeHtml(t.version)}</span>
+                    <span class="topic-id-badge">#${t.id}</span>
+                </div>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    ${hasSyntax ? `
+                        <button class="btn-card-practice" onclick="practiceTopicCode('${t.id}')" title="Open and run this snippet in Live Sandbox">
+                            <span>⚡ Practice in Sandbox</span>
+                        </button>
+                    ` : ''}
+                    <button class="btn-copy-code" onclick="copyTopicCard('${t.id}', this)" title="Copy Topic Summary & Code">📋 Copy</button>
+                </div>
+            </div>
+
+            <!-- Title -->
+            <h3 class="topic-title">${escapeHtml(t.topic)}</h3>
+
+            <!-- 1. What's New & Core Purpose -->
+            ${hasWhatsNew ? `
+                <div class="topic-section">
+                    <div class="section-badge whats-new-badge">
+                        <span>🚀 What's New & Core Purpose</span>
+                    </div>
+                    <ul class="whats-new-list">
+                        ${t.whatsNew.map(item => `<li>${escapeHtml(item)}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+
+            <!-- 2. Runtime Engine & Execution Model -->
+            ${t.runtimeEngine ? `
+                <div class="topic-section">
+                    <div class="section-badge runtime-engine-badge">
+                        <span>⚙️ Runtime Engine & Execution Model</span>
+                    </div>
+                    <p class="runtime-engine-text">${escapeHtml(t.runtimeEngine)}</p>
+                </div>
+            ` : ''}
+
+            <!-- 3. Key Concepts Checklist -->
+            ${hasConcepts ? `
+                <div class="topic-section">
+                    <div class="section-badge concepts-badge">
+                        <span>⭐ Essential Concept Checklist (Interview Mastery)</span>
+                    </div>
+                    <div class="key-concepts-grid">
+                        ${t.keyConcepts.map(c => `<span class="concept-item-pill">${escapeHtml(c)}</span>`).join('')}
+                    </div>
+                </div>
+            ` : ''}
+
+            <!-- 4. Architectural Standard -->
+            <div class="topic-section">
+                <div class="section-badge standard-badge">
+                    <span>📖 Architectural Standard Breakdown</span>
+                </div>
+                <p class="articulation-text">${escapeHtml(t.articulation)}</p>
+            </div>
+
+            <!-- 5. One Executable Program -->
+            ${hasSyntax ? `
+                <div class="syntax-wrapper">
+                    <div class="syntax-bar">
+                        <span class="syntax-lang-label">💻 RUNNABLE C# PROGRAM (ONE PROGRAM PER VERSION)</span>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn-copy-code" onclick="practiceTopicCode('${t.id}')">⚡ Run in Sandbox</button>
+                            <button class="btn-copy-code" onclick="copySnippetOnly('${t.id}', this)">Copy Code</button>
+                        </div>
+                    </div>
+                    <pre class="syntax-block"><code>${highlightDotNetSyntax(t.syntax)}</code></pre>
+                </div>
+            ` : ''}
+
+            <!-- 6. Technical Lead Interview Articulation -->
+            ${hasLead ? `
+                <div class="topic-section lead-articulation-section ${isLeadExpanded ? 'expanded' : ''}" id="lead-section-${t.id}">
+                    <div class="lead-header-toggle" onclick="toggleSingleLead('${t.id}')">
+                        <div class="section-badge lead-badge">
+                            <span>🎯 How I Explain This in Interviews (Technical Lead Answer)</span>
+                        </div>
+                        <span class="lead-toggle-icon">${isLeadExpanded ? '▲' : '▼'}</span>
+                    </div>
+                    <div class="lead-content-box">
+                        <p class="lead-text">${escapeHtml(t.myArticulation)}</p>
+                    </div>
+                </div>
+            ` : ''}
+
+            <!-- 7. Architect-Level Follow-Up Questions -->
+            ${hasFollowUp ? `
+                <div class="topic-section architect-followup-box">
+                    <div class="followup-header">
+                        <span class="followup-badge">💡 Architect-Level Follow-Up</span>
+                        <strong class="followup-question">Q: ${escapeHtml(t.architectFollowUp.question)}</strong>
+                    </div>
+                    <div class="followup-answer">
+                        <p><strong>A: </strong>${escapeHtml(t.architectFollowUp.answer)}</p>
+                    </div>
+                </div>
+            ` : ''}
+
+            <!-- 8. Five-Pass Mastery Indicator -->
+            <div class="pass-mastery-footer">
+                <span class="pass-mastery-label">5-Pass Study Loop:</span>
+                <span class="pass-pill" title="Pass 1: Read and understand core mechanics">Pass 1: Understand</span>
+                <span class="pass-pill" title="Pass 2: Recall the numbered concepts without notes">Pass 2: Recall</span>
+                <span class="pass-pill" title="Pass 3: Run and modify the executable program">Pass 3: Code</span>
+                <span class="pass-pill" title="Pass 4: Articulate the Tech Lead response fluently">Pass 4: Explain</span>
+                <span class="pass-pill" title="Pass 5: Confidently answer the senior architect follow-up">Pass 5: Follow-Up</span>
+            </div>
+
+        </article>
+    `;
+}
+
+// 3. Render Abbreviation & Architect Interview Index
+function renderAbbreviationCards(searchQuery = '', category = 'All') {
+    const container = document.getElementById('topics-cards-container');
+    const titleEl = document.getElementById('rhs-active-title');
+    const countEl = document.getElementById('rhs-count-label');
+    if (!container || typeof DOTNET_ABBREVIATIONS === 'undefined') return;
+
+    if (titleEl) {
+        titleEl.innerHTML = `🔤 .NET Abbreviation & Architect Interview Index <span style="font-size: 0.9rem; font-weight: 500; color: #6366f1; margin-left: 0.5rem;">(Category: ${category})</span>`;
+    }
+
+    let items = DOTNET_ABBREVIATIONS;
+
+    // Filter by category
+    if (category !== 'All') {
+        items = items.filter(a => a.category === category);
+    }
+
+    // Filter by search query
+    const q = searchQuery.toLowerCase().trim();
+    if (q) {
+        items = items.filter(a => {
+            const qStr = (a.interviewQuestions || []).join(' ').toLowerCase();
+            const scenarioStr = a.architectScenario ? (a.architectScenario.question + ' ' + a.architectScenario.answer).toLowerCase() : '';
+            return (
+                a.abbr.toLowerCase().includes(q) ||
+                a.fullForm.toLowerCase().includes(q) ||
+                a.oneLine.toLowerCase().includes(q) ||
+                a.why.toLowerCase().includes(q) ||
+                a.archRole.toLowerCase().includes(q) ||
+                a.category.toLowerCase().includes(q) ||
+                qStr.includes(q) ||
+                scenarioStr.includes(q) ||
+                (a.realProject && a.realProject.toLowerCase().includes(q))
+            );
+        });
+    }
+
+    if (countEl) {
+        countEl.innerText = `Showing ${items.length} Architectural Abbreviation & Interview Deep-Dive${items.length === 1 ? '' : 's'}`;
+    }
+
+    if (items.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <h3>🔍 No abbreviations found</h3>
+                <p>Try searching for another keyword or select a different category pill above.</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = items.map(a => renderSingleAbbrHtml(a)).join('');
+}
+
+function renderSingleAbbrHtml(a) {
+    const hasCode = a.code && a.code.trim().length > 0;
+    const hasScenario = a.architectScenario && a.architectScenario.question;
+    const hasQuestions = a.interviewQuestions && a.interviewQuestions.length > 0;
+
+    return `
+        <article class="abbreviation-card" id="abbr-${a.abbr}">
+            
+            <!-- Header Row -->
+            <div class="abbr-header-row">
+                <div class="abbr-title-left">
+                    <span class="abbr-badge-main">${escapeHtml(a.abbr)}</span>
+                    <span class="abbr-fullform-text">— ${escapeHtml(a.fullForm)}</span>
+                </div>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <span class="abbr-category-tag">${escapeHtml(a.category)}</span>
+                    ${hasCode ? `
+                        <button class="btn-card-practice" onclick="practiceAbbrCode('${a.abbr}')" title="Open snippet in Live Sandbox">
+                            <span>⚡ Practice</span>
+                        </button>
+                    ` : ''}
+                    <button class="btn-copy-code" onclick="copyAbbrCard('${a.abbr}', this)" title="Copy entire abbreviation deep-dive">📋 Copy</button>
+                </div>
+            </div>
+
+            <!-- 1. One-line Meaning -->
+            <div class="abbr-oneline-box">
+                <strong>One-Line Meaning:</strong> ${escapeHtml(a.oneLine)}
+            </div>
+
+            <!-- 2. Why it Exists & Architecture Role (Grid) -->
+            <div class="abbr-details-grid">
+                <div class="abbr-detail-item">
+                    <strong>💡 Why It Exists:</strong>
+                    <span>${escapeHtml(a.why)}</span>
+                </div>
+                <div class="abbr-detail-item">
+                    <strong>⚙️ Architectural Role:</strong>
+                    <span>${escapeHtml(a.archRole)}</span>
+                </div>
+            </div>
+
+            <!-- 3. Progressive Interview Questions (What interviewer may ask) -->
+            ${hasQuestions ? `
+                <div class="abbr-questions-section">
+                    <div class="abbr-questions-title">
+                        <span>❓ What Interviewer May Ask Next (Progressive Interview Chain):</span>
+                    </div>
+                    <ul class="abbr-questions-list">
+                        ${a.interviewQuestions.map(q => `<li>${escapeHtml(q)}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+
+            <!-- 4. Senior / Architect Scenario Question & Answer -->
+            ${hasScenario ? `
+                <div class="architect-followup-box">
+                    <div class="followup-header">
+                        <span class="followup-badge">🎯 Senior Technical Lead / Architect Scenario</span>
+                        <strong class="followup-question">Scenario: ${escapeHtml(a.architectScenario.question)}</strong>
+                    </div>
+                    <div class="followup-answer">
+                        <p><strong>Architectural Answer: </strong>${escapeHtml(a.architectScenario.answer)}</p>
+                    </div>
+                </div>
+            ` : ''}
+
+            <!-- 5. Real Enterprise Project Example -->
+            ${a.realProject ? `
+                <div class="real-project-box">
+                    <strong>🏥 Real Enterprise Project Context (Deepthi's Portfolio):</strong>
+                    <span>${escapeHtml(a.realProject)}</span>
+                </div>
+            ` : ''}
+
+            <!-- 6. Executable Code / Sandbox Snippet -->
+            ${hasCode ? `
+                <div class="syntax-wrapper">
+                    <div class="syntax-bar">
+                        <span class="syntax-lang-label">💻 EXECUTABLE PROGRAM: ${escapeHtml(a.abbr)} IN ACTION</span>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn-copy-code" onclick="practiceAbbrCode('${a.abbr}')">⚡ Run in Sandbox</button>
+                            <button class="btn-copy-code" onclick="copyAbbrCodeOnly('${a.abbr}', this)">Copy Code</button>
+                        </div>
+                    </div>
+                    <pre class="syntax-block"><code>${highlightDotNetSyntax(a.code)}</code></pre>
+                </div>
+            ` : ''}
+
+        </article>
+    `;
+}
+
+// 4. Combined Master View (Both Versions & Abbreviations)
+function renderCombinedView(searchQuery = '') {
+    const container = document.getElementById('topics-cards-container');
+    const titleEl = document.getElementById('rhs-active-title');
+    const countEl = document.getElementById('rhs-count-label');
+    if (!container) return;
+
+    if (titleEl) titleEl.innerHTML = `⚡ Complete Master Architecture & Interview Knowledge System`;
+
+    let vTopics = [];
+    DOTNET_VERSION_ORDER.forEach(k => {
+        if (DOTNET_DATA[k] && DOTNET_DATA[k].topics) vTopics.push(...DOTNET_DATA[k].topics);
+    });
+
+    let aItems = typeof DOTNET_ABBREVIATIONS !== 'undefined' ? DOTNET_ABBREVIATIONS : [];
+
+    const q = searchQuery.toLowerCase().trim();
+    if (q) {
+        vTopics = vTopics.filter(t => t.topic.toLowerCase().includes(q) || t.articulation.toLowerCase().includes(q));
+        aItems = aItems.filter(a => a.abbr.toLowerCase().includes(q) || a.fullForm.toLowerCase().includes(q) || a.oneLine.toLowerCase().includes(q));
+    }
+
+    if (countEl) {
+        countEl.innerText = `Showing ${vTopics.length} Versions & ${aItems.length} Architectural Abbreviations`;
+    }
+
+    container.innerHTML = `
+        <div style="margin-bottom: 2rem;">
+            <h3 style="font-size: 1.3rem; color: #2d1c24; margin-bottom: 1rem;">🗺️ Chronological Version Evolution (${vTopics.length})</h3>
+            ${vTopics.map(t => renderSingleTopicHtml(t)).join('')}
+        </div>
+        <div>
+            <h3 style="font-size: 1.3rem; color: #2d1c24; margin-bottom: 1rem;">🔤 Abbreviation & Architect Interview Index (${aItems.length})</h3>
+            ${aItems.map(a => renderSingleAbbrHtml(a)).join('')}
+        </div>
+    `;
+}
+
+// 5. Search and Filtering
 function filterLhsSearch(query) {
     const q = query.toLowerCase().trim();
     const items = document.querySelectorAll('.version-accordion-item');
 
     items.forEach(item => {
         const vKey = item.getAttribute('data-version');
-        const vObj = DOTNET_DATA[vKey];
-        if (!vObj) return;
+        let hasMatch = false;
 
-        let hasMatch = vKey.toLowerCase().includes(q);
-        const subLinks = item.querySelectorAll('.subtopic-nav-link');
-
-        subLinks.forEach(link => {
-            const text = link.innerText.toLowerCase();
-            if (q === '' || text.includes(q)) {
-                link.style.display = 'flex';
-                hasMatch = true;
-            } else {
-                link.style.display = 'none';
-            }
-        });
+        if (vKey === 'abbreviations') {
+            const subLinks = item.querySelectorAll('.subtopic-nav-link');
+            subLinks.forEach(link => {
+                const text = link.innerText.toLowerCase();
+                if (q === '' || text.includes(q)) {
+                    link.style.display = 'flex';
+                    hasMatch = true;
+                } else {
+                    link.style.display = 'none';
+                }
+            });
+        } else {
+            const vObj = DOTNET_DATA[vKey];
+            if (!vObj) return;
+            hasMatch = vKey.toLowerCase().includes(q);
+            const subLinks = item.querySelectorAll('.subtopic-nav-link');
+            subLinks.forEach(link => {
+                const text = link.innerText.toLowerCase();
+                if (q === '' || text.includes(q)) {
+                    link.style.display = 'flex';
+                    hasMatch = true;
+                } else {
+                    link.style.display = 'none';
+                }
+            });
+        }
 
         if (hasMatch) {
             item.style.display = 'block';
-            if (q.length > 0) {
-                item.classList.add('expanded');
-            }
+            if (q.length > 0) item.classList.add('expanded');
         } else {
             item.style.display = 'none';
         }
@@ -604,16 +930,14 @@ function filterLhsSearch(query) {
 
 function onRhsSearch(query) {
     currentSearchQuery = query;
-    renderRhsTopics(currentActiveVersion, query);
+    renderActiveView();
 }
 
-// 4. Lead Articulation Toggle
+// 6. Lead Articulation Toggle
 function toggleAllLeadArticulations() {
     isLeadExpanded = !isLeadExpanded;
     const btn = document.getElementById('btn-toggle-all');
-    if (btn) {
-        btn.innerText = isLeadExpanded ? 'Collapse Lead Notes' : 'Expand Lead Notes';
-    }
+    if (btn) btn.innerText = isLeadExpanded ? 'Collapse Lead Notes' : 'Expand Lead Notes';
 
     document.querySelectorAll('.lead-articulation-section').forEach(sec => {
         if (isLeadExpanded) {
@@ -633,13 +957,11 @@ function toggleSingleLead(topicId) {
     if (sec) {
         sec.classList.toggle('expanded');
         const icon = sec.querySelector('.lead-toggle-icon');
-        if (icon) {
-            icon.innerText = sec.classList.contains('expanded') ? '▲' : '▼';
-        }
+        if (icon) icon.innerText = sec.classList.contains('expanded') ? '▲' : '▼';
     }
 }
 
-// 5. Sidebar Toggle
+// 7. Sidebar Toggle
 function toggleLhsSidebar() {
     const sidebar = document.getElementById('lhs-ribbon');
     const layout = document.getElementById('master-layout');
@@ -664,12 +986,10 @@ function toggleLhsSidebar() {
 }
 
 function expandSidebar() {
-    if (isSidebarCollapsed) {
-        toggleLhsSidebar();
-    }
+    if (isSidebarCollapsed) toggleLhsSidebar();
 }
 
-// 6. Copy Utilities
+// 8. Copy Utilities
 function copySnippetOnly(topicId, btn) {
     let target = null;
     for (let k in DOTNET_DATA) {
@@ -705,13 +1025,47 @@ function copyTopicCard(topicId, btn) {
     navigator.clipboard.writeText(fullText).then(() => {
         const originalText = btn.innerText;
         btn.innerText = '✓ Copied!';
-        setTimeout(() => {
-            btn.innerText = originalText;
-        }, 1800);
+        setTimeout(() => btn.innerText = originalText, 1800);
     });
 }
 
-// 7. Live Sandbox Modal Logic
+function practiceAbbrCode(abbrKey) {
+    if (typeof DOTNET_ABBREVIATIONS === 'undefined') return;
+    const target = DOTNET_ABBREVIATIONS.find(a => a.abbr === abbrKey);
+    if (!target || !target.code) return;
+    openSandbox(target.code);
+}
+
+function copyAbbrCodeOnly(abbrKey, btn) {
+    if (typeof DOTNET_ABBREVIATIONS === 'undefined') return;
+    const target = DOTNET_ABBREVIATIONS.find(a => a.abbr === abbrKey);
+    if (!target || !target.code) return;
+
+    navigator.clipboard.writeText(target.code).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = '✓ Copied!';
+        setTimeout(() => btn.innerText = originalText, 1800);
+    });
+}
+
+function copyAbbrCard(abbrKey, btn) {
+    if (typeof DOTNET_ABBREVIATIONS === 'undefined') return;
+    const a = DOTNET_ABBREVIATIONS.find(x => x.abbr === abbrKey);
+    if (!a) return;
+
+    const questions = a.interviewQuestions ? a.interviewQuestions.join('\n- ') : '';
+    const scenario = a.architectScenario ? `\n\nArchitect Scenario:\nQ: ${a.architectScenario.question}\nA: ${a.architectScenario.answer}` : '';
+
+    const text = `[${a.abbr}] ${a.fullForm} (${a.category})\nMeaning: ${a.oneLine}\nWhy It Exists: ${a.why}\nArchitecture Role: ${a.archRole}\n\nProgressive Interview Questions:\n- ${questions}${scenario}\n\nReal Project Example:\n${a.realProject || 'N/A'}\n\nCode:\n${a.code || 'N/A'}`;
+
+    navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = '✓ Copied!';
+        setTimeout(() => btn.innerText = originalText, 1800);
+    });
+}
+
+// 9. Live Sandbox Modal Logic
 function openSandbox(customSnippet = '') {
     const overlay = document.getElementById('sandbox-overlay');
     const editor = document.getElementById('sandbox-code-editor');
@@ -741,9 +1095,7 @@ function closeSandbox() {
 }
 
 function handleSandboxOverlayClick(event) {
-    if (event.target.id === 'sandbox-overlay') {
-        closeSandbox();
-    }
+    if (event.target.id === 'sandbox-overlay') closeSandbox();
 }
 
 function onTemplateChange(templateKey) {
@@ -770,9 +1122,7 @@ function practiceTopicCode(topicId) {
 
 function resetSandboxCode() {
     const editor = document.getElementById('sandbox-code-editor');
-    if (editor && lastLoadedSnippet) {
-        editor.value = lastLoadedSnippet;
-    }
+    if (editor && lastLoadedSnippet) editor.value = lastLoadedSnippet;
 }
 
 function copySandboxCode() {
@@ -782,9 +1132,7 @@ function copySandboxCode() {
         const status = document.getElementById('sandbox-status');
         if (status) {
             status.innerText = '⚡ Status: Code copied to clipboard!';
-            setTimeout(() => {
-                status.innerText = '⚡ Status: Ready (Press Ctrl + Enter to Run)';
-            }, 2000);
+            setTimeout(() => status.innerText = '⚡ Status: Ready (Press Ctrl + Enter to Run)', 2000);
         }
     });
 }
@@ -849,7 +1197,7 @@ function simulateDotNetExecution(code) {
 <span class="console-line-info">[CLR Diagnostics] Memory: Managed Heap Active | GC Gen 0: 0 collections | JIT Status: Ready</span>`;
 }
 
-// 8. Syntax Highlighting Engine
+// 10. Syntax Highlighting Engine
 function highlightDotNetSyntax(code) {
     if (!code) return '';
     let escaped = escapeHtml(code);
