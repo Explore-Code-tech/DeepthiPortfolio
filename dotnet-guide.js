@@ -269,17 +269,13 @@ function switchViewMode(mode) {
     const activeBtn = document.getElementById(`btn-mode-${mode}`);
     if (activeBtn) activeBtn.classList.add('active');
 
-    const roadmapBanner = document.getElementById('evolution-roadmap-banner');
     const abbrCategoryBar = document.getElementById('abbr-category-bar');
 
     if (mode === 'evolution') {
-        if (roadmapBanner) roadmapBanner.style.display = 'flex';
         if (abbrCategoryBar) abbrCategoryBar.style.display = 'none';
     } else if (mode === 'abbreviations') {
-        if (roadmapBanner) roadmapBanner.style.display = 'none';
         if (abbrCategoryBar) abbrCategoryBar.style.display = 'flex';
     } else { // 'all'
-        if (roadmapBanner) roadmapBanner.style.display = 'flex';
         if (abbrCategoryBar) abbrCategoryBar.style.display = 'flex';
     }
 
@@ -471,15 +467,6 @@ function selectVersion(vKey) {
             el.classList.add('active');
         } else {
             el.classList.remove('active');
-        }
-    });
-
-    // Update active pill in roadmap
-    document.querySelectorAll('.roadmap-step-pill').forEach(pill => {
-        if (pill.getAttribute('data-version') === vKey) {
-            pill.classList.add('active');
-        } else {
-            pill.classList.remove('active');
         }
     });
 
