@@ -73,3 +73,66 @@ function searchCSharp(query) {
         }
     });
 }
+
+// .NET Architecture Interactive Filter & Search Engine
+function filterDotNetEra(era, btn) {
+    document.querySelectorAll('.dotnet-filter-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    document.querySelectorAll('.dotnet-pill-btn').forEach(p => p.classList.remove('active'));
+    const searchInput = document.getElementById('dotnet-search');
+    if (searchInput) searchInput.value = '';
+
+    const cards = document.querySelectorAll('.dotnet-card');
+    cards.forEach(card => {
+        const cardEra = card.getAttribute('data-era');
+        if (era === 'all' || cardEra === era) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+function filterDotNetVersion(versionKey, pill) {
+    document.querySelectorAll('.dotnet-pill-btn').forEach(p => p.classList.remove('active'));
+    if (pill) pill.classList.add('active');
+
+    document.querySelectorAll('.dotnet-filter-btn').forEach(b => b.classList.remove('active'));
+    const searchInput = document.getElementById('dotnet-search');
+    if (searchInput) searchInput.value = '';
+
+    const cards = document.querySelectorAll('.dotnet-card');
+    cards.forEach(card => {
+        const cardVersion = card.getAttribute('data-version');
+        if (versionKey === 'all' || cardVersion === String(versionKey)) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+function searchDotNet(query) {
+    const term = query.toLowerCase().trim();
+    const cards = document.querySelectorAll('.dotnet-card');
+
+    if (term.length > 0) {
+        document.querySelectorAll('.dotnet-filter-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.dotnet-pill-btn').forEach(p => p.classList.remove('active'));
+    } else {
+        const allBtn = document.querySelector('.dotnet-filter-btn[data-era="all"]');
+        if (allBtn) allBtn.classList.add('active');
+    }
+
+    cards.forEach(card => {
+        const textContent = card.innerText.toLowerCase();
+        const keywords = (card.getAttribute('data-keywords') || '').toLowerCase();
+        if (term === '' || textContent.includes(term) || keywords.includes(term)) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+

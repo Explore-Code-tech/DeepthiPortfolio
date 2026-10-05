@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C# 1 to 15 Master Architecture & Interview Guide | Deepthi T</title>
+    <title>.NET Ecosystem & Architecture Master Guide | Deepthi T</title>
     <link rel="stylesheet" href="csharp-guide.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>">
 </head>
 <body>
 
@@ -18,16 +18,16 @@
             </button>
             <a href="index.html" class="logo-link">
                 <span class="logo-text">Deepthi T</span>
-                <span class="logo-badge">C# 1–15 Guide</span>
+                <span class="logo-badge">.NET Architecture Guide</span>
             </a>
         </div>
         
         <div class="nav-actions">
-            <a href="dotnet-guide.html" class="btn-nav-action" title="Open .NET Architecture & Ecosystem Guide">
-                <span>🌐 .NET Guide</span>
+            <a href="csharp-guide.html" class="btn-nav-action" title="Open C# 1 to 15 Language Guide">
+                <span>⚡ C# 1–15 Guide</span>
             </a>
-            <button class="btn-nav-action btn-nav-sandbox" onclick="openSandbox()" title="Open Interactive C# Code Sandbox">
-                <span>⚡ Live C# Sandbox</span>
+            <button class="btn-nav-action btn-nav-sandbox" onclick="openSandbox()" title="Open Interactive .NET Live Practice Sandbox">
+                <span>⚡ Live .NET Sandbox</span>
             </button>
             <a href="index.html" class="btn-nav-action">← Portfolio</a>
         </div>
@@ -40,7 +40,7 @@
         <aside class="lhs-ribbon" id="lhs-ribbon">
             <div class="lhs-header">
                 <div class="lhs-title-row">
-                    <span class="lhs-title">📑 Language Versions</span>
+                    <span class="lhs-title">📑 .NET Versions & Pillars</span>
                     <div class="lhs-header-actions">
                         <button class="btn-lhs-expand-toggle" id="btn-lhs-expand-all" onclick="toggleAllLhsVersions()">📂 Expand All</button>
                         <button class="btn-lhs-expand-toggle" onclick="toggleLhsSidebar()" title="Collapse Sidebar">◀ Hide</button>
@@ -50,19 +50,19 @@
                 <!-- Quick Filter for LHS Tree -->
                 <div class="lhs-search-wrapper">
                     <span class="lhs-search-icon">🔍</span>
-                    <input type="text" class="lhs-search-input" placeholder="Filter versions / topics..." oninput="filterLhsSearch(this.value)">
+                    <input type="text" class="lhs-search-input" placeholder="Filter versions / runtime pillars..." oninput="filterLhsSearch(this.value)">
                 </div>
 
                 <!-- All Versions Button -->
                 <button class="lhs-all-btn active" id="lhs-btn-all" onclick="selectVersion('all')">
-                    <span>⚡ All Generations (1.0 to 15)</span>
-                    <span class="version-badge-count" style="background: rgba(255,255,255,0.3); color: inherit;">332</span>
+                    <span>🌐 All Eras & Runtime Pillars</span>
+                    <span class="version-badge-count" style="background: rgba(255,255,255,0.3); color: inherit;">45+</span>
                 </button>
             </div>
 
             <!-- Dynamic Version & Topic Tree Container -->
             <div class="lhs-tree-container" id="lhs-tree">
-                <!-- Injected dynamically via csharp-guide.js -->
+                <!-- Injected dynamically via dotnet-guide.js -->
             </div>
         </aside>
 
@@ -72,13 +72,13 @@
             <!-- RHS Control & Filter Bar -->
             <div class="rhs-control-bar">
                 <div class="rhs-view-info">
-                    <h2 class="rhs-active-version-title" id="rhs-active-title">⚡ All C# Versions (1.0 to 15)</h2>
-                    <span class="rhs-count-label" id="rhs-count-label">Showing 332 Topics</span>
+                    <h2 class="rhs-active-version-title" id="rhs-active-title">🌐 All .NET Eras & Runtime Architectures</h2>
+                    <span class="rhs-count-label" id="rhs-count-label">Showing All Topics</span>
                 </div>
                 <div class="rhs-tools">
                     <div style="position: relative;">
                         <span style="position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: #A7727D; font-size: 0.85rem; pointer-events: none;">🔍</span>
-                        <input type="text" class="rhs-search-input" id="rhs-search" placeholder="Search syntax, concepts, patterns..." oninput="onRhsSearch(this.value)">
+                        <input type="text" class="rhs-search-input" id="rhs-search" placeholder="Search CLR, GC, ASP.NET Core, EF Core, AOT, Aspire..." oninput="onRhsSearch(this.value)">
                     </div>
                     <button class="btn-toggle-all" onclick="openSandbox()">⚡ Practice in Sandbox</button>
                     <button class="btn-toggle-all" id="btn-toggle-all" onclick="toggleAllLeadArticulations()">Collapse Lead Notes</button>
@@ -87,7 +87,7 @@
 
             <!-- Topic Cards List Container -->
             <div class="topics-cards-container" id="topics-cards-container">
-                <!-- Cards injected dynamically via csharp-guide.js -->
+                <!-- Cards injected dynamically via dotnet-guide.js -->
             </div>
 
         </section>
@@ -103,7 +103,7 @@
     <button class="btn-floating-top" id="btn-back-to-top" title="Back to top">↑</button>
 
     <!-- =========================================
-         INTERACTIVE C# LIVE SANDBOX MODAL
+         INTERACTIVE .NET LIVE SANDBOX MODAL
          ========================================= -->
     <div class="sandbox-overlay" id="sandbox-overlay" onclick="handleSandboxOverlayClick(event)">
         <div class="sandbox-modal" id="sandbox-modal">
@@ -111,22 +111,21 @@
             <!-- Header -->
             <div class="sandbox-header">
                 <div class="sandbox-header-left">
-                    <span class="sandbox-title">⚡ C# Live Practice Sandbox</span>
-                    <span class="sandbox-badge">.NET C# Runner</span>
+                    <span class="sandbox-title">⚡ .NET Architecture Live Sandbox</span>
+                    <span class="sandbox-badge">CoreCLR & ASP.NET Runner</span>
                 </div>
                 <div class="sandbox-header-controls">
                     <select class="sandbox-template-select" id="sandbox-template-select" onchange="onTemplateChange(this.value)">
-                        <option value="custom">-- Choose Starter Template --</option>
-                        <option value="hello">👋 Hello World & Classes (C# 1–2)</option>
-                        <option value="linq">🔍 LINQ & Lambda Queries (C# 3)</option>
-                        <option value="async">🚀 Async / Await Task (C# 5)</option>
-                        <option value="records">💎 Records & Pattern Matching (C# 9–10)</option>
-                        <option value="primary">🧩 Primary Constructors & Collections (C# 12)</option>
-                        <option value="lock">🔒 params Spans & Lock Object (C# 13)</option>
-                        <option value="field">🏷 Field-Backed Properties (C# 14)</option>
-                        <option value="unions">🔮 Discriminated Unions & AI (C# 15)</option>
+                        <option value="custom">-- Choose Architecture Template --</option>
+                        <option value="minimal">🌐 Minimal API & Endpoints (.NET 6–8)</option>
+                        <option value="channels">🚀 High-Throughput Channels Queue (.NET Core)</option>
+                        <option value="span">⚡ Zero-Allocation Span&lt;T&gt; Parsing (.NET Core 2.1+)</option>
+                        <option value="frozen">💎 FrozenDictionary O(1) Lookups (.NET 8)</option>
+                        <option value="gc">🧹 GC Generations & Heap Diagnostics (CLR)</option>
+                        <option value="aspire">☁️ .NET Aspire Cloud-Native AppHost (.NET 8–9)</option>
+                        <option value="resilience">🛡️ Resilient Polly Pipeline (.NET 8)</option>
                     </select>
-                    <a href="https://dotnetfiddle.net/" target="_blank" class="btn-open-external" title="Open full Roslyn compiler in .NET Fiddle">
+                    <a href="https://dotnetfiddle.net/" target="_blank" class="btn-open-external" title="Open full Roslyn & .NET compiler in .NET Fiddle">
                         <span>🌐 .NET Fiddle ↗</span>
                     </a>
                     <button class="btn-close-sandbox" onclick="closeSandbox()" title="Close Sandbox (Esc)">✕</button>
@@ -139,18 +138,16 @@
                 <!-- Code Editor Panel -->
                 <div class="sandbox-editor-panel">
                     <div class="sandbox-panel-header">
-                        <span>📝 C# Source Code Editor</span>
+                        <span>📝 C# / .NET Source Code Editor</span>
                         <span style="font-size: 0.72rem; color: #6c7086;">Auto-indents & Tab support</span>
                     </div>
                     <div class="sandbox-editor-container">
-                        <textarea class="sandbox-textarea" id="sandbox-code-editor" spellcheck="false" placeholder="// Write or paste C# code here...
+                        <textarea class="sandbox-textarea" id="sandbox-code-editor" spellcheck="false" placeholder="// Write or paste C# / .NET code here...
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 class Program {
     static void Main() {
-        Console.WriteLine(&quot;Hello from C# Live Sandbox!&quot;);
+        Console.WriteLine(&quot;Hello from .NET Architecture Live Sandbox!&quot;);
     }
 }"></textarea>
                     </div>
@@ -164,7 +161,7 @@ class Program {
                     </div>
                     <div class="sandbox-console-output" id="sandbox-output">
 <span class="console-line-info">$ dotnet run Program.cs</span>
-<span class="console-line-success">Ready. Click [▶ Run Code] to execute your C# code or practice any topic snippet!</span>
+<span class="console-line-success">Ready. Click [▶ Run Code] to execute your .NET code or practice any architectural snippet!</span>
                     </div>
                 </div>
 
@@ -192,7 +189,7 @@ class Program {
     </div>
 
     <!-- Scripts -->
-    <script src="csharp-data.js"></script>
-    <script src="csharp-guide.js"></script>
+    <script src="dotnet-data.js"></script>
+    <script src="dotnet-guide.js"></script>
 </body>
 </html>

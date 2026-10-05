@@ -15,11 +15,10 @@
             <ul class="nav-links">
                 <li><a href="#about">About</a></li>
                 <li><a href="csharp-guide.html">C# 1–15</a></li>
+                <li><a href="dotnet-guide.html">.NET</a></li>
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#contact">Contact</a></li>
-
-
             </ul>
         </div>
     </nav>
@@ -34,6 +33,7 @@
 <div class="menu-links">
     <li><a href="#about" onclick = "toggleMenu()">About</a></li>
     <li><a href="csharp-guide.html" onclick = "toggleMenu()">C# 1–15</a></li>
+    <li><a href="dotnet-guide.html" onclick = "toggleMenu()">.NET</a></li>
     <li><a href="#experience" onclick = "toggleMenu()">Experience</a></li>
     <li><a href="#projects" onclick = "toggleMenu()">Projects</a></li>
     <li><a href="#contact" onclick = "toggleMenu()">Contact</a></li>
@@ -555,6 +555,466 @@
         </div>
     </div>
     
+    <img src="./assets/arrow.png" alt="Arrow icon" class="icon arrow" onclick="location.href='#dotnet'">
+</section>
+
+<section id="dotnet">
+    <p class="section__text_p1">Framework Evolution & Lead Architect Guide</p>
+    <h1 class="title">.NET Architecture & Ecosystem Evolution</h1>
+    
+    <div style="display: flex; justify-content: center; margin-top: -0.5rem; margin-bottom: 1.5rem;">
+        <button class="btn btn-color-1" onclick="window.location.href='dotnet-guide.html'" style="font-size: 0.98rem; padding: 0.9rem 2.2rem; display: inline-flex; align-items: center; gap: 0.6rem; box-shadow: 0 6px 25px rgba(99, 102, 241, 0.35); cursor: pointer;">
+            <span>🚀 Open Full .NET Master Architecture Guide (with Runtime Internals, CoreCLR & Tech Lead Answers) →</span>
+        </button>
+    </div>
+
+    <div class="dotnet-container">
+        <!-- Interactive Controls (Search & Filters) -->
+        <div class="dotnet-controls">
+            <div class="dotnet-search-wrapper">
+                <span class="dotnet-search-icon">🔍</span>
+                <input type="text" id="dotnet-search" class="dotnet-search-input" placeholder="Search .NET architecture, runtime internals, CLR, GC, ASP.NET Core, EF Core, AOT, Aspire..." oninput="searchDotNet(this.value)">
+            </div>
+
+            <!-- Era Filter Buttons -->
+            <div class="dotnet-era-filters">
+                <button class="dotnet-filter-btn active" data-era="all" onclick="filterDotNetEra('all', this)">⚡ All .NET Eras</button>
+                <button class="dotnet-filter-btn" data-era="framework" onclick="filterDotNetEra('framework', this)">🏛 .NET Framework (1.0 – 4.8.1)</button>
+                <button class="dotnet-filter-btn" data-era="core" onclick="filterDotNetEra('core', this)">⚡ .NET Core Revolution (1.0 – 3.1)</button>
+                <button class="dotnet-filter-btn" data-era="unified" onclick="filterDotNetEra('unified', this)">🚀 Modern Unified .NET (.NET 5 – 8 LTS)</button>
+                <button class="dotnet-filter-btn" data-era="modern-future" onclick="filterDotNetEra('modern-future', this)">🔮 Next-Gen & Cloud-Native (.NET 9 – 10)</button>
+            </div>
+
+            <!-- Quick Jump Version Pills -->
+            <div class="dotnet-version-pills">
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-fx-1-2', this)">.NET Framework 1.1 / 2.0</button>
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-fx-3-4', this)">.NET Framework 3.5 / 4.0</button>
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-fx-48', this)">.NET Framework 4.5 – 4.8.1</button>
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-core-1', this)">.NET Core 1.0 / 1.1</button>
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-core-2', this)">.NET Core 2.0 / 2.1 LTS</button>
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-core-3', this)">.NET Core 3.0 / 3.1 LTS</button>
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-5', this)">.NET 5</button>
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-6', this)">.NET 6 LTS</button>
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-7', this)">.NET 7</button>
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-8', this)">.NET 8 LTS</button>
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-9', this)">.NET 9</button>
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-10', this)">.NET 10 Preview</button>
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-arch-clr', this)">⚙️ CoreCLR & JIT</button>
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-arch-gc', this)">🧹 GC & Memory</button>
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-arch-perf', this)">⚡ Span & I/O</button>
+                <button class="dotnet-pill-btn" onclick="filterDotNetVersion('net-arch-aspire', this)">☁️ Aspire Cloud</button>
+            </div>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="dotnet-cards-grid">
+            
+            <!-- .NET Framework 1.1 / 2.0 -->
+            <div class="dotnet-card" data-version="net-fx-1-2" data-era="framework" data-keywords=".net framework 1.1 2.0 clr generics msil ado.net dataset datareader web forms windows forms">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">📌 .NET Framework 1.1 / 2.0</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">CLR 1.1 / 2.0</span>
+                        <span class="dotnet-year-badge">2003–2005</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">Monolithic Windows CLR, Generics & ADO.NET</div>
+                <ul class="dotnet-feature-list">
+                    <li>Common Language Runtime (CLR) executing managed MSIL bytecode with JIT and GC</li>
+                    <li>Generics implemented natively in the CLR without Java-style type erasure</li>
+                    <li>ADO.NET Connected (SqlDataReader) vs Disconnected (DataSet / DataTable) architecture</li>
+                    <li>ASP.NET Web Forms with ViewState and server controls simulating desktop UI over HTTP</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// Native CLR Generics & SqlDataReader streaming</span>
+<span class="csharp-highlight-kw">using</span> (<span class="csharp-highlight-kw">var</span> conn = <span class="csharp-highlight-kw">new</span> <span class="csharp-highlight-type">SqlConnection</span>(connStr))
+<span class="csharp-highlight-kw">using</span> (<span class="csharp-highlight-kw">var</span> cmd = <span class="csharp-highlight-kw">new</span> <span class="csharp-highlight-type">SqlCommand</span>(<span class="csharp-highlight-str">"SELECT Id, Code FROM Cases WHERE Active = 1"</span>, conn)) {
+    conn.<span class="csharp-highlight-fn">Open</span>();
+    <span class="csharp-highlight-kw">using</span> (<span class="csharp-highlight-kw">var</span> reader = cmd.<span class="csharp-highlight-fn">ExecuteReader</span>()) {
+        <span class="csharp-highlight-kw">while</span> (reader.<span class="csharp-highlight-fn">Read</span>()) { <span class="csharp-highlight-type">int</span> id = reader.<span class="csharp-highlight-fn">GetInt32</span>(0); }
+    }
+}</code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> Foundation of managed execution, type safety & enterprise relational database streaming.</div>
+            </div>
+
+            <!-- .NET Framework 3.5 / 4.0 -->
+            <div class="dotnet-card" data-version="net-fx-3-4" data-era="framework" data-keywords=".net framework 3.5 4.0 wcf wpf linq tpl task parallel library expression trees threadpool work-stealing">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">📌 .NET Framework 3.5 / 4.0</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">CLR 4.0</span>
+                        <span class="dotnet-year-badge">2007–2010</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">WCF, WPF MVVM & Task Parallel Library (TPL)</div>
+                <ul class="dotnet-feature-list">
+                    <li>Task Parallel Library (TPL) with work-stealing ThreadPool algorithms for multi-core scaling</li>
+                    <li>Windows Communication Foundation (WCF) unified ABC (Address, Binding, Contract) SOA architecture</li>
+                    <li>Windows Presentation Foundation (WPF) with DirectX hardware acceleration and MVVM</li>
+                    <li>LINQ Providers with Expression Trees transforming C# expressions to SQL Server queries</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// TPL multi-core execution & work-stealing</span>
+<span class="csharp-highlight-type">Parallel</span>.<span class="csharp-highlight-fn">ForEach</span>(auditRecords, <span class="csharp-highlight-kw">new</span> <span class="csharp-highlight-type">ParallelOptions</span> { 
+    MaxDegreeOfParallelism = <span class="csharp-highlight-type">Environment</span>.ProcessorCount 
+}, record =&gt; {
+    <span class="csharp-highlight-fn">ProcessRegulatoryAudit</span>(record);
+});</code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> Decoupled enterprise SOA service bus and lock-free multi-core ThreadPool scheduling.</div>
+            </div>
+
+            <!-- .NET Framework 4.5 – 4.8.1 -->
+            <div class="dotnet-card" data-version="net-fx-48" data-era="framework" data-keywords=".net framework 4.5 4.8 4.8.1 async await statemachine synchronizationcontext configureawait enterprise stability">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">📌 .NET Framework 4.5 – 4.8.1</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">Final Framework LTS</span>
+                        <span class="dotnet-year-badge">2012–2022</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">Async State Machine & Enterprise Servicing Maturity</div>
+                <ul class="dotnet-feature-list">
+                    <li>CLR-level async/await state machine dispatch via IAsyncStateMachine and I/O Completion Ports</li>
+                    <li>SynchronizationContext dispatching and <code>ConfigureAwait(false)</code> deadlock prevention</li>
+                    <li>High DPI support for Windows Desktop and TLS 1.3 enterprise security compliance</li>
+                    <li>In-place OS component servicing model ensuring 100% binary backward compatibility</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// Non-blocking async I/O completion port</span>
+<span class="csharp-highlight-kw">public async</span> <span class="csharp-highlight-type">Task</span>&lt;<span class="csharp-highlight-type">AuditReport</span>&gt; <span class="csharp-highlight-fn">GetReportAsync</span>(<span class="csharp-highlight-type">int</span> id) {
+    <span class="csharp-highlight-kw">var</span> data = <span class="csharp-highlight-kw">await</span> _client.<span class="csharp-highlight-fn">GetStringAsync</span>(url).<span class="csharp-highlight-fn">ConfigureAwait</span>(<span class="csharp-highlight-kw">false</span>);
+    <span class="csharp-highlight-kw">return</span> <span class="csharp-highlight-type">JsonSerializer</span>.<span class="csharp-highlight-fn">Deserialize</span>&lt;<span class="csharp-highlight-type">AuditReport</span>&gt;(data);
+}</code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> Asynchronous thread scalability eliminating I/O thread pool exhaustion in enterprise backends.</div>
+            </div>
+
+            <!-- .NET Core 1.0 / 1.1 -->
+            <div class="dotnet-card" data-version="net-core-1" data-era="core" data-keywords=".net core 1.0 1.1 cross-platform modular coreclr kestrel middleware dependency injection docker linux">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">📌 .NET Core 1.0 / 1.1</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">CoreCLR 1.0</span>
+                        <span class="dotnet-year-badge">2016–2017</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">Cross-Platform Modular Revolution & Kestrel</div>
+                <ul class="dotnet-feature-list">
+                    <li>Complete open-source runtime rewrite running natively on Linux, macOS, and Windows containers</li>
+                    <li>Side-by-side deployment model eliminating machine-wide GAC dependency conflicts</li>
+                    <li>Ultra-fast Kestrel HTTP web server replacing monolithic IIS System.Web dependencies</li>
+                    <li>First-class built-in Dependency Injection container (IServiceCollection) and composable middleware</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// Composable ASP.NET Core Middleware Pipeline</span>
+<span class="csharp-highlight-kw">public void</span> <span class="csharp-highlight-fn">Configure</span>(<span class="csharp-highlight-type">IApplicationBuilder</span> app) {
+    app.<span class="csharp-highlight-fn">UseExceptionHandler</span>(<span class="csharp-highlight-str">"/error"</span>);
+    app.<span class="csharp-highlight-fn">UseAuthentication</span>();
+    app.<span class="csharp-highlight-fn">UseAuthorization</span>();
+    app.<span class="csharp-highlight-fn">UseEndpoints</span>(endpoints =&gt; endpoints.<span class="csharp-highlight-fn">MapControllers</span>());
+}</code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> Cloud-ready Linux containerization, modular NuGet BCL packaging & high-throughput HTTP.</div>
+            </div>
+
+            <!-- .NET Core 2.0 / 2.1 LTS -->
+            <div class="dotnet-card" data-version="net-core-2" data-era="core" data-keywords=".net core 2.0 2.1 span readonlyspan memory sockethttpreader tiered compilation ef core 2.0">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">📌 .NET Core 2.0 / 2.1 LTS</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">CoreCLR 2.1 LTS</span>
+                        <span class="dotnet-year-badge">2017–2018</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">Span&lt;T&gt;, SocketsHttpHandler & Tiered Compilation</div>
+                <ul class="dotnet-feature-list">
+                    <li><code>Span&lt;T&gt;</code> and <code>ReadOnlySpan&lt;T&gt;</code> enabling zero-allocation memory slicing across heap, stack, and native memory</li>
+                    <li>Managed <code>SocketsHttpHandler</code> replacing OS-specific HTTP stacks with connection pooling</li>
+                    <li>Tiered Compilation: Tier 0 quick JIT for fast startup and Tier 1 optimized JIT for hot methods</li>
+                    <li>Entity Framework Core 2.0 with DbContext pooling and query filters for multi-tenant SaaS</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// Zero-allocation string slicing with ReadOnlySpan</span>
+<span class="csharp-highlight-type">ReadOnlySpan</span>&lt;<span class="csharp-highlight-type">char</span>&gt; header = <span class="csharp-highlight-str">"CASE:84920:SURGERY"</span>.<span class="csharp-highlight-fn">AsSpan</span>();
+<span class="csharp-highlight-type">ReadOnlySpan</span>&lt;<span class="csharp-highlight-type">char</span>&gt; caseId = header.<span class="csharp-highlight-fn">Slice</span>(5, 5); <span class="csharp-highlight-comment">// 0 bytes allocated on heap!</span>
+<span class="csharp-highlight-type">int</span> id = <span class="csharp-highlight-type">int</span>.<span class="csharp-highlight-fn">Parse</span>(caseId);</code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> Nanosecond memory manipulation, zero GC heap churn & self-healing socket connection pools.</div>
+            </div>
+
+            <!-- .NET Core 3.0 / 3.1 LTS -->
+            <div class="dotnet-card" data-version="net-core-3" data-era="core" data-keywords=".net core 3.0 3.1 grpc system.text.json worker services blazor server http/2 protobuf">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">📌 .NET Core 3.0 / 3.1 LTS</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">CoreCLR 3.1 LTS</span>
+                        <span class="dotnet-year-badge">2019</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">gRPC on HTTP/2, System.Text.Json & Worker Services</div>
+                <ul class="dotnet-feature-list">
+                    <li>First-class gRPC microservice implementation with HTTP/2 multiplexing and compact binary Protobuf</li>
+                    <li>High-performance <code>System.Text.Json</code> parser operating directly on UTF-8 byte streams</li>
+                    <li>Worker Services & <code>BackgroundService</code> daemon architecture for queue ingestion on Linux/Windows</li>
+                    <li>Blazor Server running C# components in real-time over WebSocket SignalR connections</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// High-performance gRPC Server Implementation</span>
+<span class="csharp-highlight-kw">public class</span> <span class="csharp-highlight-type">TradingService</span> : <span class="csharp-highlight-type">TradingEngine</span>.<span class="csharp-highlight-type">TradingEngineBase</span> {
+    <span class="csharp-highlight-kw">public override async</span> <span class="csharp-highlight-type">Task</span> <span class="csharp-highlight-fn">StreamTicks</span>(<span class="csharp-highlight-type">TickRequest</span> req, <span class="csharp-highlight-type">IServerStreamWriter</span>&lt;<span class="csharp-highlight-type">TickData</span>&gt; stream, <span class="csharp-highlight-type">ServerCallContext</span> ctx) {
+        <span class="csharp-highlight-kw">await</span> stream.<span class="csharp-highlight-fn">WriteAsync</span>(<span class="csharp-highlight-kw">new</span> <span class="csharp-highlight-type">TickData</span> { Price = 420.50 });
+    }
+}</code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> 7x higher microservice RPC throughput and zero-allocation UTF-8 JSON parsing.</div>
+            </div>
+
+            <!-- .NET 5 -->
+            <div class="dotnet-card" data-version="net-5" data-era="unified" data-keywords=".net 5 great unification single sdk arm64 avx2 simd pinned object heap poh records c# 9">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">📌 .NET 5</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">Unified SDK</span>
+                        <span class="dotnet-year-badge">2020</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">The Great Unification & ARM64 Acceleration</div>
+                <ul class="dotnet-feature-list">
+                    <li>Consolidated .NET Framework, Core, Xamarin, and Mono into a single unified .NET runtime & BCL</li>
+                    <li>RyuJIT hardware intrinsic vectorization (AVX2/SSE) and first-class ARM64 cloud parity (AWS Graviton)</li>
+                    <li>Pinned Object Heap (POH) preventing memory fragmentation during native socket and I/O operations</li>
+                    <li>C# 9 Record types and init-only setters supported natively at runtime</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// Hardware-accelerated SIMD Vector instructions</span>
+<span class="csharp-highlight-kw">if</span> (<span class="csharp-highlight-type">Avx2</span>.IsSupported) {
+    <span class="csharp-highlight-type">Vector256</span>&lt;<span class="csharp-highlight-type">float</span>&gt; v1 = <span class="csharp-highlight-type">Avx2</span>.<span class="csharp-highlight-fn">LoadVector256</span>(ptr1);
+    <span class="csharp-highlight-type">Vector256</span>&lt;<span class="csharp-highlight-type">float</span>&gt; v2 = <span class="csharp-highlight-type">Avx2</span>.<span class="csharp-highlight-fn">LoadVector256</span>(ptr2);
+    <span class="csharp-highlight-type">Vector256</span>&lt;<span class="csharp-highlight-type">float</span>&gt; sum = <span class="csharp-highlight-type">Avx2</span>.<span class="csharp-highlight-fn">Add</span>(v1, v2); <span class="csharp-highlight-comment">// 8 floats calculated in 1 CPU cycle</span>
+}</code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> Unified TFM (net5.0) ecosystem and 40% cloud cost reduction on ARM64 servers.</div>
+            </div>
+
+            <!-- .NET 6 LTS -->
+            <div class="dotnet-card" data-version="net-6" data-era="unified" data-keywords=".net 6 lts minimal apis dynamic pgo profile guided optimization http/3 quic hot reload arm64">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">📌 .NET 6 LTS</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">.NET 6 LTS</span>
+                        <span class="dotnet-year-badge">2021</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">Minimal APIs, Dynamic PGO & HTTP/3 QUIC</div>
+                <ul class="dotnet-feature-list">
+                    <li>Minimal APIs eliminating Controller reflection ceremony, reducing cold start and RAM footprint</li>
+                    <li>Dynamic Profile-Guided Optimization (Dynamic PGO) learning real runtime call graphs to de-virtualize methods</li>
+                    <li>HTTP/3 and QUIC transport protocol eliminating TCP head-of-line blocking across mobile networks</li>
+                    <li>Hot Reload developer productivity and Blazor WebAssembly ahead-of-time compilation</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// ASP.NET Core Minimal API Architecture</span>
+<span class="csharp-highlight-kw">var</span> builder = <span class="csharp-highlight-type">WebApplication</span>.<span class="csharp-highlight-fn">CreateBuilder</span>(args);
+<span class="csharp-highlight-kw">var</span> app = builder.<span class="csharp-highlight-fn">Build</span>();
+
+app.<span class="csharp-highlight-fn">MapGet</span>(<span class="csharp-highlight-str">"/api/patients/{id}"</span>, <span class="csharp-highlight-kw">async</span> (<span class="csharp-highlight-type">int</span> id, <span class="csharp-highlight-type">SurgeryDb</span> db) =&gt; 
+    <span class="csharp-highlight-kw">await</span> db.Patients.<span class="csharp-highlight-fn">FindAsync</span>(id) <span class="csharp-highlight-kw">is</span> <span class="csharp-highlight-type">Patient</span> p ? <span class="csharp-highlight-type">Results</span>.<span class="csharp-highlight-fn">Ok</span>(p) : <span class="csharp-highlight-type">Results</span>.<span class="csharp-highlight-fn">NotFound</span>());
+
+app.<span class="csharp-highlight-fn">Run</span>();</code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> Up to 30% automatic runtime throughput improvement via Dynamic PGO and lightweight endpoints.</div>
+            </div>
+
+            <!-- .NET 7 -->
+            <div class="dotnet-card" data-version="net-7" data-era="unified" data-keywords=".net 7 native aot rate limiting output caching generic math grpc json transcoding">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">📌 .NET 7</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">.NET 7 STS</span>
+                        <span class="dotnet-year-badge">2022</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">Native AOT, Rate Limiting & Output Caching</div>
+                <ul class="dotnet-feature-list">
+                    <li>Native AOT (Ahead-of-Time) compilation for console tools and microservices with sub-millisecond cold start</li>
+                    <li>Built-in Rate Limiting middleware (Sliding Window, Token Bucket, Concurrency) protecting downstream databases</li>
+                    <li>Output Caching middleware with tag-based eviction and cache stampede locking</li>
+                    <li>Generic Math in BCL allowing mathematical algorithms over <code>INumber&lt;T&gt;</code> without boxing</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// Built-in Token Bucket Rate Limiting</span>
+builder.Services.<span class="csharp-highlight-fn">AddRateLimiter</span>(options =&gt; {
+    options.<span class="csharp-highlight-fn">AddSlidingWindowLimiter</span>(<span class="csharp-highlight-str">"trading-policy"</span>, opt =&gt; {
+        opt.PermitLimit = 100;
+        opt.Window = <span class="csharp-highlight-type">TimeSpan</span>.<span class="csharp-highlight-fn">FromMinutes</span>(1);
+        opt.SegmentsPerWindow = 6;
+    });
+});
+app.<span class="csharp-highlight-fn">MapGet</span>(<span class="csharp-highlight-str">"/api/quotes"</span>, () =&gt; ...).<span class="csharp-highlight-fn">RequireRateLimiting</span>(<span class="csharp-highlight-str">"trading-policy"</span>);</code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> Built-in defense-in-depth API protection and stampede-free multi-tier response caching.</div>
+            </div>
+
+            <!-- .NET 8 LTS -->
+            <div class="dotnet-card" data-version="net-8" data-era="unified" data-keywords=".net 8 lts native aot web keyed di frozen collections timeprovider aspire preview blazor united">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">📌 .NET 8 LTS</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">Enterprise LTS</span>
+                        <span class="dotnet-year-badge">2023</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">Native AOT for Web, Keyed DI & Frozen Collections</div>
+                <ul class="dotnet-feature-list">
+                    <li>Native AOT compilation for ASP.NET Core Web APIs producing 15MB Docker containers starting in 10ms</li>
+                    <li>Keyed Dependency Injection allowing multiple named implementations of the same interface</li>
+                    <li><code>FrozenDictionary</code> and <code>FrozenSet</code> optimized for blazing-fast read-heavy lookup tables</li>
+                    <li><code>TimeProvider</code> BCL abstraction for deterministic time-based unit testing without flaky sleeps</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// Keyed DI & Frozen Collections</span>
+builder.Services.<span class="csharp-highlight-fn">AddKeyedSingleton</span>&lt;<span class="csharp-highlight-type">IPaymentService</span>, <span class="csharp-highlight-type">StripeService</span>&gt;(<span class="csharp-highlight-str">"stripe"</span>);
+builder.Services.<span class="csharp-highlight-fn">AddKeyedSingleton</span>&lt;<span class="csharp-highlight-type">IPaymentService</span>, <span class="csharp-highlight-type">RazorpayService</span>&gt;(<span class="csharp-highlight-str">"razorpay"</span>);
+
+<span class="csharp-highlight-kw">public class</span> <span class="csharp-highlight-type">BillingService</span>([<span class="csharp-highlight-type">FromKeyedServices</span>(<span class="csharp-highlight-str">"stripe"</span>)] <span class="csharp-highlight-type">IPaymentService</span> payment) {
+    <span class="csharp-highlight-comment">// Clean, declarative keyed service resolution</span>
+}</code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> Zero-reflection cloud microservices, sub-nanosecond lookups & enterprise testability.</div>
+            </div>
+
+            <!-- .NET 9 -->
+            <div class="dotnet-card" data-version="net-9" data-era="modern-future" data-keywords=".net 9 hybridcache datas server gc openapi feature switches sse server-sent events">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">📌 .NET 9</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">.NET 9 Modern</span>
+                        <span class="dotnet-year-badge">2024</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">HybridCache, Server GC DATAS & Built-In OpenAPI</div>
+                <ul class="dotnet-feature-list">
+                    <li><code>HybridCache</code> unifying L1 local in-process RAM with L2 distributed Redis cache and stampede locking</li>
+                    <li>Dynamic Adaptation Server GC (DATAS) adjusting heaps dynamically based on memory pressure in Kubernetes</li>
+                    <li>Built-in native OpenAPI 3.0 document generation replacing legacy Swashbuckle packages</li>
+                    <li>First-class Server-Sent Events (SSE) streaming for real-time generative AI token streaming</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// Multi-Tier HybridCache (L1 Memory + L2 Redis)</span>
+<span class="csharp-highlight-kw">public async</span> <span class="csharp-highlight-type">Task</span>&lt;<span class="csharp-highlight-type">PatientCase</span>&gt; <span class="csharp-highlight-fn">GetCaseAsync</span>(<span class="csharp-highlight-type">int</span> id, <span class="csharp-highlight-type">CancellationToken</span> ct) {
+    <span class="csharp-highlight-kw">return await</span> _cache.<span class="csharp-highlight-fn">GetOrCreateAsync</span>(
+        $<span class="csharp-highlight-str">"case-{id}"</span>,
+        <span class="csharp-highlight-kw">async</span> token =&gt; <span class="csharp-highlight-kw">await</span> _db.Cases.<span class="csharp-highlight-fn">FindAsync</span>([id], token),
+        tags: [<span class="csharp-highlight-str">"cases"</span>, $<span class="csharp-highlight-str">"facility-{facilityId}"</span>]
+    );
+}</code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> Elimination of cache stampedes across clusters & dynamic container memory auto-tuning.</div>
+            </div>
+
+            <!-- .NET 10 Preview & Roadmap -->
+            <div class="dotnet-card" data-version="net-10" data-era="modern-future" data-keywords=".net 10 preview aspire 9 ai tensor simd hardware post-jit pgo zero-alloc streaming">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">📌 .NET 10 Preview & Roadmap</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">Next-Gen Horizon</span>
+                        <span class="dotnet-year-badge">2025–2026</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">AI Tensor&lt;T&gt; Primitives & Post-JIT PGO Cold Separation</div>
+                <ul class="dotnet-feature-list">
+                    <li>Native n-dimensional <code>Tensor&lt;T&gt;</code> types optimized with AVX-512 and ARM SVE for in-process AI models</li>
+                    <li>Post-JIT PGO reordering native assembly instructions to keep hot loops strictly inside L1 CPU cache</li>
+                    <li>.NET Aspire 9 enterprise distributed cloud orchestration and native telemetry pipelines</li>
+                    <li>Zero-allocation high-density streaming pipelines for multi-modal AI reasoning agents</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// Native AI Tensor SIMD Cosine Similarity</span>
+<span class="csharp-highlight-kw">var</span> embeddingA = <span class="csharp-highlight-type">Tensor</span>.<span class="csharp-highlight-fn">Create</span>&lt;<span class="csharp-highlight-type">float</span>&gt;([1, 4], [0.1f, 0.4f, 0.8f, 0.9f]);
+<span class="csharp-highlight-kw">var</span> embeddingB = <span class="csharp-highlight-type">Tensor</span>.<span class="csharp-highlight-fn">Create</span>&lt;<span class="csharp-highlight-type">float</span>&gt;([4, 1], [0.5f, 0.2f, 0.1f, 0.7f]);
+<span class="csharp-highlight-type">float</span> similarity = <span class="csharp-highlight-type">Tensor</span>.<span class="csharp-highlight-fn">CosineSimilarity</span>(embeddingA, embeddingB);</code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> C++ speed in-process AI tensor operations without external Python process hops.</div>
+            </div>
+
+            <!-- CoreCLR & RyuJIT Runtime Internals -->
+            <div class="dotnet-card" data-version="net-arch-clr" data-era="core" data-keywords="coreclr ryujit methodtable vtable tiered compilation osr on-stack replacement jit internals">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">⚙️ CoreCLR & RyuJIT Internals</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">Execution Engine</span>
+                        <span class="dotnet-year-badge">Architecture</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">MSIL Compilation, Method Tables & On-Stack Replacement</div>
+                <ul class="dotnet-feature-list">
+                    <li>16-byte 64-bit object header: 8-byte sync block index and 8-byte MethodTable pointer</li>
+                    <li>Virtual method resolution via vtable pointers with Dynamic PGO fast-path de-virtualization</li>
+                    <li>On-Stack Replacement (OSR) dynamically patching stack frames to swap Tier 0 loops to Tier 1 mid-execution</li>
+                    <li>RyuJIT instruction vectorization converting standard loops into SIMD hardware instructions</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// On-Stack Replacement (OSR) Hot Loop Optimization</span>
+<span class="csharp-highlight-kw">public void</span> <span class="csharp-highlight-fn">ProcessBatch</span>() {
+    <span class="csharp-highlight-comment">// JIT starts in Tier 0; after 1000 iterations, OSR replaces</span>
+    <span class="csharp-highlight-comment">// the active stack frame with Tier 1 vectorized assembly!</span>
+    <span class="csharp-highlight-kw">for</span> (<span class="csharp-highlight-type">int</span> i = 0; i &lt; 1_000_000; i++) { <span class="csharp-highlight-fn">Compute</span>(i); }
+}</code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> Deep insight into low-level CPU instruction caches, memory alignment & stack frames.</div>
+            </div>
+
+            <!-- Garbage Collection (GC) Internals -->
+            <div class="dotnet-card" data-version="net-arch-gc" data-era="core" data-keywords="gc garbage collection gen 0 gen 1 gen 2 loh poh pinned object heap server gc workstation gc datas">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">🧹 Garbage Collection (GC) Internals</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">Memory Engine</span>
+                        <span class="dotnet-year-badge">Architecture</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">Generations 0/1/2, LOH, POH & Compaction</div>
+                <ul class="dotnet-feature-list">
+                    <li>Generational Hypothesis: Gen 0 sub-millisecond collections, Gen 1 buffers, Gen 2 full sweeps</li>
+                    <li>Large Object Heap (LOH) for objects >= 85,000 bytes with sweep-based allocation</li>
+                    <li>Pinned Object Heap (POH) isolating fixed socket/unmanaged memory from standard GC compaction</li>
+                    <li>Server GC dedicating heaps and threads per CPU core vs Workstation GC minimizing UI latency</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// Pinned Object Heap (POH) Zero-Fragmentation Allocation</span>
+<span class="csharp-highlight-type">byte</span>[] pinnedBuffer = <span class="csharp-highlight-type">GC</span>.<span class="csharp-highlight-fn">AllocateArray</span>&lt;<span class="csharp-highlight-type">byte</span>&gt;(length: 4096, pinned: <span class="csharp-highlight-kw">true</span>);
+<span class="csharp-highlight-comment">// Passed safely to unmanaged OS sockets without pinning handles!</span></code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> Eliminating Gen 2 pauses and LOH heap fragmentation under extreme concurrency.</div>
+            </div>
+
+            <!-- High-Performance Memory & IO -->
+            <div class="dotnet-card" data-version="net-arch-perf" data-era="unified" data-keywords="span memory arraypool channels pipelines zero-allocation high throughput io">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">⚡ High-Performance Memory & I/O</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">Zero-Allocation</span>
+                        <span class="dotnet-year-badge">Architecture</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">ArrayPool&lt;T&gt;, Channels & System.IO.Pipelines</div>
+                <ul class="dotnet-feature-list">
+                    <li><code>ArrayPool&lt;T&gt;.Shared.Rent</code> reusing large buffers to cut Gen 0 GC allocations by 85%+</li>
+                    <li><code>System.Threading.Channels</code> providing lock-free producer-consumer queues with backpressure</li>
+                    <li><code>System.IO.Pipelines</code> managing socket memory buffers without intermediate byte copying</li>
+                    <li><code>ValueTask&lt;T&gt;</code> eliminating Task object allocations on synchronous completion paths</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// High-Speed Lock-Free Channels Producer-Consumer</span>
+<span class="csharp-highlight-kw">var</span> channel = <span class="csharp-highlight-type">Channel</span>.<span class="csharp-highlight-fn">CreateBounded</span>&lt;<span class="csharp-highlight-type">TradeOrder</span>&gt;(<span class="csharp-highlight-kw">new</span> <span class="csharp-highlight-type">BoundedChannelOptions</span>(5000) {
+    FullMode = <span class="csharp-highlight-type">BoundedChannelFullMode</span>.Wait
+});
+<span class="csharp-highlight-kw">await</span> channel.Writer.<span class="csharp-highlight-fn">WriteAsync</span>(<span class="csharp-highlight-kw">new</span> <span class="csharp-highlight-type">TradeOrder</span>(<span class="csharp-highlight-str">"MSFT"</span>, 420.50m));
+<span class="csharp-highlight-kw">await foreach</span> (<span class="csharp-highlight-kw">var</span> order <span class="csharp-highlight-kw">in</span> channel.Reader.<span class="csharp-highlight-fn">ReadAllAsync</span>()) { <span class="csharp-highlight-fn">Execute</span>(order); }</code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> Ultra-high throughput backpressure pipelines handling 100K+ ops/sec with stable RAM.</div>
+            </div>
+
+            <!-- Cloud-Native .NET Aspire & Microservices -->
+            <div class="dotnet-card" data-version="net-arch-aspire" data-era="modern-future" data-keywords="aspire cloud native microservices apphost opentelemetry polly resilience healthchecks">
+                <div class="dotnet-card-header">
+                    <div class="dotnet-version-tag">☁️ .NET Aspire & Cloud-Native</div>
+                    <div class="dotnet-badges-group">
+                        <span class="dotnet-runtime-badge">Distributed Stack</span>
+                        <span class="dotnet-year-badge">Architecture</span>
+                    </div>
+                </div>
+                <div class="dotnet-card-title">Distributed AppHost, Service Defaults & Telemetry</div>
+                <ul class="dotnet-feature-list">
+                    <li>.NET Aspire AppHost orchestrating multi-project microservices and containers (Redis, Postgres) in C#</li>
+                    <li>Standardized Service Defaults configuring OpenTelemetry traces, metrics, and health checks</li>
+                    <li>Polly resilience pipelines with standard exponential backoff, circuit breakers, and rate limiters</li>
+                    <li>Built-in W3C Distributed Tracing diagnosing requests end-to-end across cloud microservices</li>
+                </ul>
+                <div class="dotnet-code-box"><code><span class="csharp-highlight-comment">// .NET Aspire AppHost C# Cloud Orchestration</span>
+<span class="csharp-highlight-kw">var</span> builder = <span class="csharp-highlight-type">DistributedApplication</span>.<span class="csharp-highlight-fn">CreateBuilder</span>(args);
+<span class="csharp-highlight-kw">var</span> redis = builder.<span class="csharp-highlight-fn">AddRedis</span>(<span class="csharp-highlight-str">"cache"</span>);
+<span class="csharp-highlight-kw">var</span> api = builder.<span class="csharp-highlight-fn">AddProject</span>&lt;<span class="csharp-highlight-type">Projects</span>.<span class="csharp-highlight-type">Trading_Api</span>&gt;(<span class="csharp-highlight-str">"api"</span>).<span class="csharp-highlight-fn">WithReference</span>(redis);
+builder.<span class="csharp-highlight-fn">AddProject</span>&lt;<span class="csharp-highlight-type">Projects</span>.<span class="csharp-highlight-type">Trading_Web</span>&gt;(<span class="csharp-highlight-str">"web"</span>).<span class="csharp-highlight-fn">WithReference</span>(api);
+builder.<span class="csharp-highlight-fn">Build</span>().<span class="csharp-highlight-fn">Run</span>();</code></div>
+                <div class="dotnet-card-footer"><span>Architectural Value:</span> Declarative cloud topology, zero-config container linking & end-to-end observability.</div>
+            </div>
+
+        </div>
+    </div>
+    
     <img src="./assets/arrow.png" alt="Arrow icon" class="icon arrow" onclick="location.href='#experience'">
 </section>
 
@@ -1025,11 +1485,10 @@
             <ul class="nav-links">
                 <li><a href="#about">About</a></li>
                 <li><a href="csharp-guide.html">C# 1–15</a></li>
+                <li><a href="dotnet-guide.html">.NET</a></li>
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#contact">Contact</a></li>
-
-
             </ul>
         </div>
     </nav>
@@ -1042,6 +1501,7 @@
             ".NET Technical Lead",
             "Senior .NET Software Engineer",
             "C# 1–15 Specialist & Architect",
+            ".NET Core & Cloud Architect",
             "Full-Stack .NET & Python Developer",
             "Algorithmic Trading & FinTech Architect",
             "AI & RPA Automation Specialist",

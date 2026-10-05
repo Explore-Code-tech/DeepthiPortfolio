@@ -111,24 +111,29 @@
     text-align: justify;
    }
    
-   .csharp-cards-grid {
+   .csharp-cards-grid,
+   .dotnet-cards-grid {
     grid-template-columns: 1fr;
    }
 
-   .csharp-controls {
+   .csharp-controls,
+   .dotnet-controls {
     padding: 1.2rem 1rem;
    }
 
-   .csharp-card {
+   .csharp-card,
+   .dotnet-card {
     padding: 1.4rem;
    }
 
-   .csharp-filter-btn {
+   .csharp-filter-btn,
+   .dotnet-filter-btn {
     font-size: 0.78rem;
     padding: 0.4rem 0.85rem;
    }
 
-   .csharp-pill-btn {
+   .csharp-pill-btn,
+   .dotnet-pill-btn {
     font-size: 0.72rem;
     padding: 0.3rem 0.65rem;
    }
