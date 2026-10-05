@@ -604,129 +604,37 @@ function restoreSelfChecks() {
 
 // Normalizer for Evolutionary Version Topics
 function normalizeVersionTopic(t) {
-    if (t.id === 'net-110') {
-        const net11Code = t.syntax || "";
-        RAW_CODE_CACHE[sanitizeId(t.id)] = net11Code;
+    if (t.syntax) {
+        RAW_CODE_CACHE[sanitizeId(t.id)] = t.syntax;
+    }
+
+    const nbData = (typeof NOTEBOOK_VERSION_DATA !== 'undefined' && (NOTEBOOK_VERSION_DATA[t.version] || NOTEBOOK_VERSION_DATA[t.topic])) || null;
+
+    if (nbData) {
         return {
             id: t.id,
-            abbr: '.NET 11',
-            fullForm: 'C# 15 Native Union Types & .NET 11 Runtime Infrastructure',
-            category: '.NET Modern',
-            title: '.NET 11: C# 15 Union Types & Runtime Support (UnionAttribute, IUnion)',
-            mentalModel: "C# 15 introduces native Union Types as a first-class language feature to declare sum types, while .NET 11 provides the supporting runtime infrastructure via [UnionAttribute] and IUnion.",
-            visualFlow: [
-                "1. Traditional abstract class / records + inheritance",
-                "2. OneOf library-based solution",
-                "3. C# 15 native union keyword (public union Pet...)",
-                "4. Union case types (Cat, Dog, Bird)",
-                "5. Pattern matching",
-                "6. Exhaustive switch (no discard needed)",
-                "7. .NET 11 [UnionAttribute] + IUnion runtime support"
-            ],
-            keywords: [
-                "Union Types",
-                "C# 15 union keyword",
-                "Case Types",
-                "Exhaustive Switch",
-                "Pattern Matching",
-                ".NET 11 [UnionAttribute]",
-                "IUnion Contract",
-                "Sum Types"
-            ],
-            naturalExplanation: "C# 15 introduces native Union Types, so scenarios previously modeled using libraries such as OneOf or inheritance-based union-like patterns can now be expressed directly using the language's union support. The key distinction is that 'union' is the C# 15 language construct with case types and exhaustive pattern matching, while .NET 11 provides the runtime-level UnionAttribute and IUnion infrastructure. The compiler verifies exhaustive switch coverage across case types, eliminating the need for a fallback discard branch. OneOf remains valuable historically and in existing applications, but C# 15 gives us standard language-level union syntax.",
-            speakKeywordsChain: "C# 15 union → Case Types → Exhaustive Switch → .NET 11 [UnionAttribute] + IUnion",
-            speakKeywordsPrompt: "Try explaining C# 15 Union Types vs .NET 11 runtime support using only these keywords. Don't read the paragraph.",
-            why: "Because it cleanly models mutually exclusive domain outcomes (like Success vs Failure or Pet variants) without boilerplate class hierarchies, while enabling compile-time exhaustiveness checks and standard BCL runtime contracts.",
-            terminologyNote: "Official Terminology: Microsoft's C# 15 feature is officially designated 'Union Types'. The C# proposal specifically distinguishes these from traditional tagged/discriminated unions, although they can express that style of modeling. OneOf is still useful historically and in existing applications; C# 15 doesn't magically make every existing library unnecessary.",
-            thirtySecAnswer: "C# 15 introduces native Union Types via the 'union' keyword, enabling first-class sum types where a variable holds one of several declared case types. .NET 11 supplies the supporting runtime infrastructure with [UnionAttribute] and IUnion. The Roslyn compiler enforces exhaustive pattern matching across all case types at compile time without requiring a fallback discard branch.",
-            twoMinAnswer: {
-                what: "C# 15 native Union Types (e.g., 'public union Pet(Cat, Dog, Bird);') and .NET 11's [UnionAttribute] and IUnion runtime infrastructure.",
-                why: "Replaces verbose abstract class/record hierarchies and library-dependent OneOf structs with a first-class language construct that guarantees exhaustive switch matching at compile time.",
-                how: "The developer defines case types and declares a union. Roslyn lowers the union into a struct implementing IUnion and decorated with [UnionAttribute]. By default, the generated struct holds a single object? reference (value types boxed by default, while custom unions can use non-boxing strategies). Switch expressions over union cases are checked for exhaustiveness without requiring a discard branch.",
-                example: "Used in ASC WebQI domain workflows to model clinical submission outcomes: OrderResult(Success, ValidationFailed, ProviderRejected) without custom wrapper records.",
-                tradeoff: "Native Union Types standardize code and eliminate third-party dependencies, but the default compiler representation boxes value-type cases into an object? reference unless a custom union strategy is implemented."
-            },
-            interviewLevels: {
-                level1: [
-                    {
-                        q: "What is the distinction between C# 15's role and .NET 11's role in Union Types?",
-                        think: "Language syntax vs Runtime/BCL infrastructure contract",
-                        a: "C# 15 provides the language feature: the 'union' keyword, case types, pattern matching, and compiler-enforced exhaustive switch. .NET 11 supplies the supporting runtime infrastructure: the [UnionAttribute] and IUnion interface contract that standardizes how union types are represented in metadata."
-                    }
-                ],
-                level2: [
-                    {
-                        q: "How does C# 15 exhaustive pattern matching work with union case types compared to traditional switch expressions?",
-                        think: "Closed set of case types known at compile-time vs open hierarchy requiring discard branch",
-                        a: "With open class or record hierarchies, the compiler cannot guarantee that another assembly won't derive a new subclass, so a fallback discard ('_ => ...') is typically required. With C# 15 Union Types, the case types form a closed, compiler-known set. If your switch handles all declared case types (e.g., Cat, Dog, Bird), the switch is exhaustive without any discard branch. Adding a new case type later produces a compile error on unhandled switches."
-                    }
-                ],
-                level3: [
-                    {
-                        q: "How does the compiler-generated union represent memory in .NET 11, and does it eliminate boxing for value-type cases?",
-                        think: "Struct storing a single object? reference → boxing for value types vs custom storage",
-                        a: "According to Microsoft's documentation, the standard compiler-generated union is a struct that stores its contents as a single object? reference. Reference-type cases are stored directly without extra allocation, but value-type cases are boxed by default into that reference. Custom unions can specify alternative, non-boxing storage strategies if needed. Unlike manual record hierarchies which allocate on the managed heap as separate class instances, the union wrapper itself is a struct. And unlike library-based OneOf structs with multiple value fields, the compiler-generated union keeps a compact single-reference struct representation."
-                    }
-                ]
-            },
-            followUpChain: [
-                "1. Traditional abstract class / records + inheritance",
-                "2. OneOf library-based union-like solution",
-                "3. C# 15 native union keyword",
-                "4. Union case types",
-                "5. Pattern matching",
-                "6. Exhaustive switch checks",
-                "7. .NET 11 UnionAttribute + IUnion runtime support"
-            ],
-            tradeoffs: {
-                columns: ["Approach", "Syntax & Usability", "Memory & Boxing", "Exhaustive Switch Guarantee", "When to Use"],
-                rows: [
-                    [
-                        "Manual Record Hierarchy",
-                        "Verbose: requires abstract record + derived records with inheritance",
-                        "Heap allocation for every record instance",
-                        "Open hierarchy: requires fallback discard branch (_)",
-                        "Pre-C# 15 enterprise codebases"
-                    ],
-                    [
-                        "OneOf<T0, T1> Library",
-                        "Generic struct wrapper (OneOf<Success, Error>)",
-                        "Struct with multiple value fields + boxed object reference",
-                        "Library-level .Match() / .Switch(), not native C# switch",
-                        "Existing .NET apps / LTS versions"
-                    ],
-                    [
-                        "C# 15 Native Union Types",
-                        "Clean language keyword: 'public union Pet(Cat, Dog, Bird);'",
-                        "Struct storing single object? ref (boxed value types; custom unions can avoid)",
-                        "Native compiler-enforced exhaustiveness without fallback discard",
-                        ".NET 11 / C# 15 greenfield architecture & domain modeling"
-                    ]
-                ]
-            },
-            realProject: "In ASC WebQI and Srimantha-Algox, business workflows often return distinct outcomes such as OrderResult(Success, ValidationError, PaymentDeclined). Previously modeled using OneOf or abstract records, C# 15 native unions provide compile-time exhaustiveness guarantees across domain services without external packages.",
+            abbr: t.version.split(' ')[0] + ' ' + (t.version.split(' ')[1] || ''),
+            fullForm: t.topic,
+            category: t.era === 'framework' ? '.NET Framework' : t.era === 'core' ? '.NET Core' : '.NET Modern',
+            title: t.topic,
+            myUnderstanding: nbData.myUnderstanding,
+            whyNeedIt: nbData.whyNeedIt,
+            beforeAfter: nbData.beforeAfter,
+            keywords: nbData.keywords,
+            myArticulation: nbData.myArticulation,
+            oneLineMemory: nbData.oneLineMemory,
+            interviewQuestions: nbData.interviewQuestions,
+            realProject: nbData.realProject,
             tinyCode: {
-                code: net11Code,
-                explanation: "Declares case types (Cat, Dog, Bird), a C# 15 union Pet, and performs an exhaustive switch without a fallback discard branch."
-            },
-            goDeeper: {
-                internals: "Roslyn lowers the union into a struct decorated with System.Runtime.CompilerServices.UnionAttribute and implementing System.IUnion. In the standard implementation, the struct stores its value in a single object? field. Value-type cases are boxed by default. Custom unions can specify non-boxing storage strategies.",
-                debugging: "Inspect the emitted IL with ildasm or SharpLab (C# Next branch) to examine the [UnionAttribute], the generated struct layout, and compiler-generated pattern matching switches."
-            },
-            closeAndSpeak: {
-                keywords: ["C# 15 union", "Case Types", "Exhaustive Switch", "UnionAttribute", "IUnion"],
-                prompt: "Close the screen. Explain the difference between C# 15 language unions and .NET 11 runtime support using only these 5 keywords."
+                code: t.syntax || "// Standalone executable program",
+                explanation: "Standalone executable C# program demonstrating this milestone."
             }
         };
     }
 
+    // Fallback if not in notebook dictionary
     const rawConcepts = t.keyConcepts || [];
-    const cleanKeywords = rawConcepts.slice(0, 7).map(c => c.replace(/^\d+\.\s*/, ''));
-    const chain = cleanKeywords.slice(0, 5).join(' → ') || 'Runtime → IL → JIT → GC → Performance';
-
-    if (t.syntax) {
-        RAW_CODE_CACHE[sanitizeId(t.id)] = t.syntax;
-    }
+    const cleanKeywords = rawConcepts.slice(0, 6).map(c => c.replace(/^\d+\.\s*/, ''));
 
     return {
         id: t.id,
@@ -734,52 +642,36 @@ function normalizeVersionTopic(t) {
         fullForm: t.topic,
         category: t.era === 'framework' ? '.NET Framework' : t.era === 'core' ? '.NET Core' : '.NET Modern',
         title: t.topic,
-        mentalModel: t.runtimeEngine ? t.runtimeEngine.split('.')[0] + '.' : (t.articulation.split('.')[0] + '.'),
-        visualFlow: ["Source Code (C#)", "CSC / Roslyn Compiler", "IL Bytecode + Metadata", "CLR / CoreCLR Host", "JIT Compiler (RyuJIT)", "Native CPU Execution"],
-        keywords: cleanKeywords.length > 0 ? cleanKeywords : ["Managed Execution", "IL Bytecode", "JIT", "Garbage Collection", "Type Safety", "Performance"],
-        naturalExplanation: t.myArticulation || t.articulation,
-        speakKeywordsChain: chain,
-        speakKeywordsPrompt: `Try explaining ${t.version} using only these keywords. Don't read the paragraph.`,
-        why: (t.whatsNew && t.whatsNew.length > 0) ? t.whatsNew.join('; ') : t.articulation,
-        terminologyNote: `Milestone release in the .NET runtime evolution: ${t.version}.`,
-        thirtySecAnswer: t.articulation,
-        twoMinAnswer: {
-            what: t.topic,
-            why: (t.whatsNew && t.whatsNew[0]) || t.topic,
-            how: t.runtimeEngine || "Executed through CoreCLR and RyuJIT compilation pipeline.",
-            example: "Applied in enterprise medical records processing and high-throughput order routing in ASC WebQI.",
-            tradeoff: t.architectFollowUp ? t.architectFollowUp.answer : "Balance between development velocity and runtime performance."
+        myUnderstanding: t.myArticulation || t.articulation,
+        whyNeedIt: {
+            earlier: "Legacy or earlier architectural approach.",
+            problem: "Performance bottlenecks, tight platform coupling, or lack of modern APIs.",
+            newFeature: t.topic,
+            whatBecameEasier: (t.whatsNew && t.whatsNew[0]) || t.articulation
         },
-        interviewLevels: {
-            level1: [
-                { q: `What was the primary innovation of ${t.version}?`, think: "Runtime foundation → key features", a: (t.whatsNew && t.whatsNew[0]) || t.articulation }
-            ],
-            level2: [
-                { q: `How does the execution engine behave in ${t.version}?`, think: "Runtime mechanics → JIT & GC", a: t.runtimeEngine || t.articulation }
-            ],
-            level3: [
-                { q: t.architectFollowUp?.question || `What are the architectural trade-offs of ${t.version}?`, think: "Architect follow-up → bottlenecks and solutions", a: t.architectFollowUp?.answer || t.myArticulation }
-            ]
+        beforeAfter: {
+            before: "Earlier manual or platform-coupled approach.",
+            after: (t.whatsNew && t.whatsNew[0]) || t.articulation
         },
-        followUpChain: [
-            `What is ${t.version}?`,
-            "What was the runtime engine?",
-            "What was the biggest architectural bottleneck?",
-            "How does this milestone compare to modern .NET?"
+        keywords: cleanKeywords.length > 0 ? cleanKeywords : [t.version, "Runtime", "Architecture", "Performance"],
+        myArticulation: t.myArticulation || t.articulation,
+        oneLineMemory: `${t.version} = ${(t.whatsNew && t.whatsNew[0]) || t.articulation}`,
+        interviewQuestions: [
+            {
+                q: `What was the primary innovation of ${t.version}?`,
+                think: "Key features → architectural impact",
+                a: (t.whatsNew && t.whatsNew[0]) || t.articulation
+            },
+            {
+                q: `How does ${t.version} influence modern .NET development?`,
+                think: "Evolution → modern runtime capabilities",
+                a: t.runtimeEngine || t.articulation
+            }
         ],
-        tradeoffs: null,
-        realProject: "In ASC WebQI and Srimantha-Algox, we migrated legacy dependencies across .NET milestones to reduce server memory and leverage modern language features.",
+        realProject: "In ASC WebQI, migrated dependencies across .NET milestones to optimize server throughput and memory efficiency.",
         tinyCode: {
             code: t.syntax || "// Standalone executable program",
-            explanation: "One standalone executable program demonstrating this version's core capability."
-        },
-        goDeeper: {
-            internals: t.runtimeEngine || "Executed via the CLR execution engine and JIT compiler.",
-            debugging: "Monitor runtime performance with 'dotnet-counters monitor System.Runtime' and dotnet-dump."
-        },
-        closeAndSpeak: {
-            keywords: cleanKeywords.slice(0, 5),
-            prompt: `Now close the page and explain ${t.version} in your own words using only these 5 keywords.`
+            explanation: "Executable C# program demonstrating this version's core capability."
         }
     };
 }
@@ -792,46 +684,49 @@ function normalizeAbbreviationTopic(a) {
         RAW_CODE_CACHE[safeId] = rawCode;
     }
 
+    const whyNeed = {
+        earlier: a.twoMinAnswer?.what ? `Before ${a.abbr}, developers managed execution, memory, or communication with manual boilerplate.` : `Before ${a.abbr}, applications lacked automated runtime capabilities.`,
+        problem: a.why || "Manual memory errors, tight coupling, and lack of standardized runtime services.",
+        newFeature: `${a.abbr} (${a.fullForm})`,
+        whatBecameEasier: a.thirtySecAnswer ? a.thirtySecAnswer.split('.')[0] + '.' : "Automated memory safety, loose coupling, and standardized architecture."
+    };
+
+    const beforeAfter = {
+        before: a.twoMinAnswer?.tradeoff ? a.twoMinAnswer.tradeoff.split(',')[0] : "Manual / unmanaged / tightly coupled approach.",
+        after: a.thirtySecAnswer ? a.thirtySecAnswer.split('.')[0] + '.' : "Standardized, managed, and loosely coupled architecture."
+    };
+
+    const questions = [];
+    if (a.interviewLevels) {
+        if (a.interviewLevels.level1 && a.interviewLevels.level1[0]) questions.push(a.interviewLevels.level1[0]);
+        if (a.interviewLevels.level2 && a.interviewLevels.level2[0]) questions.push(a.interviewLevels.level2[0]);
+        if (a.interviewLevels.level3 && a.interviewLevels.level3[0]) questions.push(a.interviewLevels.level3[0]);
+    } else if (a.interviewQuestions) {
+        questions.push({ q: a.interviewQuestions[0] || `What is ${a.abbr}?`, think: "Core concept", a: a.oneLine || a.archRole });
+        if (a.interviewQuestions[1]) questions.push({ q: a.interviewQuestions[1], think: "Architecture & trade-offs", a: a.archRole });
+    }
+
     return {
         id: `abbr-${a.abbr}`,
         abbr: a.abbr,
         fullForm: a.fullForm,
         category: a.category,
         title: `${a.abbr} — ${a.fullForm}`,
-        mentalModel: a.mentalModel || a.oneLine,
-        visualFlow: a.visualFlow || [a.abbr, "Role Definition", "Runtime Execution", "Architecture Output"],
-        keywords: a.keywords || [a.abbr, a.fullForm, a.category, "Architecture", "Best Practice"],
-        naturalExplanation: a.naturalExplanation || a.archRole,
-        speakKeywordsChain: a.speakKeywordsChain || `${a.abbr} → Role → Architecture → Production`,
-        speakKeywordsPrompt: a.speakKeywordsPrompt || `Try explaining ${a.abbr} using only these keywords. Don't read the paragraph.`,
-        why: a.why,
-        terminologyNote: a.terminologyNote || null,
-        thirtySecAnswer: a.thirtySecAnswer || a.oneLine,
-        twoMinAnswer: a.twoMinAnswer || {
-            what: a.fullForm,
-            why: a.why,
-            how: a.archRole,
-            example: a.realProject || "Used in enterprise healthcare systems.",
-            tradeoff: "Balance between implementation complexity and operational performance."
-        },
-        interviewLevels: a.interviewLevels || {
-            level1: (a.interviewQuestions || []).slice(0, 2).map(q => ({ q, think: "Core concept", a: a.oneLine })),
-            level2: (a.interviewQuestions || []).slice(2, 4).map(q => ({ q, think: "Technical implementation", a: a.archRole })),
-            level3: a.architectScenario ? [ { q: a.architectScenario.question, think: "Senior architect trade-off", a: a.architectScenario.answer } ] : []
-        },
-        followUpChain: a.followUpChain || (a.interviewQuestions || []),
-        tradeoffs: a.tradeoffs || null,
-        realProject: a.realProject || "Applied in high-throughput enterprise architectures.",
-        tinyCode: a.tinyCode || (a.code ? { code: a.code, explanation: "Executable program demonstrating concept." } : null),
-        goDeeper: a.goDeeper || { internals: a.archRole, debugging: "Inspect with dotnet-dump and diagnostic counters." },
-        closeAndSpeak: a.closeAndSpeak || { keywords: (a.keywords || []).slice(0, 5), prompt: `Now explain ${a.abbr} in your own words using only these 5 keywords.` }
+        myUnderstanding: a.naturalExplanation || a.mentalModel || a.oneLine,
+        whyNeedIt: whyNeed,
+        beforeAfter: beforeAfter,
+        keywords: (a.keywords && a.keywords.length > 0) ? a.keywords.slice(0, 5) : [a.abbr, a.fullForm, a.category, "Architecture"],
+        myArticulation: a.naturalExplanation || a.thirtySecAnswer || a.archRole,
+        oneLineMemory: `${a.abbr} = ${a.thirtySecAnswer ? a.thirtySecAnswer.split('.')[0] : (a.fullForm + ' providing core runtime capabilities')}.`,
+        interviewQuestions: questions,
+        realProject: a.realProject || "Applied in high-throughput enterprise architectures in ASC WebQI.",
+        tinyCode: a.tinyCode || (a.code ? { code: a.code, explanation: "Executable program demonstrating concept." } : null)
     };
 }
 
-// Master Natural Learning Card Renderer (Strictly adhering to user structure)
+// Master Natural Learning Card Renderer (Personal Engineering Notebook Style)
 function renderNaturalLearningCardHtml(item) {
     const hasCode = item.tinyCode && item.tinyCode.code && item.tinyCode.code.trim().length > 0;
-    const hasTradeoffs = item.tradeoffs && item.tradeoffs.columns && item.tradeoffs.rows;
     const safeTopicId = sanitizeId(item.id);
 
     return `
@@ -857,40 +752,76 @@ function renderNaturalLearningCardHtml(item) {
             <!-- Title -->
             <h2 class="nl-topic-title">${escapeHtml(item.title)}</h2>
 
-            <!-- 1. 🧠 Mental Model (Max 1-2 sentences) -->
-            <div class="nl-section nl-mental-model-box">
+            <!-- 1. 🧠 My Understanding -->
+            <div class="nl-section nl-understanding-box">
                 <div class="nl-section-header">
                     <span class="nl-section-icon">🧠</span>
-                    <strong>1. Mental Model</strong>
-                    <span class="nl-sub-hint">(Core Essence in 1–2 Sentences)</span>
+                    <strong>1. My Understanding</strong>
+                    <span class="nl-sub-hint">(Explained Naturally to Another Developer)</span>
                 </div>
-                <p class="nl-mental-model-text">${escapeHtml(item.mentalModel)}</p>
+                <p class="nl-understanding-text">${escapeHtml(item.myUnderstanding)}</p>
             </div>
 
-            <!-- 2. 🔄 Visual Flow -->
-            ${item.visualFlow && item.visualFlow.length > 0 ? `
-                <div class="nl-section nl-flow-box">
+            <!-- 2. 🤔 Why Did We Need It? (Problem -> Evolution Chain) -->
+            ${item.whyNeedIt ? `
+                <div class="nl-section nl-why-need-box">
                     <div class="nl-section-header">
-                        <span class="nl-section-icon">🔄</span>
-                        <strong>2. Visual Flow</strong>
-                        <span class="nl-sub-hint">(Step-by-Step Architecture)</span>
+                        <span class="nl-section-icon">🤔</span>
+                        <strong>2. Why Did We Need It?</strong>
+                        <span class="nl-sub-hint">(Problem → Evolution Chain)</span>
                     </div>
-                    <div class="nl-flow-diagram">
-                        ${item.visualFlow.map((step, idx) => `
-                            <span class="nl-flow-step">${escapeHtml(step)}</span>
-                            ${idx < item.visualFlow.length - 1 ? '<span class="nl-flow-arrow">➔</span>' : ''}
-                        `).join('')}
+                    <div class="nl-evolution-flow">
+                        <div class="nl-flow-node nl-node-earlier">
+                            <span class="nl-node-label">Earlier</span>
+                            <span class="nl-node-desc">${escapeHtml(item.whyNeedIt.earlier)}</span>
+                        </div>
+                        <span class="nl-flow-arrow">↓</span>
+                        <div class="nl-flow-node nl-node-problem">
+                            <span class="nl-node-label">Problem</span>
+                            <span class="nl-node-desc">${escapeHtml(item.whyNeedIt.problem)}</span>
+                        </div>
+                        <span class="nl-flow-arrow">↓</span>
+                        <div class="nl-flow-node nl-node-feature">
+                            <span class="nl-node-label">New Solution</span>
+                            <span class="nl-node-desc">${escapeHtml(item.whyNeedIt.newFeature)}</span>
+                        </div>
+                        <span class="nl-flow-arrow">↓</span>
+                        <div class="nl-flow-node nl-node-easier">
+                            <span class="nl-node-label">What Became Easier</span>
+                            <span class="nl-node-desc">${escapeHtml(item.whyNeedIt.whatBecameEasier)}</span>
+                        </div>
                     </div>
                 </div>
             ` : ''}
 
-            <!-- 3. 🔑 Remember These Keywords (5-8 memory anchors) -->
+            <!-- 3. 🔄 Before → After -->
+            ${item.beforeAfter ? `
+                <div class="nl-section nl-before-after-box">
+                    <div class="nl-section-header">
+                        <span class="nl-section-icon">🔄</span>
+                        <strong>3. Before → After</strong>
+                    </div>
+                    <div class="nl-before-after-grid">
+                        <div class="nl-ba-card nl-ba-before">
+                            <span class="nl-ba-badge">Before</span>
+                            <p class="nl-ba-text">${escapeHtml(item.beforeAfter.before)}</p>
+                        </div>
+                        <div class="nl-ba-arrow">➔</div>
+                        <div class="nl-ba-card nl-ba-after">
+                            <span class="nl-ba-badge">After</span>
+                            <p class="nl-ba-text">${escapeHtml(item.beforeAfter.after)}</p>
+                        </div>
+                    </div>
+                </div>
+            ` : ''}
+
+            <!-- 4. 🔑 Keywords (Important words for interviews) -->
             ${item.keywords && item.keywords.length > 0 ? `
                 <div class="nl-section nl-keywords-box">
                     <div class="nl-section-header">
                         <span class="nl-section-icon">🔑</span>
-                        <strong>3. Remember These Keywords</strong>
-                        <span class="nl-sub-hint">(5–8 Memory Anchors — Don't Memorize Sentences)</span>
+                        <strong>4. Keywords</strong>
+                        <span class="nl-sub-hint">(Important Words for Interviews — Don't Memorize Sentences)</span>
                     </div>
                     <div class="nl-keywords-grid">
                         ${item.keywords.map(kw => `
@@ -900,134 +831,12 @@ function renderNaturalLearningCardHtml(item) {
                 </div>
             ` : ''}
 
-            <!-- 4. 🗣️ Natural Speaking Version (Conversational Tech Lead) -->
-            <div class="nl-section nl-natural-speaking-box">
-                <div class="nl-section-header">
-                    <span class="nl-section-icon">🗣️</span>
-                    <strong>4. Natural Speaking Version (Technical Lead Answer)</strong>
-                </div>
-                <div class="nl-speaking-bubble">
-                    <p class="nl-speaking-text">"${escapeHtml(item.naturalExplanation)}"</p>
-                </div>
-            </div>
-
-            <!-- 5. 🎤 Speak From Keywords -->
-            <div class="nl-section nl-speak-keywords-box">
-                <div class="nl-section-header">
-                    <span class="nl-section-icon">🎤</span>
-                    <strong>Can I explain this from these keywords?</strong>
-                </div>
-                <div class="nl-chain-strip">
-                    <code>${escapeHtml(item.speakKeywordsChain)}</code>
-                </div>
-                <p class="nl-speak-prompt">
-                    💡 <em>${escapeHtml(item.speakKeywordsPrompt)}</em>
-                </p>
-            </div>
-
-            <!-- 6. ❓ Why do I need to know this? -->
-            <div class="nl-section nl-why-box">
-                <div class="nl-section-header">
-                    <span class="nl-section-icon">❓</span>
-                    <strong>Why do I need to know this?</strong>
-                </div>
-                <p class="nl-why-text">${escapeHtml(item.why)}</p>
-                ${item.terminologyNote ? `
-                    <div class="nl-terminology-callout">
-                        <strong>🏷️ Technical Terminology Evolution:</strong> ${escapeHtml(item.terminologyNote)}
-                    </div>
-                ` : ''}
-            </div>
-
-            <!-- 7. Quick Answers: ⚡ 30-Second & 🎯 2-Minute -->
-            <div class="nl-quick-answers-grid">
-                <div class="nl-quick-answer-card">
-                    <div class="nl-quick-header">
-                        <span>⚡ 30-Second Interview Answer</span>
-                    </div>
-                    <p class="nl-quick-text">${escapeHtml(item.thirtySecAnswer)}</p>
-                </div>
-                ${item.twoMinAnswer ? `
-                    <div class="nl-quick-answer-card">
-                        <div class="nl-quick-header">
-                            <span>🎯 2-Minute Technical Explanation</span>
-                        </div>
-                        <div class="nl-twomin-breakdown">
-                            <div><strong>What:</strong> ${escapeHtml(item.twoMinAnswer.what)}</div>
-                            <div><strong>Why:</strong> ${escapeHtml(item.twoMinAnswer.why)}</div>
-                            <div><strong>How:</strong> ${escapeHtml(item.twoMinAnswer.how)}</div>
-                            <div><strong>Example:</strong> ${escapeHtml(item.twoMinAnswer.example)}</div>
-                            <div><strong>Trade-off:</strong> ${escapeHtml(item.twoMinAnswer.tradeoff)}</div>
-                        </div>
-                    </div>
-                ` : ''}
-            </div>
-
-            <!-- 8. 🎯 What Can The Interviewer Ask Next? (Level 1, 2, 3 with Think clues) -->
-            ${renderInterviewLevelsHtml(item.interviewLevels, safeTopicId)}
-
-            <!-- 9. 🌳 Follow-Up Chain (Visual Interview Tree) -->
-            ${item.followUpChain && item.followUpChain.length > 0 ? `
-                <div class="nl-section nl-followup-tree-box">
-                    <div class="nl-section-header">
-                        <span class="nl-section-icon">🌳</span>
-                        <strong>Follow-Up Chain (Visual Interview Tree)</strong>
-                    </div>
-                    <div class="nl-tree-steps">
-                        ${item.followUpChain.map((qText, idx) => `
-                            <div class="nl-tree-node">
-                                <span class="nl-tree-num">${idx + 1}</span>
-                                <span>${escapeHtml(qText)}</span>
-                            </div>
-                            ${idx < item.followUpChain.length - 1 ? '<span class="nl-tree-arrow">↓</span>' : ''}
-                        `).join('')}
-                    </div>
-                </div>
-            ` : ''}
-
-            <!-- 10. ⚖️ Architect Trade-offs -->
-            ${hasTradeoffs ? `
-                <div class="nl-section nl-tradeoffs-box">
-                    <div class="nl-section-header">
-                        <span class="nl-section-icon">⚖️</span>
-                        <strong>Architect Trade-offs: ${escapeHtml(item.tradeoffs.title)}</strong>
-                    </div>
-                    <table class="nl-tradeoff-table">
-                        <thead>
-                            <tr>
-                                ${item.tradeoffs.columns.map(c => `<th>${escapeHtml(c)}</th>`).join('')}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${item.tradeoffs.rows.map(row => `
-                                <tr>
-                                    ${row.map((cell, cIdx) => `
-                                        <td>${cIdx === 0 ? `<strong>${escapeHtml(cell)}</strong>` : escapeHtml(cell)}</td>
-                                    `).join('')}
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            ` : ''}
-
-            <!-- 11. 🏥 Real Enterprise Project Connection -->
-            ${item.realProject ? `
-                <div class="nl-section nl-realproject-box">
-                    <div class="nl-section-header">
-                        <span class="nl-section-icon">🏥</span>
-                        <strong>Real Enterprise Project Connection (Deepthi's Portfolio)</strong>
-                    </div>
-                    <p class="nl-realproject-text">${escapeHtml(item.realProject)}</p>
-                </div>
-            ` : ''}
-
-            <!-- 12. 💻 Code Supporting Concept (Tiny Sandbox Snippet) -->
+            <!-- 5. 💻 Small Code Example (where applicable) -->
             ${hasCode ? `
                 <div class="nl-section nl-code-box">
                     <div class="nl-section-header">
                         <span class="nl-section-icon">💻</span>
-                        <strong>Tiny Code Supporting Concept</strong>
+                        <strong>5. Small Code Example</strong>
                         <div style="margin-left: auto; display: flex; gap: 0.4rem;">
                             <button class="btn-copy-code" onclick="practiceTopicRawCode('${safeTopicId}')">⚡ Run in Sandbox</button>
                             <button class="btn-copy-code" onclick="copySnippetRaw('${safeTopicId}', this)">Copy</button>
@@ -1036,58 +845,60 @@ function renderNaturalLearningCardHtml(item) {
                     <pre class="syntax-block"><code id="code-${safeTopicId}">${highlightDotNetSyntax(item.tinyCode.code)}</code></pre>
                     ${item.tinyCode.explanation ? `
                         <div class="nl-code-flow">
-                            <strong>Execution Flow:</strong> ${escapeHtml(item.tinyCode.explanation)}
+                            <strong>What this shows:</strong> ${escapeHtml(item.tinyCode.explanation)}
                         </div>
                     ` : ''}
                 </div>
             ` : ''}
 
-            <!-- 13. ▶ Go Deeper (Progressive Disclosure / Accordions) -->
-            ${item.goDeeper ? `
-                <div class="nl-go-deeper-container">
-                    ${item.goDeeper.internals ? `
-                        <details class="nl-details-accordion">
-                            <summary class="nl-summary-toggle">▶ CLR / Architecture Internals</summary>
-                            <div class="nl-details-content">${escapeHtml(item.goDeeper.internals)}</div>
-                        </details>
-                    ` : ''}
-                    ${item.goDeeper.debugging ? `
-                        <details class="nl-details-accordion">
-                            <summary class="nl-summary-toggle">▶ Advanced Debugging (WinDbg / dotnet-dump / Trace)</summary>
-                            <div class="nl-details-content">${escapeHtml(item.goDeeper.debugging)}</div>
-                        </details>
-                    ` : ''}
+            <!-- 6. 🎤 My Interview Articulation -->
+            <div class="nl-section nl-natural-speaking-box">
+                <div class="nl-section-header">
+                    <span class="nl-section-icon">🎤</span>
+                    <strong>6. My Interview Articulation</strong>
+                    <span class="nl-sub-hint">(How I Explain This Naturally as a Tech Lead)</span>
+                </div>
+                <div class="nl-speaking-bubble">
+                    <p class="nl-speaking-text">"${escapeHtml(item.myArticulation)}"</p>
+                </div>
+            </div>
+
+            <!-- 7. 🔥 One-Line Memory -->
+            <div class="nl-section nl-oneline-memory-box">
+                <div class="nl-section-header">
+                    <span class="nl-section-icon">🔥</span>
+                    <strong>7. One-Line Memory</strong>
+                    <span class="nl-sub-hint">(Quick Revision Before Interview)</span>
+                </div>
+                <p class="nl-oneline-text">${escapeHtml(item.oneLineMemory)}</p>
+            </div>
+
+            <!-- 8. 🎯 Interviewer May Ask (Practical follow-ups) -->
+            ${renderInterviewerQuestionsHtml(item.interviewQuestions, safeTopicId)}
+
+            <!-- 9. 🏥 Real Project Connection -->
+            ${item.realProject ? `
+                <div class="nl-section nl-realproject-box">
+                    <div class="nl-section-header">
+                        <span class="nl-section-icon">🏥</span>
+                        <strong>Real Project Connection (ASC WebQI / Healthcare)</strong>
+                    </div>
+                    <p class="nl-realproject-text">${escapeHtml(item.realProject)}</p>
                 </div>
             ` : ''}
 
-            <!-- 14. 🧠 Close the page and explain -->
-            ${item.closeAndSpeak ? `
-                <div class="nl-close-and-speak-box">
-                    <div class="nl-close-header">
-                        <span class="nl-section-icon">🧠</span>
-                        <strong>Close the page and explain</strong>
-                    </div>
-                    <div class="nl-close-keywords-strip">
-                        ${escapeHtml(item.closeAndSpeak.keywords.join('   ➔   '))}
-                    </div>
-                    <p class="nl-close-prompt">
-                        ${escapeHtml(item.closeAndSpeak.prompt)}
-                    </p>
-                </div>
-            ` : ''}
-
-            <!-- 15. ✅ Self-Check Checklist -->
+            <!-- 10. ✅ Self-Check Checklist -->
             <div class="nl-self-check-box" data-topic-id="${safeTopicId}">
                 <div class="nl-self-check-header">
                     <strong>✅ Can I explain this? (Self-Check Checklist)</strong>
                     <span class="nl-check-counter" id="check-counter-${safeTopicId}">0 / 5</span>
                 </div>
                 <div class="nl-check-items">
-                    <label><input type="checkbox" onchange="toggleSelfCheck('${safeTopicId}', 0, this)"> I understand the concept</label>
-                    <label><input type="checkbox" onchange="toggleSelfCheck('${safeTopicId}', 1, this)"> I can explain it without reading</label>
-                    <label><input type="checkbox" onchange="toggleSelfCheck('${safeTopicId}', 2, this)"> I can give a real example</label>
-                    <label><input type="checkbox" onchange="toggleSelfCheck('${safeTopicId}', 3, this)"> I can answer a follow-up question</label>
-                    <label><input type="checkbox" onchange="toggleSelfCheck('${safeTopicId}', 4, this)"> I understand the trade-off</label>
+                    <label><input type="checkbox" onchange="toggleSelfCheck('${safeTopicId}', 0, this)"> I understand the concept naturally</label>
+                    <label><input type="checkbox" onchange="toggleSelfCheck('${safeTopicId}', 1, this)"> I can explain the Before → After difference</label>
+                    <label><input type="checkbox" onchange="toggleSelfCheck('${safeTopicId}', 2, this)"> I can speak using only the 4–6 keywords</label>
+                    <label><input type="checkbox" onchange="toggleSelfCheck('${safeTopicId}', 3, this)"> I can answer the interviewer follow-up questions</label>
+                    <label><input type="checkbox" onchange="toggleSelfCheck('${safeTopicId}', 4, this)"> I can state the One-Line Memory</label>
                 </div>
             </div>
 
@@ -1095,42 +906,17 @@ function renderNaturalLearningCardHtml(item) {
     `;
 }
 
-function renderInterviewLevelsHtml(levels, topicId) {
-    if (!levels) return '';
-
-    const hasL1 = levels.level1 && levels.level1.length > 0;
-    const hasL2 = levels.level2 && levels.level2.length > 0;
-    const hasL3 = levels.level3 && levels.level3.length > 0;
-
-    if (!hasL1 && !hasL2 && !hasL3) return '';
+function renderInterviewerQuestionsHtml(questions, topicId) {
+    if (!questions || questions.length === 0) return '';
 
     return `
         <div class="nl-section nl-questions-container">
             <div class="nl-section-header">
                 <span class="nl-section-icon">🎯</span>
-                <strong>What Can The Interviewer Ask Next? (Answer from Understanding)</strong>
+                <strong>Interviewer May Ask</strong>
+                <span class="nl-sub-hint">(Practical Follow-Up Questions)</span>
             </div>
-
-            ${hasL1 ? `
-                <div class="nl-level-block">
-                    <span class="nl-level-badge" style="color: #10b981;">🟢 Level 1 — Basic Questions</span>
-                    ${levels.level1.map((item, idx) => renderSingleQuestionHtml(item, `${topicId}-l1-${idx}`)).join('')}
-                </div>
-            ` : ''}
-
-            ${hasL2 ? `
-                <div class="nl-level-block">
-                    <span class="nl-level-badge" style="color: #f59e0b;">🟡 Level 2 — Technical Questions</span>
-                    ${levels.level2.map((item, idx) => renderSingleQuestionHtml(item, `${topicId}-l2-${idx}`)).join('')}
-                </div>
-            ` : ''}
-
-            ${hasL3 ? `
-                <div class="nl-level-block">
-                    <span class="nl-level-badge" style="color: #ef4444;">🔴 Level 3 — Architect / Scenario Questions</span>
-                    ${levels.level3.map((item, idx) => renderSingleQuestionHtml(item, `${topicId}-l3-${idx}`)).join('')}
-                </div>
-            ` : ''}
+            ${questions.map((item, idx) => renderSingleQuestionHtml(item, `${topicId}-q-${idx}`)).join('')}
         </div>
     `;
 }
@@ -1144,7 +930,7 @@ function renderSingleQuestionHtml(item, qId) {
             </div>
             ${item.think ? `
                 <div class="nl-think-badge">
-                    <span>🧠 Think:</span> <em>${escapeHtml(item.think)}</em>
+                    <span>💡 Think:</span> <em>${escapeHtml(item.think)}</em>
                 </div>
             ` : ''}
             <div class="nl-answer-box" id="ans-${qId}">
@@ -1183,13 +969,16 @@ function renderRhsTopics(vKey, searchQuery = '') {
     if (q) {
         items = items.filter(it => {
             const kwStr = (it.keywords || []).join(' ').toLowerCase();
-            const whyStr = (it.why || '').toLowerCase();
-            const mentalStr = (it.mentalModel || '').toLowerCase();
+            const understandingStr = (it.myUnderstanding || '').toLowerCase();
+            const articulationStr = (it.myArticulation || '').toLowerCase();
+            const oneLineStr = (it.oneLineMemory || '').toLowerCase();
+            const whyStr = it.whyNeedIt ? `${it.whyNeedIt.earlier} ${it.whyNeedIt.problem} ${it.whyNeedIt.newFeature} ${it.whyNeedIt.whatBecameEasier}`.toLowerCase() : '';
             return (
-                it.title.toLowerCase().includes(q) ||
-                it.abbr.toLowerCase().includes(q) ||
-                it.naturalExplanation.toLowerCase().includes(q) ||
-                mentalStr.includes(q) ||
+                (it.title || '').toLowerCase().includes(q) ||
+                (it.abbr || '').toLowerCase().includes(q) ||
+                understandingStr.includes(q) ||
+                articulationStr.includes(q) ||
+                oneLineStr.includes(q) ||
                 whyStr.includes(q) ||
                 kwStr.includes(q)
             );
@@ -1239,14 +1028,17 @@ function renderAbbreviationCards(searchQuery = '', category = 'All') {
     if (q) {
         items = items.filter(it => {
             const kwStr = (it.keywords || []).join(' ').toLowerCase();
-            const whyStr = (it.why || '').toLowerCase();
-            const mentalStr = (it.mentalModel || '').toLowerCase();
+            const understandingStr = (it.myUnderstanding || '').toLowerCase();
+            const articulationStr = (it.myArticulation || '').toLowerCase();
+            const oneLineStr = (it.oneLineMemory || '').toLowerCase();
+            const whyStr = it.whyNeedIt ? `${it.whyNeedIt.earlier} ${it.whyNeedIt.problem} ${it.whyNeedIt.newFeature} ${it.whyNeedIt.whatBecameEasier}`.toLowerCase() : '';
             return (
-                it.abbr.toLowerCase().includes(q) ||
-                it.fullForm.toLowerCase().includes(q) ||
-                it.title.toLowerCase().includes(q) ||
-                it.naturalExplanation.toLowerCase().includes(q) ||
-                mentalStr.includes(q) ||
+                (it.abbr || '').toLowerCase().includes(q) ||
+                (it.fullForm || '').toLowerCase().includes(q) ||
+                (it.title || '').toLowerCase().includes(q) ||
+                understandingStr.includes(q) ||
+                articulationStr.includes(q) ||
+                oneLineStr.includes(q) ||
                 whyStr.includes(q) ||
                 kwStr.includes(q)
             );
@@ -1290,8 +1082,19 @@ function renderCombinedView(searchQuery = '') {
 
     const q = searchQuery.toLowerCase().trim();
     if (q) {
-        vItems = vItems.filter(it => it.title.toLowerCase().includes(q) || it.keywords.some(k => k.toLowerCase().includes(q)));
-        aItems = aItems.filter(it => it.abbr.toLowerCase().includes(q) || it.fullForm.toLowerCase().includes(q) || it.keywords.some(k => k.toLowerCase().includes(q)));
+        vItems = vItems.filter(it => 
+            (it.title || '').toLowerCase().includes(q) || 
+            (it.myUnderstanding || '').toLowerCase().includes(q) ||
+            (it.oneLineMemory || '').toLowerCase().includes(q) ||
+            it.keywords.some(k => k.toLowerCase().includes(q))
+        );
+        aItems = aItems.filter(it => 
+            (it.abbr || '').toLowerCase().includes(q) || 
+            (it.fullForm || '').toLowerCase().includes(q) || 
+            (it.myUnderstanding || '').toLowerCase().includes(q) ||
+            (it.oneLineMemory || '').toLowerCase().includes(q) ||
+            it.keywords.some(k => k.toLowerCase().includes(q))
+        );
     }
 
     if (countEl) {

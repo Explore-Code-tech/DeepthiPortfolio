@@ -105,7 +105,7 @@
                 <div class="rhs-tools">
                     <div style="position: relative;">
                         <span style="position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: #A7727D; font-size: 0.85rem; pointer-events: none;">🔍</span>
-                        <input type="text" class="rhs-search-input" id="rhs-search" placeholder="Search mental models, keywords (CLR, JIT...), topics, questions..." oninput="onRhsSearch(this.value)">
+                        <input type="text" class="rhs-search-input" id="rhs-search" placeholder="Search topics, keywords (CLR, JIT, Minimal APIs...), interview questions..." oninput="onRhsSearch(this.value)">
                     </div>
                     <button class="btn-practice-toggle" id="btn-practice-mode" onclick="togglePracticeMode()" title="Toggle Speak Practice Mode: Hides paragraphs so you can test speaking from keywords!">
                         <span>🎤 Practice / Speak Mode</span>
@@ -225,6 +225,7 @@ class Program {
     <!-- Scripts -->
     <script src="dotnet-data.js"></script>
     <script src="dotnet-abbreviations.js"></script>
+    <script src="dotnet-notebook-data.js"></script>
     <script src="dotnet-guide.js"></script>
 </body>
 </html>
