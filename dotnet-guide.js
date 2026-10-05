@@ -216,6 +216,7 @@ class Program {
 document.addEventListener('DOMContentLoaded', () => {
     initLhsTree();
     renderActiveView();
+    updateGlobalMasteryCount();
 
     // Setup Back to top button
     const backToTopBtn = document.getElementById('btn-back-to-top');
@@ -511,53 +512,592 @@ function onSubtopicClick(vKey, topicId, event) {
     }, 100);
 }
 
-// 2. Render Chronological Evolution Topics
+// ==========================================================================
+// 2. NATURAL INTERVIEW LEARNING SYSTEM: NORMALIZATION & RENDERING
+// ==========================================================================
+
+let isPracticeModeActive = false;
+const RAW_CODE_CACHE = {};
+
+function togglePracticeMode() {
+    isPracticeModeActive = !isPracticeModeActive;
+    const container = document.getElementById('topics-cards-container');
+    const btn = document.getElementById('btn-practice-mode');
+    
+    if (container) {
+        if (isPracticeModeActive) {
+            container.classList.add('practice-mode-active');
+        } else {
+            container.classList.remove('practice-mode-active');
+        }
+    }
+    
+    if (btn) {
+        if (isPracticeModeActive) {
+            btn.classList.add('active');
+            btn.innerHTML = '<span>👁️ Exit Practice Mode (Show Text)</span>';
+        } else {
+            btn.classList.remove('active');
+            btn.innerHTML = '<span>🎤 Practice / Speak Mode</span>';
+        }
+    }
+}
+
+function toggleAnswerReveal(qId) {
+    const el = document.getElementById(`ans-${qId}`);
+    const btn = document.getElementById(`btn-rev-${qId}`);
+    if (el) {
+        el.classList.toggle('answer-revealed');
+        const isRevealed = el.classList.contains('answer-revealed');
+        if (btn) {
+            btn.innerText = isRevealed ? 'Hide Answer' : '👁️ Reveal Answer';
+        }
+    }
+}
+
+function toggleSelfCheck(topicId, idx, cb) {
+    const key = `selfcheck_${topicId}`;
+    let state = [false, false, false, false, false];
+    try {
+        state = JSON.parse(localStorage.getItem(key) || '[false,false,false,false,false]');
+    } catch (e) {}
+    state[idx] = cb.checked;
+    localStorage.setItem(key, JSON.stringify(state));
+    updateCardCheckCounter(topicId, state);
+    updateGlobalMasteryCount();
+}
+
+function updateCardCheckCounter(topicId, state) {
+    const countEl = document.getElementById(`check-counter-${topicId}`);
+    if (countEl) {
+        const checkedCount = state.filter(Boolean).length;
+        countEl.innerText = `${checkedCount} / 5`;
+        if (checkedCount === 5) {
+            countEl.style.background = 'rgba(16, 185, 129, 0.3)';
+            countEl.style.color = '#065f46';
+            countEl.innerHTML = '🏆 Mastered (5/5)';
+        } else {
+            countEl.style.background = 'rgba(16, 185, 129, 0.15)';
+            countEl.style.color = '#065f46';
+        }
+    }
+}
+
+function updateGlobalMasteryCount() {
+    let mastered = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('selfcheck_')) {
+            try {
+                const arr = JSON.parse(localStorage.getItem(k) || '[]');
+                if (arr.filter(Boolean).length === 5) mastered++;
+            } catch (e) {}
+        }
+    }
+    const masteredEl = document.getElementById('mastered-count');
+    if (masteredEl) masteredEl.innerText = mastered;
+}
+
+function restoreSelfChecks() {
+    document.querySelectorAll('.nl-self-check-box').forEach(box => {
+        const topicId = box.getAttribute('data-topic-id');
+        if (!topicId) return;
+        const key = `selfcheck_${topicId}`;
+        try {
+            const state = JSON.parse(localStorage.getItem(key) || '[false,false,false,false,false]');
+            const checkboxes = box.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach((cb, idx) => {
+                cb.checked = !!state[idx];
+            });
+            updateCardCheckCounter(topicId, state);
+        } catch (e) {}
+    });
+    updateGlobalMasteryCount();
+}
+
+// Normalizer for Evolutionary Version Topics
+function normalizeVersionTopic(t) {
+    const rawConcepts = t.keyConcepts || [];
+    const cleanKeywords = rawConcepts.slice(0, 7).map(c => c.replace(/^\d+\.\s*/, ''));
+    const chain = cleanKeywords.slice(0, 5).join(' → ') || 'Runtime → IL → JIT → GC → Performance';
+
+    if (t.syntax) {
+        RAW_CODE_CACHE[sanitizeId(t.id)] = t.syntax;
+    }
+
+    return {
+        id: t.id,
+        abbr: t.version.split(' ')[0] + ' ' + (t.version.split(' ')[1] || ''),
+        fullForm: t.topic,
+        category: t.era === 'framework' ? '.NET Framework' : t.era === 'core' ? '.NET Core' : '.NET Modern',
+        title: t.topic,
+        mentalModel: t.runtimeEngine ? t.runtimeEngine.split('.')[0] + '.' : (t.articulation.split('.')[0] + '.'),
+        visualFlow: ["Source Code (C#)", "CSC / Roslyn Compiler", "IL Bytecode + Metadata", "CLR / CoreCLR Host", "JIT Compiler (RyuJIT)", "Native CPU Execution"],
+        keywords: cleanKeywords.length > 0 ? cleanKeywords : ["Managed Execution", "IL Bytecode", "JIT", "Garbage Collection", "Type Safety", "Performance"],
+        naturalExplanation: t.myArticulation || t.articulation,
+        speakKeywordsChain: chain,
+        speakKeywordsPrompt: `Try explaining ${t.version} using only these keywords. Don't read the paragraph.`,
+        why: (t.whatsNew && t.whatsNew.length > 0) ? t.whatsNew.join('; ') : t.articulation,
+        terminologyNote: `Milestone release in the .NET runtime evolution: ${t.version}.`,
+        thirtySecAnswer: t.articulation,
+        twoMinAnswer: {
+            what: t.topic,
+            why: (t.whatsNew && t.whatsNew[0]) || t.topic,
+            how: t.runtimeEngine || "Executed through CoreCLR and RyuJIT compilation pipeline.",
+            example: "Applied in enterprise medical records processing and high-throughput order routing in ASC WebQI.",
+            tradeoff: t.architectFollowUp ? t.architectFollowUp.answer : "Balance between development velocity and runtime performance."
+        },
+        interviewLevels: {
+            level1: [
+                { q: `What was the primary innovation of ${t.version}?`, think: "Runtime foundation → key features", a: (t.whatsNew && t.whatsNew[0]) || t.articulation }
+            ],
+            level2: [
+                { q: `How does the execution engine behave in ${t.version}?`, think: "Runtime mechanics → JIT & GC", a: t.runtimeEngine || t.articulation }
+            ],
+            level3: [
+                { q: t.architectFollowUp?.question || `What are the architectural trade-offs of ${t.version}?`, think: "Architect follow-up → bottlenecks and solutions", a: t.architectFollowUp?.answer || t.myArticulation }
+            ]
+        },
+        followUpChain: [
+            `What is ${t.version}?`,
+            "What was the runtime engine?",
+            "What was the biggest architectural bottleneck?",
+            "How does this milestone compare to modern .NET?"
+        ],
+        tradeoffs: null,
+        realProject: "In ASC WebQI and Srimantha-Algox, we migrated legacy dependencies across .NET milestones to reduce server memory and leverage modern language features.",
+        tinyCode: {
+            code: t.syntax || "// Standalone executable program",
+            explanation: "One standalone executable program demonstrating this version's core capability."
+        },
+        goDeeper: {
+            internals: t.runtimeEngine || "Executed via the CLR execution engine and JIT compiler.",
+            debugging: "Monitor runtime performance with 'dotnet-counters monitor System.Runtime' and dotnet-dump."
+        },
+        closeAndSpeak: {
+            keywords: cleanKeywords.slice(0, 5),
+            prompt: `Now close the page and explain ${t.version} in your own words using only these 5 keywords.`
+        }
+    };
+}
+
+// Normalizer for Abbreviation Topics
+function normalizeAbbreviationTopic(a) {
+    const rawCode = (a.tinyCode && a.tinyCode.code) || a.code || "";
+    const safeId = sanitizeId(`abbr_${a.abbr.toLowerCase()}`);
+    if (rawCode) {
+        RAW_CODE_CACHE[safeId] = rawCode;
+    }
+
+    return {
+        id: `abbr-${a.abbr}`,
+        abbr: a.abbr,
+        fullForm: a.fullForm,
+        category: a.category,
+        title: `${a.abbr} — ${a.fullForm}`,
+        mentalModel: a.mentalModel || a.oneLine,
+        visualFlow: a.visualFlow || [a.abbr, "Role Definition", "Runtime Execution", "Architecture Output"],
+        keywords: a.keywords || [a.abbr, a.fullForm, a.category, "Architecture", "Best Practice"],
+        naturalExplanation: a.naturalExplanation || a.archRole,
+        speakKeywordsChain: a.speakKeywordsChain || `${a.abbr} → Role → Architecture → Production`,
+        speakKeywordsPrompt: a.speakKeywordsPrompt || `Try explaining ${a.abbr} using only these keywords. Don't read the paragraph.`,
+        why: a.why,
+        terminologyNote: a.terminologyNote || null,
+        thirtySecAnswer: a.thirtySecAnswer || a.oneLine,
+        twoMinAnswer: a.twoMinAnswer || {
+            what: a.fullForm,
+            why: a.why,
+            how: a.archRole,
+            example: a.realProject || "Used in enterprise healthcare systems.",
+            tradeoff: "Balance between implementation complexity and operational performance."
+        },
+        interviewLevels: a.interviewLevels || {
+            level1: (a.interviewQuestions || []).slice(0, 2).map(q => ({ q, think: "Core concept", a: a.oneLine })),
+            level2: (a.interviewQuestions || []).slice(2, 4).map(q => ({ q, think: "Technical implementation", a: a.archRole })),
+            level3: a.architectScenario ? [ { q: a.architectScenario.question, think: "Senior architect trade-off", a: a.architectScenario.answer } ] : []
+        },
+        followUpChain: a.followUpChain || (a.interviewQuestions || []),
+        tradeoffs: a.tradeoffs || null,
+        realProject: a.realProject || "Applied in high-throughput enterprise architectures.",
+        tinyCode: a.tinyCode || (a.code ? { code: a.code, explanation: "Executable program demonstrating concept." } : null),
+        goDeeper: a.goDeeper || { internals: a.archRole, debugging: "Inspect with dotnet-dump and diagnostic counters." },
+        closeAndSpeak: a.closeAndSpeak || { keywords: (a.keywords || []).slice(0, 5), prompt: `Now explain ${a.abbr} in your own words using only these 5 keywords.` }
+    };
+}
+
+// Master Natural Learning Card Renderer (Strictly adhering to user structure)
+function renderNaturalLearningCardHtml(item) {
+    const hasCode = item.tinyCode && item.tinyCode.code && item.tinyCode.code.trim().length > 0;
+    const hasTradeoffs = item.tradeoffs && item.tradeoffs.columns && item.tradeoffs.rows;
+    const safeTopicId = sanitizeId(item.id);
+
+    return `
+        <article class="natural-learning-card" id="${item.id}" data-topic-id="${safeTopicId}">
+            
+            <!-- Card Header -->
+            <div class="nl-card-header">
+                <div class="nl-header-meta">
+                    <span class="nl-badge-primary">${escapeHtml(item.abbr)}</span>
+                    <span class="nl-category-tag">${escapeHtml(item.category)}</span>
+                    ${item.fullForm ? `<span class="nl-fullform-text">— ${escapeHtml(item.fullForm)}</span>` : ''}
+                </div>
+                <div class="nl-header-actions">
+                    ${hasCode ? `
+                        <button class="btn-card-practice" onclick="practiceTopicRawCode('${safeTopicId}')" title="Practice snippet in Live Sandbox">
+                            <span>⚡ Sandbox</span>
+                        </button>
+                    ` : ''}
+                    <button class="btn-copy-code" onclick="copyNaturalCard('${safeTopicId}', this)" title="Copy summary">📋 Copy</button>
+                </div>
+            </div>
+
+            <!-- Title -->
+            <h2 class="nl-topic-title">${escapeHtml(item.title)}</h2>
+
+            <!-- 1. 🧠 Mental Model (Max 1-2 sentences) -->
+            <div class="nl-section nl-mental-model-box">
+                <div class="nl-section-header">
+                    <span class="nl-section-icon">🧠</span>
+                    <strong>1. Mental Model</strong>
+                    <span class="nl-sub-hint">(Core Essence in 1–2 Sentences)</span>
+                </div>
+                <p class="nl-mental-model-text">${escapeHtml(item.mentalModel)}</p>
+            </div>
+
+            <!-- 2. 🔄 Visual Flow -->
+            ${item.visualFlow && item.visualFlow.length > 0 ? `
+                <div class="nl-section nl-flow-box">
+                    <div class="nl-section-header">
+                        <span class="nl-section-icon">🔄</span>
+                        <strong>2. Visual Flow</strong>
+                        <span class="nl-sub-hint">(Step-by-Step Architecture)</span>
+                    </div>
+                    <div class="nl-flow-diagram">
+                        ${item.visualFlow.map((step, idx) => `
+                            <span class="nl-flow-step">${escapeHtml(step)}</span>
+                            ${idx < item.visualFlow.length - 1 ? '<span class="nl-flow-arrow">➔</span>' : ''}
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
+
+            <!-- 3. 🔑 Remember These Keywords (5-8 memory anchors) -->
+            ${item.keywords && item.keywords.length > 0 ? `
+                <div class="nl-section nl-keywords-box">
+                    <div class="nl-section-header">
+                        <span class="nl-section-icon">🔑</span>
+                        <strong>3. Remember These Keywords</strong>
+                        <span class="nl-sub-hint">(5–8 Memory Anchors — Don't Memorize Sentences)</span>
+                    </div>
+                    <div class="nl-keywords-grid">
+                        ${item.keywords.map(kw => `
+                            <span class="nl-keyword-chip">📌 ${escapeHtml(kw)}</span>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
+
+            <!-- 4. 🗣️ Natural Speaking Version (Conversational Tech Lead) -->
+            <div class="nl-section nl-natural-speaking-box">
+                <div class="nl-section-header">
+                    <span class="nl-section-icon">🗣️</span>
+                    <strong>4. Natural Speaking Version (Technical Lead Answer)</strong>
+                </div>
+                <div class="nl-speaking-bubble">
+                    <p class="nl-speaking-text">"${escapeHtml(item.naturalExplanation)}"</p>
+                </div>
+            </div>
+
+            <!-- 5. 🎤 Speak From Keywords -->
+            <div class="nl-section nl-speak-keywords-box">
+                <div class="nl-section-header">
+                    <span class="nl-section-icon">🎤</span>
+                    <strong>Can I explain this from these keywords?</strong>
+                </div>
+                <div class="nl-chain-strip">
+                    <code>${escapeHtml(item.speakKeywordsChain)}</code>
+                </div>
+                <p class="nl-speak-prompt">
+                    💡 <em>${escapeHtml(item.speakKeywordsPrompt)}</em>
+                </p>
+            </div>
+
+            <!-- 6. ❓ Why do I need to know this? -->
+            <div class="nl-section nl-why-box">
+                <div class="nl-section-header">
+                    <span class="nl-section-icon">❓</span>
+                    <strong>Why do I need to know this?</strong>
+                </div>
+                <p class="nl-why-text">${escapeHtml(item.why)}</p>
+                ${item.terminologyNote ? `
+                    <div class="nl-terminology-callout">
+                        <strong>🏷️ Technical Terminology Evolution:</strong> ${escapeHtml(item.terminologyNote)}
+                    </div>
+                ` : ''}
+            </div>
+
+            <!-- 7. Quick Answers: ⚡ 30-Second & 🎯 2-Minute -->
+            <div class="nl-quick-answers-grid">
+                <div class="nl-quick-answer-card">
+                    <div class="nl-quick-header">
+                        <span>⚡ 30-Second Interview Answer</span>
+                    </div>
+                    <p class="nl-quick-text">${escapeHtml(item.thirtySecAnswer)}</p>
+                </div>
+                ${item.twoMinAnswer ? `
+                    <div class="nl-quick-answer-card">
+                        <div class="nl-quick-header">
+                            <span>🎯 2-Minute Technical Explanation</span>
+                        </div>
+                        <div class="nl-twomin-breakdown">
+                            <div><strong>What:</strong> ${escapeHtml(item.twoMinAnswer.what)}</div>
+                            <div><strong>Why:</strong> ${escapeHtml(item.twoMinAnswer.why)}</div>
+                            <div><strong>How:</strong> ${escapeHtml(item.twoMinAnswer.how)}</div>
+                            <div><strong>Example:</strong> ${escapeHtml(item.twoMinAnswer.example)}</div>
+                            <div><strong>Trade-off:</strong> ${escapeHtml(item.twoMinAnswer.tradeoff)}</div>
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+
+            <!-- 8. 🎯 What Can The Interviewer Ask Next? (Level 1, 2, 3 with Think clues) -->
+            ${renderInterviewLevelsHtml(item.interviewLevels, safeTopicId)}
+
+            <!-- 9. 🌳 Follow-Up Chain (Visual Interview Tree) -->
+            ${item.followUpChain && item.followUpChain.length > 0 ? `
+                <div class="nl-section nl-followup-tree-box">
+                    <div class="nl-section-header">
+                        <span class="nl-section-icon">🌳</span>
+                        <strong>Follow-Up Chain (Visual Interview Tree)</strong>
+                    </div>
+                    <div class="nl-tree-steps">
+                        ${item.followUpChain.map((qText, idx) => `
+                            <div class="nl-tree-node">
+                                <span class="nl-tree-num">${idx + 1}</span>
+                                <span>${escapeHtml(qText)}</span>
+                            </div>
+                            ${idx < item.followUpChain.length - 1 ? '<span class="nl-tree-arrow">↓</span>' : ''}
+                        `).join('')}
+                    </div>
+                </div>
+            ` : ''}
+
+            <!-- 10. ⚖️ Architect Trade-offs -->
+            ${hasTradeoffs ? `
+                <div class="nl-section nl-tradeoffs-box">
+                    <div class="nl-section-header">
+                        <span class="nl-section-icon">⚖️</span>
+                        <strong>Architect Trade-offs: ${escapeHtml(item.tradeoffs.title)}</strong>
+                    </div>
+                    <table class="nl-tradeoff-table">
+                        <thead>
+                            <tr>
+                                ${item.tradeoffs.columns.map(c => `<th>${escapeHtml(c)}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${item.tradeoffs.rows.map(row => `
+                                <tr>
+                                    ${row.map((cell, cIdx) => `
+                                        <td>${cIdx === 0 ? `<strong>${escapeHtml(cell)}</strong>` : escapeHtml(cell)}</td>
+                                    `).join('')}
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            ` : ''}
+
+            <!-- 11. 🏥 Real Enterprise Project Connection -->
+            ${item.realProject ? `
+                <div class="nl-section nl-realproject-box">
+                    <div class="nl-section-header">
+                        <span class="nl-section-icon">🏥</span>
+                        <strong>Real Enterprise Project Connection (Deepthi's Portfolio)</strong>
+                    </div>
+                    <p class="nl-realproject-text">${escapeHtml(item.realProject)}</p>
+                </div>
+            ` : ''}
+
+            <!-- 12. 💻 Code Supporting Concept (Tiny Sandbox Snippet) -->
+            ${hasCode ? `
+                <div class="nl-section nl-code-box">
+                    <div class="nl-section-header">
+                        <span class="nl-section-icon">💻</span>
+                        <strong>Tiny Code Supporting Concept</strong>
+                        <div style="margin-left: auto; display: flex; gap: 0.4rem;">
+                            <button class="btn-copy-code" onclick="practiceTopicRawCode('${safeTopicId}')">⚡ Run in Sandbox</button>
+                            <button class="btn-copy-code" onclick="copySnippetRaw('${safeTopicId}', this)">Copy</button>
+                        </div>
+                    </div>
+                    <pre class="syntax-block"><code id="code-${safeTopicId}">${highlightDotNetSyntax(item.tinyCode.code)}</code></pre>
+                    ${item.tinyCode.explanation ? `
+                        <div class="nl-code-flow">
+                            <strong>Execution Flow:</strong> ${escapeHtml(item.tinyCode.explanation)}
+                        </div>
+                    ` : ''}
+                </div>
+            ` : ''}
+
+            <!-- 13. ▶ Go Deeper (Progressive Disclosure / Accordions) -->
+            ${item.goDeeper ? `
+                <div class="nl-go-deeper-container">
+                    ${item.goDeeper.internals ? `
+                        <details class="nl-details-accordion">
+                            <summary class="nl-summary-toggle">▶ CLR / Architecture Internals</summary>
+                            <div class="nl-details-content">${escapeHtml(item.goDeeper.internals)}</div>
+                        </details>
+                    ` : ''}
+                    ${item.goDeeper.debugging ? `
+                        <details class="nl-details-accordion">
+                            <summary class="nl-summary-toggle">▶ Advanced Debugging (WinDbg / dotnet-dump / Trace)</summary>
+                            <div class="nl-details-content">${escapeHtml(item.goDeeper.debugging)}</div>
+                        </details>
+                    ` : ''}
+                </div>
+            ` : ''}
+
+            <!-- 14. 🧠 Close the page and explain -->
+            ${item.closeAndSpeak ? `
+                <div class="nl-close-and-speak-box">
+                    <div class="nl-close-header">
+                        <span class="nl-section-icon">🧠</span>
+                        <strong>Close the page and explain</strong>
+                    </div>
+                    <div class="nl-close-keywords-strip">
+                        ${escapeHtml(item.closeAndSpeak.keywords.join('   ➔   '))}
+                    </div>
+                    <p class="nl-close-prompt">
+                        ${escapeHtml(item.closeAndSpeak.prompt)}
+                    </p>
+                </div>
+            ` : ''}
+
+            <!-- 15. ✅ Self-Check Checklist -->
+            <div class="nl-self-check-box" data-topic-id="${safeTopicId}">
+                <div class="nl-self-check-header">
+                    <strong>✅ Can I explain this? (Self-Check Checklist)</strong>
+                    <span class="nl-check-counter" id="check-counter-${safeTopicId}">0 / 5</span>
+                </div>
+                <div class="nl-check-items">
+                    <label><input type="checkbox" onchange="toggleSelfCheck('${safeTopicId}', 0, this)"> I understand the concept</label>
+                    <label><input type="checkbox" onchange="toggleSelfCheck('${safeTopicId}', 1, this)"> I can explain it without reading</label>
+                    <label><input type="checkbox" onchange="toggleSelfCheck('${safeTopicId}', 2, this)"> I can give a real example</label>
+                    <label><input type="checkbox" onchange="toggleSelfCheck('${safeTopicId}', 3, this)"> I can answer a follow-up question</label>
+                    <label><input type="checkbox" onchange="toggleSelfCheck('${safeTopicId}', 4, this)"> I understand the trade-off</label>
+                </div>
+            </div>
+
+        </article>
+    `;
+}
+
+function renderInterviewLevelsHtml(levels, topicId) {
+    if (!levels) return '';
+
+    const hasL1 = levels.level1 && levels.level1.length > 0;
+    const hasL2 = levels.level2 && levels.level2.length > 0;
+    const hasL3 = levels.level3 && levels.level3.length > 0;
+
+    if (!hasL1 && !hasL2 && !hasL3) return '';
+
+    return `
+        <div class="nl-section nl-questions-container">
+            <div class="nl-section-header">
+                <span class="nl-section-icon">🎯</span>
+                <strong>What Can The Interviewer Ask Next? (Answer from Understanding)</strong>
+            </div>
+
+            ${hasL1 ? `
+                <div class="nl-level-block">
+                    <span class="nl-level-badge" style="color: #10b981;">🟢 Level 1 — Basic Questions</span>
+                    ${levels.level1.map((item, idx) => renderSingleQuestionHtml(item, `${topicId}-l1-${idx}`)).join('')}
+                </div>
+            ` : ''}
+
+            ${hasL2 ? `
+                <div class="nl-level-block">
+                    <span class="nl-level-badge" style="color: #f59e0b;">🟡 Level 2 — Technical Questions</span>
+                    ${levels.level2.map((item, idx) => renderSingleQuestionHtml(item, `${topicId}-l2-${idx}`)).join('')}
+                </div>
+            ` : ''}
+
+            ${hasL3 ? `
+                <div class="nl-level-block">
+                    <span class="nl-level-badge" style="color: #ef4444;">🔴 Level 3 — Architect / Scenario Questions</span>
+                    ${levels.level3.map((item, idx) => renderSingleQuestionHtml(item, `${topicId}-l3-${idx}`)).join('')}
+                </div>
+            ` : ''}
+        </div>
+    `;
+}
+
+function renderSingleQuestionHtml(item, qId) {
+    return `
+        <div class="nl-question-item">
+            <div class="nl-q-row">
+                <p class="nl-question-title"><strong>Q:</strong> ${escapeHtml(item.q)}</p>
+                <button class="btn-reveal-answer" id="btn-rev-${qId}" onclick="toggleAnswerReveal('${qId}')">👁️ Reveal Answer</button>
+            </div>
+            ${item.think ? `
+                <div class="nl-think-badge">
+                    <span>🧠 Think:</span> <em>${escapeHtml(item.think)}</em>
+                </div>
+            ` : ''}
+            <div class="nl-answer-box" id="ans-${qId}">
+                <strong>Your answer:</strong> ${escapeHtml(item.a)}
+            </div>
+        </div>
+    `;
+}
+
+// 3. Render Chronological Evolution Topics
 function renderRhsTopics(vKey, searchQuery = '') {
     const container = document.getElementById('topics-cards-container');
     const titleEl = document.getElementById('rhs-active-title');
     const countEl = document.getElementById('rhs-count-label');
     if (!container) return;
 
-    let topicsToRender = [];
+    let rawTopics = [];
 
     if (vKey === 'all') {
         DOTNET_VERSION_ORDER.forEach(k => {
             if (DOTNET_DATA[k] && DOTNET_DATA[k].topics) {
-                topicsToRender.push(...DOTNET_DATA[k].topics);
+                rawTopics.push(...DOTNET_DATA[k].topics);
             }
         });
         if (titleEl) titleEl.innerHTML = `🌐 Chronological .NET Evolution (1.0 ↓ 11) & Runtime Architecture`;
     } else if (DOTNET_DATA[vKey]) {
-        topicsToRender = DOTNET_DATA[vKey].topics || [];
+        rawTopics = DOTNET_DATA[vKey].topics || [];
         const meta = DOTNET_DATA[vKey].meta || {};
         if (titleEl) titleEl.innerHTML = `${meta.icon || '📌'} ${vKey} <span style="font-size: 0.9rem; font-weight: 500; color: #6366f1; margin-left: 0.5rem;">${meta.title || ''}</span>`;
     }
 
+    let items = rawTopics.map(t => normalizeVersionTopic(t));
+
     // Search query filter
     const q = searchQuery.toLowerCase().trim();
     if (q) {
-        topicsToRender = topicsToRender.filter(t => {
-            const conceptsStr = t.keyConcepts ? t.keyConcepts.join(' ').toLowerCase() : '';
-            const whatsNewStr = t.whatsNew ? t.whatsNew.join(' ').toLowerCase() : '';
-            const followUpStr = t.architectFollowUp ? (t.architectFollowUp.question + ' ' + t.architectFollowUp.answer).toLowerCase() : '';
+        items = items.filter(it => {
+            const kwStr = (it.keywords || []).join(' ').toLowerCase();
+            const whyStr = (it.why || '').toLowerCase();
+            const mentalStr = (it.mentalModel || '').toLowerCase();
             return (
-                t.topic.toLowerCase().includes(q) ||
-                t.articulation.toLowerCase().includes(q) ||
-                (t.syntax && t.syntax.toLowerCase().includes(q)) ||
-                t.myArticulation.toLowerCase().includes(q) ||
-                t.version.toLowerCase().includes(q) ||
-                conceptsStr.includes(q) ||
-                whatsNewStr.includes(q) ||
-                followUpStr.includes(q)
+                it.title.toLowerCase().includes(q) ||
+                it.abbr.toLowerCase().includes(q) ||
+                it.naturalExplanation.toLowerCase().includes(q) ||
+                mentalStr.includes(q) ||
+                whyStr.includes(q) ||
+                kwStr.includes(q)
             );
         });
     }
 
     if (countEl) {
-        countEl.innerText = `Showing ${topicsToRender.length} Evolution Milestone${topicsToRender.length === 1 ? '' : 's'}`;
+        countEl.innerText = `Showing ${items.length} Evolution Milestone${items.length === 1 ? '' : 's'}`;
     }
 
-    if (topicsToRender.length === 0) {
+    if (items.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
                 <h3>🔍 No topics found</h3>
@@ -567,137 +1107,11 @@ function renderRhsTopics(vKey, searchQuery = '') {
         return;
     }
 
-    container.innerHTML = topicsToRender.map(t => renderSingleTopicHtml(t)).join('');
+    container.innerHTML = items.map(it => renderNaturalLearningCardHtml(it)).join('');
+    restoreSelfChecks();
 }
 
-function renderSingleTopicHtml(t) {
-    const hasSyntax = t.syntax && t.syntax.trim().length > 0;
-    const hasLead = t.myArticulation && t.myArticulation.trim().length > 0;
-    const hasConcepts = t.keyConcepts && t.keyConcepts.length > 0;
-    const hasWhatsNew = t.whatsNew && t.whatsNew.length > 0;
-    const hasFollowUp = t.architectFollowUp && t.architectFollowUp.question;
-
-    return `
-        <article class="topic-card evolutionary-version-card" id="topic-${t.id}">
-            
-            <!-- Card Header -->
-            <div class="topic-card-header">
-                <div class="topic-header-meta">
-                    <span class="topic-version-badge">${escapeHtml(t.version)}</span>
-                    <span class="topic-id-badge">#${t.id}</span>
-                </div>
-                <div style="display: flex; gap: 0.5rem; align-items: center;">
-                    ${hasSyntax ? `
-                        <button class="btn-card-practice" onclick="practiceTopicCode('${t.id}')" title="Open and run this snippet in Live Sandbox">
-                            <span>⚡ Practice in Sandbox</span>
-                        </button>
-                    ` : ''}
-                    <button class="btn-copy-code" onclick="copyTopicCard('${t.id}', this)" title="Copy Topic Summary & Code">📋 Copy</button>
-                </div>
-            </div>
-
-            <!-- Title -->
-            <h3 class="topic-title">${escapeHtml(t.topic)}</h3>
-
-            <!-- 1. What's New & Core Purpose -->
-            ${hasWhatsNew ? `
-                <div class="topic-section">
-                    <div class="section-badge whats-new-badge">
-                        <span>🚀 What's New & Core Purpose</span>
-                    </div>
-                    <ul class="whats-new-list">
-                        ${t.whatsNew.map(item => `<li>${escapeHtml(item)}</li>`).join('')}
-                    </ul>
-                </div>
-            ` : ''}
-
-            <!-- 2. Runtime Engine & Execution Model -->
-            ${t.runtimeEngine ? `
-                <div class="topic-section">
-                    <div class="section-badge runtime-engine-badge">
-                        <span>⚙️ Runtime Engine & Execution Model</span>
-                    </div>
-                    <p class="runtime-engine-text">${escapeHtml(t.runtimeEngine)}</p>
-                </div>
-            ` : ''}
-
-            <!-- 3. Key Concepts Checklist -->
-            ${hasConcepts ? `
-                <div class="topic-section">
-                    <div class="section-badge concepts-badge">
-                        <span>⭐ Essential Concept Checklist (Interview Mastery)</span>
-                    </div>
-                    <div class="key-concepts-grid">
-                        ${t.keyConcepts.map(c => `<span class="concept-item-pill">${escapeHtml(c)}</span>`).join('')}
-                    </div>
-                </div>
-            ` : ''}
-
-            <!-- 4. Architectural Standard -->
-            <div class="topic-section">
-                <div class="section-badge standard-badge">
-                    <span>📖 Architectural Standard Breakdown</span>
-                </div>
-                <p class="articulation-text">${escapeHtml(t.articulation)}</p>
-            </div>
-
-            <!-- 5. One Executable Program -->
-            ${hasSyntax ? `
-                <div class="syntax-wrapper">
-                    <div class="syntax-bar">
-                        <span class="syntax-lang-label">💻 RUNNABLE C# PROGRAM (ONE PROGRAM PER VERSION)</span>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <button class="btn-copy-code" onclick="practiceTopicCode('${t.id}')">⚡ Run in Sandbox</button>
-                            <button class="btn-copy-code" onclick="copySnippetOnly('${t.id}', this)">Copy Code</button>
-                        </div>
-                    </div>
-                    <pre class="syntax-block"><code>${highlightDotNetSyntax(t.syntax)}</code></pre>
-                </div>
-            ` : ''}
-
-            <!-- 6. Technical Lead Interview Articulation -->
-            ${hasLead ? `
-                <div class="topic-section lead-articulation-section ${isLeadExpanded ? 'expanded' : ''}" id="lead-section-${t.id}">
-                    <div class="lead-header-toggle" onclick="toggleSingleLead('${t.id}')">
-                        <div class="section-badge lead-badge">
-                            <span>🎯 How I Explain This in Interviews (Technical Lead Answer)</span>
-                        </div>
-                        <span class="lead-toggle-icon">${isLeadExpanded ? '▲' : '▼'}</span>
-                    </div>
-                    <div class="lead-content-box">
-                        <p class="lead-text">${escapeHtml(t.myArticulation)}</p>
-                    </div>
-                </div>
-            ` : ''}
-
-            <!-- 7. Architect-Level Follow-Up Questions -->
-            ${hasFollowUp ? `
-                <div class="topic-section architect-followup-box">
-                    <div class="followup-header">
-                        <span class="followup-badge">💡 Architect-Level Follow-Up</span>
-                        <strong class="followup-question">Q: ${escapeHtml(t.architectFollowUp.question)}</strong>
-                    </div>
-                    <div class="followup-answer">
-                        <p><strong>A: </strong>${escapeHtml(t.architectFollowUp.answer)}</p>
-                    </div>
-                </div>
-            ` : ''}
-
-            <!-- 8. Five-Pass Mastery Indicator -->
-            <div class="pass-mastery-footer">
-                <span class="pass-mastery-label">5-Pass Study Loop:</span>
-                <span class="pass-pill" title="Pass 1: Read and understand core mechanics">Pass 1: Understand</span>
-                <span class="pass-pill" title="Pass 2: Recall the numbered concepts without notes">Pass 2: Recall</span>
-                <span class="pass-pill" title="Pass 3: Run and modify the executable program">Pass 3: Code</span>
-                <span class="pass-pill" title="Pass 4: Articulate the Tech Lead response fluently">Pass 4: Explain</span>
-                <span class="pass-pill" title="Pass 5: Confidently answer the senior architect follow-up">Pass 5: Follow-Up</span>
-            </div>
-
-        </article>
-    `;
-}
-
-// 3. Render Abbreviation & Architect Interview Index
+// 4. Render Abbreviation & Architect Interview Index
 function renderAbbreviationCards(searchQuery = '', category = 'All') {
     const container = document.getElementById('topics-cards-container');
     const titleEl = document.getElementById('rhs-active-title');
@@ -708,29 +1122,30 @@ function renderAbbreviationCards(searchQuery = '', category = 'All') {
         titleEl.innerHTML = `🔤 .NET Abbreviation & Architect Interview Index <span style="font-size: 0.9rem; font-weight: 500; color: #6366f1; margin-left: 0.5rem;">(Category: ${category})</span>`;
     }
 
-    let items = DOTNET_ABBREVIATIONS;
+    let rawList = DOTNET_ABBREVIATIONS;
 
     // Filter by category
     if (category !== 'All') {
-        items = items.filter(a => a.category === category);
+        rawList = rawList.filter(a => a.category === category);
     }
+
+    let items = rawList.map(a => normalizeAbbreviationTopic(a));
 
     // Filter by search query
     const q = searchQuery.toLowerCase().trim();
     if (q) {
-        items = items.filter(a => {
-            const qStr = (a.interviewQuestions || []).join(' ').toLowerCase();
-            const scenarioStr = a.architectScenario ? (a.architectScenario.question + ' ' + a.architectScenario.answer).toLowerCase() : '';
+        items = items.filter(it => {
+            const kwStr = (it.keywords || []).join(' ').toLowerCase();
+            const whyStr = (it.why || '').toLowerCase();
+            const mentalStr = (it.mentalModel || '').toLowerCase();
             return (
-                a.abbr.toLowerCase().includes(q) ||
-                a.fullForm.toLowerCase().includes(q) ||
-                a.oneLine.toLowerCase().includes(q) ||
-                a.why.toLowerCase().includes(q) ||
-                a.archRole.toLowerCase().includes(q) ||
-                a.category.toLowerCase().includes(q) ||
-                qStr.includes(q) ||
-                scenarioStr.includes(q) ||
-                (a.realProject && a.realProject.toLowerCase().includes(q))
+                it.abbr.toLowerCase().includes(q) ||
+                it.fullForm.toLowerCase().includes(q) ||
+                it.title.toLowerCase().includes(q) ||
+                it.naturalExplanation.toLowerCase().includes(q) ||
+                mentalStr.includes(q) ||
+                whyStr.includes(q) ||
+                kwStr.includes(q)
             );
         });
     }
@@ -749,103 +1164,11 @@ function renderAbbreviationCards(searchQuery = '', category = 'All') {
         return;
     }
 
-    container.innerHTML = items.map(a => renderSingleAbbrHtml(a)).join('');
+    container.innerHTML = items.map(it => renderNaturalLearningCardHtml(it)).join('');
+    restoreSelfChecks();
 }
 
-function renderSingleAbbrHtml(a) {
-    const hasCode = a.code && a.code.trim().length > 0;
-    const hasScenario = a.architectScenario && a.architectScenario.question;
-    const hasQuestions = a.interviewQuestions && a.interviewQuestions.length > 0;
-
-    return `
-        <article class="abbreviation-card" id="abbr-${a.abbr}">
-            
-            <!-- Header Row -->
-            <div class="abbr-header-row">
-                <div class="abbr-title-left">
-                    <span class="abbr-badge-main">${escapeHtml(a.abbr)}</span>
-                    <span class="abbr-fullform-text">— ${escapeHtml(a.fullForm)}</span>
-                </div>
-                <div style="display: flex; gap: 0.5rem; align-items: center;">
-                    <span class="abbr-category-tag">${escapeHtml(a.category)}</span>
-                    ${hasCode ? `
-                        <button class="btn-card-practice" onclick="practiceAbbrCode('${a.abbr}')" title="Open snippet in Live Sandbox">
-                            <span>⚡ Practice</span>
-                        </button>
-                    ` : ''}
-                    <button class="btn-copy-code" onclick="copyAbbrCard('${a.abbr}', this)" title="Copy entire abbreviation deep-dive">📋 Copy</button>
-                </div>
-            </div>
-
-            <!-- 1. One-line Meaning -->
-            <div class="abbr-oneline-box">
-                <strong>One-Line Meaning:</strong> ${escapeHtml(a.oneLine)}
-            </div>
-
-            <!-- 2. Why it Exists & Architecture Role (Grid) -->
-            <div class="abbr-details-grid">
-                <div class="abbr-detail-item">
-                    <strong>💡 Why It Exists:</strong>
-                    <span>${escapeHtml(a.why)}</span>
-                </div>
-                <div class="abbr-detail-item">
-                    <strong>⚙️ Architectural Role:</strong>
-                    <span>${escapeHtml(a.archRole)}</span>
-                </div>
-            </div>
-
-            <!-- 3. Progressive Interview Questions (What interviewer may ask) -->
-            ${hasQuestions ? `
-                <div class="abbr-questions-section">
-                    <div class="abbr-questions-title">
-                        <span>❓ What Interviewer May Ask Next (Progressive Interview Chain):</span>
-                    </div>
-                    <ul class="abbr-questions-list">
-                        ${a.interviewQuestions.map(q => `<li>${escapeHtml(q)}</li>`).join('')}
-                    </ul>
-                </div>
-            ` : ''}
-
-            <!-- 4. Senior / Architect Scenario Question & Answer -->
-            ${hasScenario ? `
-                <div class="architect-followup-box">
-                    <div class="followup-header">
-                        <span class="followup-badge">🎯 Senior Technical Lead / Architect Scenario</span>
-                        <strong class="followup-question">Scenario: ${escapeHtml(a.architectScenario.question)}</strong>
-                    </div>
-                    <div class="followup-answer">
-                        <p><strong>Architectural Answer: </strong>${escapeHtml(a.architectScenario.answer)}</p>
-                    </div>
-                </div>
-            ` : ''}
-
-            <!-- 5. Real Enterprise Project Example -->
-            ${a.realProject ? `
-                <div class="real-project-box">
-                    <strong>🏥 Real Enterprise Project Context (Deepthi's Portfolio):</strong>
-                    <span>${escapeHtml(a.realProject)}</span>
-                </div>
-            ` : ''}
-
-            <!-- 6. Executable Code / Sandbox Snippet -->
-            ${hasCode ? `
-                <div class="syntax-wrapper">
-                    <div class="syntax-bar">
-                        <span class="syntax-lang-label">💻 EXECUTABLE PROGRAM: ${escapeHtml(a.abbr)} IN ACTION</span>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <button class="btn-copy-code" onclick="practiceAbbrCode('${a.abbr}')">⚡ Run in Sandbox</button>
-                            <button class="btn-copy-code" onclick="copyAbbrCodeOnly('${a.abbr}', this)">Copy Code</button>
-                        </div>
-                    </div>
-                    <pre class="syntax-block"><code>${highlightDotNetSyntax(a.code)}</code></pre>
-                </div>
-            ` : ''}
-
-        </article>
-    `;
-}
-
-// 4. Combined Master View (Both Versions & Abbreviations)
+// 5. Combined Master View (Both Versions & Abbreviations)
 function renderCombinedView(searchQuery = '') {
     const container = document.getElementById('topics-cards-container');
     const titleEl = document.getElementById('rhs-active-title');
@@ -859,28 +1182,62 @@ function renderCombinedView(searchQuery = '') {
         if (DOTNET_DATA[k] && DOTNET_DATA[k].topics) vTopics.push(...DOTNET_DATA[k].topics);
     });
 
-    let aItems = typeof DOTNET_ABBREVIATIONS !== 'undefined' ? DOTNET_ABBREVIATIONS : [];
+    let vItems = vTopics.map(t => normalizeVersionTopic(t));
+    let aItems = (typeof DOTNET_ABBREVIATIONS !== 'undefined' ? DOTNET_ABBREVIATIONS : []).map(a => normalizeAbbreviationTopic(a));
 
     const q = searchQuery.toLowerCase().trim();
     if (q) {
-        vTopics = vTopics.filter(t => t.topic.toLowerCase().includes(q) || t.articulation.toLowerCase().includes(q));
-        aItems = aItems.filter(a => a.abbr.toLowerCase().includes(q) || a.fullForm.toLowerCase().includes(q) || a.oneLine.toLowerCase().includes(q));
+        vItems = vItems.filter(it => it.title.toLowerCase().includes(q) || it.keywords.some(k => k.toLowerCase().includes(q)));
+        aItems = aItems.filter(it => it.abbr.toLowerCase().includes(q) || it.fullForm.toLowerCase().includes(q) || it.keywords.some(k => k.toLowerCase().includes(q)));
     }
 
     if (countEl) {
-        countEl.innerText = `Showing ${vTopics.length} Versions & ${aItems.length} Architectural Abbreviations`;
+        countEl.innerText = `Showing ${vItems.length} Versions & ${aItems.length} Architectural Abbreviations`;
     }
 
     container.innerHTML = `
-        <div style="margin-bottom: 2rem;">
-            <h3 style="font-size: 1.3rem; color: #2d1c24; margin-bottom: 1rem;">🗺️ Chronological Version Evolution (${vTopics.length})</h3>
-            ${vTopics.map(t => renderSingleTopicHtml(t)).join('')}
+        <div style="margin-bottom: 2.5rem;">
+            <h3 style="font-size: 1.35rem; color: #2d1c24; margin-bottom: 1.25rem;">🗺️ Chronological Version Evolution (${vItems.length})</h3>
+            ${vItems.map(it => renderNaturalLearningCardHtml(it)).join('')}
         </div>
         <div>
-            <h3 style="font-size: 1.3rem; color: #2d1c24; margin-bottom: 1rem;">🔤 Abbreviation & Architect Interview Index (${aItems.length})</h3>
-            ${aItems.map(a => renderSingleAbbrHtml(a)).join('')}
+            <h3 style="font-size: 1.35rem; color: #2d1c24; margin-bottom: 1.25rem;">🔤 Abbreviation & Architect Interview Index (${aItems.length})</h3>
+            ${aItems.map(it => renderNaturalLearningCardHtml(it)).join('')}
         </div>
     `;
+    restoreSelfChecks();
+}
+
+// Helpers for Code Running & Copying in Natural Cards
+function practiceTopicRawCode(topicId) {
+    const code = RAW_CODE_CACHE[topicId] || "";
+    if (code) {
+        loadSnippetIntoSandbox(code, `Practice Topic: ${topicId}`);
+    } else {
+        openSandbox();
+    }
+}
+
+function copySnippetRaw(topicId, btn) {
+    const code = RAW_CODE_CACHE[topicId] || "";
+    if (code) {
+        navigator.clipboard.writeText(code).then(() => {
+            const oldText = btn.innerText;
+            btn.innerText = "✓ Copied";
+            setTimeout(() => { btn.innerText = oldText; }, 1800);
+        });
+    }
+}
+
+function copyNaturalCard(topicId, btn) {
+    const card = document.querySelector(`article[data-topic-id="${topicId}"]`);
+    if (card) {
+        navigator.clipboard.writeText(card.innerText).then(() => {
+            const oldText = btn.innerText;
+            btn.innerText = "✓ Copied Card";
+            setTimeout(() => { btn.innerText = oldText; }, 1800);
+        });
+    }
 }
 
 // 5. Search and Filtering

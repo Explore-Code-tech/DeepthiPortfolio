@@ -97,15 +97,20 @@
             <div class="rhs-control-bar">
                 <div class="rhs-view-info">
                     <h2 class="rhs-active-version-title" id="rhs-active-title">🌐 Chronological .NET Evolution (1.0 ↓ 11) & Runtime Architecture</h2>
-                    <span class="rhs-count-label" id="rhs-count-label">Showing All Topics</span>
+                    <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                        <span class="rhs-count-label" id="rhs-count-label">Showing All Topics</span>
+                        <span class="nl-check-counter" id="global-mastery-badge" title="Tracked from your 5-point self-checks">🎯 Mastered: <span id="mastered-count">0</span> Topics</span>
+                    </div>
                 </div>
                 <div class="rhs-tools">
                     <div style="position: relative;">
                         <span style="position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: #A7727D; font-size: 0.85rem; pointer-events: none;">🔍</span>
-                        <input type="text" class="rhs-search-input" id="rhs-search" placeholder="Search abbreviations (CLR, JIT, JWT...), topics, questions..." oninput="onRhsSearch(this.value)">
+                        <input type="text" class="rhs-search-input" id="rhs-search" placeholder="Search mental models, keywords (CLR, JIT...), topics, questions..." oninput="onRhsSearch(this.value)">
                     </div>
-                    <button class="btn-toggle-all" onclick="openSandbox()">⚡ Practice in Sandbox</button>
-                    <button class="btn-toggle-all" id="btn-toggle-all" onclick="toggleAllLeadArticulations()">Collapse Lead Notes</button>
+                    <button class="btn-practice-toggle" id="btn-practice-mode" onclick="togglePracticeMode()" title="Toggle Speak Practice Mode: Hides paragraphs so you can test speaking from keywords!">
+                        <span>🎤 Practice / Speak Mode</span>
+                    </button>
+                    <button class="btn-toggle-all" onclick="openSandbox()">⚡ Live Sandbox</button>
                 </div>
             </div>
 
@@ -120,8 +125,8 @@
                 </div>
                 
                 <p class="roadmap-subtitle">
-                    A structured technical path through the runtime evolution of .NET. Each milestone follows a strict engineering breakdown: 
-                    <strong>Version → What's New → Runtime Engine → Important APIs → Architecture → One Executable Program → Tech Lead Interview Articulation → Live Sandbox Practice</strong>.
+                    Engineered for <strong>Natural Interview Learning — NOT Memorization</strong>. Reconstruct answers naturally from mental models and key flows:
+                    <strong>Mental Model → Flow → Keywords → Natural Explanation → Follow-up Questions → Real Example → Code/Sandbox</strong>.
                 </p>
 
                 <!-- Sequential Chain of Version Pills -->
@@ -163,31 +168,31 @@
                     <button class="roadmap-step-pill" data-version=".NET 11 & Horizon (2026+)" onclick="selectVersion('.NET 11 & Horizon (2026+)')">🔮 .NET 11</button>
                 </div>
 
-                <!-- 5-Pass Study Methodology Framework -->
+                <!-- Natural Learning Methodology Framework -->
                 <div class="mastery-pass-framework-card">
                     <div class="mastery-pass-title">
-                        <span>🎯 5-Pass Architecture Mastery Loop (Learn → Understand → Code → Explain → Repeat)</span>
+                        <span>🎯 Natural Interview Learning: Understand → Recall Mental Model → Speak Naturally → Handle Follow-Ups</span>
                     </div>
                     <div class="mastery-pass-grid">
                         <div class="mastery-pass-item">
-                            <strong>Pass 1: Understand</strong>
-                            <span>Deep dive into the runtime engine, JIT compilation, and internal execution model.</span>
+                            <strong>1. Mental Model & Flow</strong>
+                            <span>Understand the essence in 1–2 sentences and visualize the architectural pipeline.</span>
                         </div>
                         <div class="mastery-pass-item">
-                            <strong>Pass 2: Recall</strong>
-                            <span>Memorize & check off the numbered architectural concept checklist for each release.</span>
+                            <strong>2. Keywords Anchor</strong>
+                            <span>Lock in 5–8 memory anchor words. Never try to memorize word-for-word paragraphs.</span>
                         </div>
                         <div class="mastery-pass-item">
-                            <strong>Pass 3: Code</strong>
-                            <span>Practice the standalone executable program in the live in-browser sandbox runner.</span>
+                            <strong>3. Speak from Keywords</strong>
+                            <span>Practice explaining the concept aloud using only the keywords chain before reading.</span>
                         </div>
                         <div class="mastery-pass-item">
-                            <strong>Pass 4: Explain</strong>
-                            <span>Deliver the Technical Lead interview articulation fluently in plain professional English.</span>
+                            <strong>4. Handle Follow-Ups</strong>
+                            <span>Master the 3-level progressive interview progression: Basic 🟢 → Technical 🟡 → Architect Scenario 🔴.</span>
                         </div>
                         <div class="mastery-pass-item">
-                            <strong>Pass 5: Follow-Up</strong>
-                            <span>Master the senior architect trade-off questions and production edge-case scenarios.</span>
+                            <strong>5. Close & Self-Check</strong>
+                            <span>Close the page, speak from 5 keywords, and verify with the interactive 5-point checklist.</span>
                         </div>
                     </div>
                 </div>
