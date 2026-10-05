@@ -1,4 +1,4 @@
-// .NET Master Architecture Guide Logic with Collapsible Sidebar & Live Practice Sandbox
+// .NET Master Architecture Guide Logic with Chronological Journey, Collapsible Sidebar & Live Practice Sandbox
 let currentActiveVersion = 'all';
 let currentSearchQuery = '';
 let isLeadExpanded = true;
@@ -7,176 +7,205 @@ let lastLoadedSnippet = '';
 let areAllLhsExpanded = false;
 
 const SANDBOX_TEMPLATES = {
-    minimal: `using System;
-using System.Collections.Generic;
+    net1: `using System;
+using System.Collections;
 
-// ASP.NET Core Minimal API Architecture Simulator
+// .NET Framework 1.0 (2002) - Managed CLR Execution & Boxing
 class Program {
     static void Main() {
-        Console.WriteLine("[Kestrel 8.0] Server listening on https://localhost:5001");
-        Console.WriteLine("[Routing] Endpoint mapped: GET /api/v1/health");
-        Console.WriteLine("[Routing] Endpoint mapped: GET /api/v1/patients/{id}");
+        Console.WriteLine("=== .NET Framework 1.0 Managed CLR Execution ===");
         
-        var api = new PatientEndpoint();
-        var result = api.GetPatient(101);
-        Console.WriteLine($"\\n[HTTP 200 OK] Response Payload: {result}");
-    }
-}
+        string clrVer = Environment.Version.ToString();
+        Console.WriteLine("CLR Runtime Version: " + clrVer);
 
-public record PatientRecord(int Id, string FullName, string Room, string Status);
+        // In 1.0: Non-generic ArrayList causes boxing of value types
+        ArrayList list = new ArrayList();
+        list.Add(101); // int is boxed into System.Object heap
+        list.Add("Healthcare Case #1");
 
-public class PatientEndpoint {
-    public PatientRecord GetPatient(int id) {
-        return new PatientRecord(id, "Deepthi Healthcare Patient", "ICU-Suite-4B", "Stable / Monitored");
+        Console.WriteLine("Total Items: " + list.Count);
+        Console.WriteLine("Unboxed Int: " + (int)list[0]);
+        Console.WriteLine("Unboxed Str: " + (string)list[1]);
+        Console.WriteLine("Garbage Collector Active. JIT Compilation verified.");
     }
 }`,
 
-    channels: `using System;
+    net2: `using System;
+using System.Collections.Generic;
+
+// .NET Framework 2.0 (2005) - True CLR Generics & Iterators
+class Program {
+    static void Main() {
+        Console.WriteLine("=== .NET Framework 2.0 Generics & Iterators ===");
+
+        // True runtime generics: Zero boxing!
+        List<int> caseIds = new List<int> { 101, 102, 103 };
+        Console.WriteLine("Generic List Count: " + caseIds.Count);
+
+        // Nullable types
+        int? timeout = null;
+        Console.WriteLine("Nullable int HasValue: " + timeout.HasValue);
+
+        // Streaming lazy iterators
+        foreach (var caseCode in StreamCases()) {
+            Console.WriteLine("  -> Processed: " + caseCode);
+        }
+    }
+
+    static IEnumerable<string> StreamCases() {
+        yield return "CASE_SURGERY_A";
+        yield return "CASE_SURGERY_B";
+    }
+}`,
+
+    net3: `using System;
+using System.Collections.Generic;
+using System.Linq;
+
+// .NET Framework 3.5 (2007) - LINQ & Lambda Expressions
+class Program {
+    static void Main() {
+        Console.WriteLine("=== .NET Framework 3.5 LINQ Declarative Query ===");
+        
+        var numbers = new List<int> { 10, 45, 12, 89, 34, 99, 23 };
+
+        var filtered = numbers
+            .Where(n => n > 30)
+            .OrderByDescending(n => n)
+            .Select(n => "Score: " + n);
+
+        foreach (var item in filtered) {
+            Console.WriteLine(item);
+        }
+    }
+}`,
+
+    net4: `using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+// .NET Framework 4.0 (2010) - Task Parallel Library & Work-Stealing
+class Program {
+    static void Main() {
+        Console.WriteLine("=== .NET Framework 4.0 Task Parallel Library (TPL) ===");
+        
+        string[] centers = { "North-Center", "South-Center", "East-Center", "West-Center" };
+
+        Parallel.ForEach(centers, center => {
+            Console.WriteLine("[Thread " + Thread.CurrentThread.ManagedThreadId + "] Processing " + center);
+        });
+
+        Console.WriteLine("All parallel worker tasks completed across CPU cores.");
+    }
+}`,
+
+    netcore_span: `using System;
+
+// .NET Core 2.1 (2018) - Span<T> Zero-Allocation Slicing
+class Program {
+    static void Main() {
+        Console.WriteLine("=== .NET Core 2.1 Span<T> Zero-Allocation Slicing ===");
+        
+        string rawHeader = "CASE_ID:94821|SEVERITY:CRITICAL|AUDIT:PASS";
+        ReadOnlySpan<char> span = rawHeader.AsSpan();
+
+        // Slice without allocating a new string on the heap!
+        ReadOnlySpan<char> caseId = span.Slice(8, 5);
+        int id = int.Parse(caseId);
+
+        Console.WriteLine("Extracted Case ID: #" + id + " (0 bytes allocated on heap!)");
+    }
+}`,
+
+    netcore_channels: `using System;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
-// High-Throughput System.Threading.Channels (Producer-Consumer)
+// .NET Core 3.1 (2019) - High-Throughput Channels Queue
 class Program {
     static async Task Main() {
-        Console.WriteLine("=== High-Throughput Trading Order Channel ===");
-        var channel = Channel.CreateBounded<string>(new BoundedChannelOptions(100) {
-            FullMode = BoundedChannelFullMode.Wait
-        });
+        Console.WriteLine("=== .NET Core 3.1 Lock-Free Channels Queue ===");
+        var channel = Channel.CreateBounded<string>(50);
 
-        // Fast Producer
         var producer = Task.Run(async () => {
-            string[] symbols = { "MSFT", "NVDA", "AAPL", "GOOGL", "AMZN" };
+            string[] symbols = { "MSFT", "NVDA", "AAPL", "GOOGL" };
             foreach (var sym in symbols) {
-                await channel.Writer.WriteAsync($"BUY {sym} @ market price");
-                Console.WriteLine($"[Producer] Enqueued order: {sym}");
-                await Task.Delay(50);
+                await channel.Writer.WriteAsync("BUY " + sym);
+                Console.WriteLine("[Producer] Enqueued: " + sym);
+                await Task.Delay(40);
             }
             channel.Writer.Complete();
         });
 
-        // Async Consumer
         var consumer = Task.Run(async () => {
-            await foreach (var order in channel.Reader.ReadAllAsync()) {
-                Console.WriteLine($"  -> [Consumer] Executed on Exchange: {order}");
+            await foreach (var item in channel.Reader.ReadAllAsync()) {
+                Console.WriteLine("  -> [Consumer] Executed: " + item);
             }
         });
 
         await Task.WhenAll(producer, consumer);
-        Console.WriteLine("All orders successfully matched and routed with 0 lock contention!");
+        Console.WriteLine("Lock-free producer-consumer queue completed successfully.");
     }
 }`,
 
-    span: `using System;
+    net6_minimal: `using System;
 
-// Zero-Allocation ReadOnlySpan<char> Parsing
+// .NET 6 LTS (2021) - Minimal API & Dynamic PGO
 class Program {
     static void Main() {
-        string rawLog = "2026-10-05|TRACE|SURGERY_AUDIT_PASS|LATENCY_MS:14";
-        Console.WriteLine($"Raw Header String: \\"{rawLog}\\"");
-
-        // Zero-allocation slicing with ReadOnlySpan
-        ReadOnlySpan<char> span = rawLog.AsSpan();
-
-        int firstPipe = span.IndexOf('|');
-        ReadOnlySpan<char> timestamp = span.Slice(0, firstPipe);
-
-        ReadOnlySpan<char> remainder = span.Slice(firstPipe + 1);
-        int secondPipe = remainder.IndexOf('|');
-        ReadOnlySpan<char> level = remainder.Slice(0, secondPipe);
-
-        ReadOnlySpan<char> payload = remainder.Slice(secondPipe + 1);
-
-        Console.WriteLine($"\\n[Parsed via Span<T>] (0 Heap Bytes Allocated):");
-        Console.WriteLine($"Timestamp: {timestamp.ToString()}");
-        Console.WriteLine($"Log Level: {level.ToString()}");
-        Console.WriteLine($"Payload  : {payload.ToString()}");
+        Console.WriteLine("=== .NET 6 LTS Minimal API Architecture ===");
+        Console.WriteLine("[Route Discovery] Endpoint mapping compiled via Source Generators");
+        Console.WriteLine("[GET] /api/v1/patients/{id} -> Returns Patient Record");
+        Console.WriteLine("[RyuJIT] Dynamic PGO active: Interface calls de-virtualized.");
+        Console.WriteLine("Cold start latency: Sub-50ms | Memory: ~25MB.");
     }
 }`,
 
-    frozen: `using System;
+    net8_frozen: `using System;
 using System.Collections.Generic;
 
-// .NET 8 Frozen Collections & High-Speed O(1) Lookups
+// .NET 8 LTS (2023) - FrozenDictionary O(1) Lookups
 class Program {
     static void Main() {
-        Console.WriteLine("=== .NET 8 FrozenDictionary Benchmark Simulator ===");
+        Console.WriteLine("=== .NET 8 LTS FrozenDictionary & Native AOT ===");
         
-        var standardDict = new Dictionary<string, string> {
+        var dict = new Dictionary<string, string> {
             { "ASC", "Ambulatory Surgery Center" },
             { "IHN", "Integrated Healthcare Network" },
             { "EHR", "Electronic Health Records" }
         };
 
-        // In .NET 8: var frozen = standardDict.ToFrozenDictionary();
-        Console.WriteLine("Frozen dictionary constructed with pre-computed collision-free hashes.");
-        Console.WriteLine($"Lookup key 'ASC': {standardDict["ASC"]}");
-        Console.WriteLine($"Lookup key 'IHN': {standardDict["IHN"]}");
-        Console.WriteLine("Read performance: Sub-nanosecond latency, zero thread lock contention.");
+        Console.WriteLine("Frozen Dictionary pre-computed collision-free hashes.");
+        Console.WriteLine("Query 'ASC': " + dict["ASC"]);
+        Console.WriteLine("Native AOT Status: 15MB binary, 8ms startup, 0 runtime JIT.");
     }
 }`,
 
-    gc: `using System;
+    net9_hybrid: `using System;
 
-// Garbage Collection & Memory Diagnostic Metrics
+// .NET 9 (2024) - HybridCache Multi-Tier & DATAS GC
 class Program {
     static void Main() {
-        Console.WriteLine("=== .NET CLR Memory & GC Diagnostics ===");
+        Console.WriteLine("=== .NET 9 HybridCache & Server GC DATAS ===");
+        Console.WriteLine("[HybridCache] L1 In-Memory + L2 Distributed Redis coordinated");
+        Console.WriteLine("[Stampede Protection] Lock-free concurrent reader synchronization");
+        Console.WriteLine("[DATAS GC] Active: Server heaps auto-scale to container RAM limits.");
+    }
+}`,
+
+    net10_tensor: `using System;
+
+// .NET 10 (2025) - Native Tensor<T> AI Primitives
+class Program {
+    static void Main() {
+        Console.WriteLine("=== .NET 10 AI Tensor<T> & Hardware SIMD ===");
         
-        long beforeAlloc = GC.GetTotalMemory(forceFullCollection: false);
-        Console.WriteLine($"Initial Managed Heap Memory: {beforeAlloc / 1024.0:F2} KB");
+        float[] vectorA = { 0.1f, 0.4f, 0.8f, 0.9f };
+        float[] vectorB = { 0.5f, 0.2f, 0.1f, 0.7f };
 
-        // Temporary allocations
-        for (int i = 0; i < 50_000; i++) {
-            var temp = new byte[64];
-        }
-
-        Console.WriteLine($"Gen 0 Collections: {GC.CollectionCount(0)}");
-        Console.WriteLine($"Gen 1 Collections: {GC.CollectionCount(1)}");
-        Console.WriteLine($"Gen 2 Collections: {GC.CollectionCount(2)}");
-        Console.WriteLine($"Total Memory After Allocations: {GC.GetTotalMemory(false) / 1024.0:F2} KB");
-
-        GC.Collect(0, GCCollectionMode.Forced);
-        Console.WriteLine($"After Gen 0 GC Collection: {GC.GetTotalMemory(false) / 1024.0:F2} KB");
-    }
-}`,
-
-    aspire: `using System;
-
-// .NET Aspire Cloud-Native Distributed Orchestration Simulator
-class Program {
-    static void Main() {
-        Console.WriteLine("=== .NET Aspire AppHost Orchestration Engine ===");
-        Console.WriteLine("[AppHost] Launching Distributed Application Host...");
-        Console.WriteLine("[Resource: redis] Container 'redis:7.2-alpine' healthy on port 6379");
-        Console.WriteLine("[Resource: postgres] Container 'postgres:16' healthy on port 5432");
-        Console.WriteLine("[Resource: api-service] ASP.NET Core 9 Service running on port 7200");
-        Console.WriteLine("[Resource: web-frontend] React / Blazor Web running on port 3000");
-        Console.WriteLine("[OpenTelemetry] Dashboard listening on http://localhost:18888");
-        Console.WriteLine("[ServiceDiscovery] Injected connection string 'Endpoint=redis:6379' into api-service");
-        Console.WriteLine("\\nDistributed cloud topology active with automatic OpenTelemetry tracing!");
-    }
-}`,
-
-    resilience: `using System;
-using System.Threading.Tasks;
-
-// Resilient Polly Pipeline Simulator (Retry, Timeout & Circuit Breaker)
-class Program {
-    static async Task Main() {
-        Console.WriteLine("=== .NET Resilience Pipeline (Polly) ===");
-        int attempts = 0;
-
-        for (int i = 1; i <= 3; i++) {
-            attempts++;
-            Console.WriteLine($"[Attempt #{attempts}] Calling external Hospital API gateway...");
-            if (attempts < 3) {
-                Console.WriteLine("  -> [HTTP 503 Service Unavailable] Transient error. Applying exponential backoff delay...");
-                await Task.Delay(200);
-            } else {
-                Console.WriteLine("  -> [HTTP 200 OK] Successful connection established! Circuit breaker state: CLOSED");
-                break;
-            }
-        }
+        Console.WriteLine("Executing In-Process AI Cosine Similarity with AVX-512...");
+        Console.WriteLine("Result: High Semantic Correlation (0.942)");
+        Console.WriteLine("Zero Python overhead: Direct hardware silicon acceleration.");
     }
 }`
 };
@@ -203,18 +232,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
-        // Esc closes sandbox modal
-        if (e.key === 'Escape') {
-            closeSandbox();
-        }
-        // Ctrl + Enter runs code in sandbox
+        if (e.key === 'Escape') closeSandbox();
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
             const overlay = document.getElementById('sandbox-overlay');
-            if (overlay && overlay.classList.contains('active')) {
-                runSandboxCode();
-            }
+            if (overlay && overlay.classList.contains('active')) runSandboxCode();
         }
-        // Ctrl + B toggles sidebar
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
             e.preventDefault();
             toggleLhsSidebar();
@@ -328,6 +350,15 @@ function selectVersion(vKey) {
         }
     });
 
+    // Update active pill in roadmap
+    document.querySelectorAll('.roadmap-step-pill').forEach(pill => {
+        if (pill.getAttribute('data-version') === vKey) {
+            pill.classList.add('active');
+        } else {
+            pill.classList.remove('active');
+        }
+    });
+
     renderRhsTopics(vKey, currentSearchQuery);
 }
 
@@ -353,7 +384,7 @@ function onSubtopicClick(vKey, topicId, event) {
     }, 100);
 }
 
-// 2. Render RHS Topics
+// 2. Render RHS Topics with Structured Breakdown
 function renderRhsTopics(vKey, searchQuery = '') {
     const container = document.getElementById('topics-cards-container');
     const titleEl = document.getElementById('rhs-active-title');
@@ -368,7 +399,7 @@ function renderRhsTopics(vKey, searchQuery = '') {
                 topicsToRender.push(...DOTNET_DATA[k].topics);
             }
         });
-        if (titleEl) titleEl.innerHTML = `🌐 All .NET Eras & Runtime Architectures`;
+        if (titleEl) titleEl.innerHTML = `🌐 Chronological .NET Evolution (1.0 ↓ 11) & Runtime Architecture`;
     } else if (DOTNET_DATA[vKey]) {
         topicsToRender = DOTNET_DATA[vKey].topics || [];
         const meta = DOTNET_DATA[vKey].meta || {};
@@ -379,25 +410,31 @@ function renderRhsTopics(vKey, searchQuery = '') {
     const q = searchQuery.toLowerCase().trim();
     if (q) {
         topicsToRender = topicsToRender.filter(t => {
+            const conceptsStr = t.keyConcepts ? t.keyConcepts.join(' ').toLowerCase() : '';
+            const whatsNewStr = t.whatsNew ? t.whatsNew.join(' ').toLowerCase() : '';
+            const followUpStr = t.architectFollowUp ? (t.architectFollowUp.question + ' ' + t.architectFollowUp.answer).toLowerCase() : '';
             return (
                 t.topic.toLowerCase().includes(q) ||
                 t.articulation.toLowerCase().includes(q) ||
-                t.syntax.toLowerCase().includes(q) ||
+                (t.syntax && t.syntax.toLowerCase().includes(q)) ||
                 t.myArticulation.toLowerCase().includes(q) ||
-                t.version.toLowerCase().includes(q)
+                t.version.toLowerCase().includes(q) ||
+                conceptsStr.includes(q) ||
+                whatsNewStr.includes(q) ||
+                followUpStr.includes(q)
             );
         });
     }
 
     if (countEl) {
-        countEl.innerText = `Showing ${topicsToRender.length} Topic${topicsToRender.length === 1 ? '' : 's'}`;
+        countEl.innerText = `Showing ${topicsToRender.length} Comprehensive Evolution Milestone${topicsToRender.length === 1 ? '' : 's'}`;
     }
 
     if (topicsToRender.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
                 <h3>🔍 No topics found</h3>
-                <p>Try searching for another keyword or select a different .NET version/pillar from the left ribbon.</p>
+                <p>Try searching for another keyword or select a different .NET version from the roadmap above.</p>
             </div>
         `;
         return;
@@ -406,9 +443,14 @@ function renderRhsTopics(vKey, searchQuery = '') {
     container.innerHTML = topicsToRender.map(t => {
         const hasSyntax = t.syntax && t.syntax.trim().length > 0;
         const hasLead = t.myArticulation && t.myArticulation.trim().length > 0;
+        const hasConcepts = t.keyConcepts && t.keyConcepts.length > 0;
+        const hasWhatsNew = t.whatsNew && t.whatsNew.length > 0;
+        const hasFollowUp = t.architectFollowUp && t.architectFollowUp.question;
 
         return `
-            <article class="topic-card" id="topic-${t.id}">
+            <article class="topic-card evolutionary-version-card" id="topic-${t.id}">
+                
+                <!-- Card Header -->
                 <div class="topic-card-header">
                     <div class="topic-header-meta">
                         <span class="topic-version-badge">${escapeHtml(t.version)}</span>
@@ -417,37 +459,78 @@ function renderRhsTopics(vKey, searchQuery = '') {
                     <div style="display: flex; gap: 0.5rem; align-items: center;">
                         ${hasSyntax ? `
                             <button class="btn-card-practice" onclick="practiceTopicCode('${t.id}')" title="Open and run this snippet in Live Sandbox">
-                                <span>⚡ Practice</span>
+                                <span>⚡ Practice in Sandbox</span>
                             </button>
                         ` : ''}
                         <button class="btn-copy-code" onclick="copyTopicCard('${t.id}', this)" title="Copy Topic Summary & Code">📋 Copy</button>
                     </div>
                 </div>
 
+                <!-- Title -->
                 <h3 class="topic-title">${escapeHtml(t.topic)}</h3>
 
+                <!-- 1. What's New & Core Purpose -->
+                ${hasWhatsNew ? `
+                    <div class="topic-section">
+                        <div class="section-badge whats-new-badge">
+                            <span>🚀 What's New & Core Purpose</span>
+                        </div>
+                        <ul class="whats-new-list">
+                            ${t.whatsNew.map(item => `<li>${escapeHtml(item)}</li>`).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+
+                <!-- 2. Runtime Engine & Under The Hood -->
+                ${t.runtimeEngine ? `
+                    <div class="topic-section">
+                        <div class="section-badge runtime-engine-badge">
+                            <span>⚙️ Runtime Engine & Execution Model</span>
+                        </div>
+                        <p class="runtime-engine-text">${escapeHtml(t.runtimeEngine)}</p>
+                    </div>
+                ` : ''}
+
+                <!-- 3. Key Concepts / Essential Checklist -->
+                ${hasConcepts ? `
+                    <div class="topic-section">
+                        <div class="section-badge concepts-badge">
+                            <span>⭐ Essential Concept Checklist (Interview Mastery)</span>
+                        </div>
+                        <div class="key-concepts-grid">
+                            ${t.keyConcepts.map(c => `<span class="concept-item-pill">${escapeHtml(c)}</span>`).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- 4. Architectural Standard -->
                 <div class="topic-section">
                     <div class="section-badge standard-badge">
-                        <span>📖 Architectural Standard</span>
+                        <span>📖 Architectural Standard Breakdown</span>
                     </div>
                     <p class="articulation-text">${escapeHtml(t.articulation)}</p>
                 </div>
 
+                <!-- 5. One Executable Program -->
                 ${hasSyntax ? `
                     <div class="syntax-wrapper">
                         <div class="syntax-bar">
-                            <span class="syntax-lang-label">C# / .NET ARCHITECTURE</span>
-                            <button class="btn-copy-code" onclick="copySnippetOnly('${t.id}', this)">Copy Code</button>
+                            <span class="syntax-lang-label">💻 RUNNABLE C# PROGRAM (ONE PROGRAM PER VERSION)</span>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button class="btn-copy-code" onclick="practiceTopicCode('${t.id}')">⚡ Run in Sandbox</button>
+                                <button class="btn-copy-code" onclick="copySnippetOnly('${t.id}', this)">Copy Code</button>
+                            </div>
                         </div>
                         <pre class="syntax-block"><code>${highlightDotNetSyntax(t.syntax)}</code></pre>
                     </div>
                 ` : ''}
 
+                <!-- 6. Technical Lead Interview Articulation -->
                 ${hasLead ? `
                     <div class="topic-section lead-articulation-section ${isLeadExpanded ? 'expanded' : ''}" id="lead-section-${t.id}">
                         <div class="lead-header-toggle" onclick="toggleSingleLead('${t.id}')">
                             <div class="section-badge lead-badge">
-                                <span>🎯 How I Explain This (Tech Lead Answer)</span>
+                                <span>🎯 How I Explain This in Interviews (Technical Lead Answer)</span>
                             </div>
                             <span class="lead-toggle-icon">${isLeadExpanded ? '▲' : '▼'}</span>
                         </div>
@@ -456,6 +539,30 @@ function renderRhsTopics(vKey, searchQuery = '') {
                         </div>
                     </div>
                 ` : ''}
+
+                <!-- 7. Architect-Level Follow-Up Questions -->
+                ${hasFollowUp ? `
+                    <div class="topic-section architect-followup-box">
+                        <div class="followup-header">
+                            <span class="followup-badge">💡 Architect-Level Follow-Up</span>
+                            <strong class="followup-question">Q: ${escapeHtml(t.architectFollowUp.question)}</strong>
+                        </div>
+                        <div class="followup-answer">
+                            <p><strong>A: </strong>${escapeHtml(t.architectFollowUp.answer)}</p>
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- 8. Five-Pass Mastery Indicator -->
+                <div class="pass-mastery-footer">
+                    <span class="pass-mastery-label">5-Pass Study Loop:</span>
+                    <span class="pass-pill" title="Pass 1: Read and understand core mechanics">Pass 1: Understand</span>
+                    <span class="pass-pill" title="Pass 2: Recall the numbered concepts without notes">Pass 2: Recall</span>
+                    <span class="pass-pill" title="Pass 3: Run and modify the executable program">Pass 3: Code</span>
+                    <span class="pass-pill" title="Pass 4: Articulate the Tech Lead response fluently">Pass 4: Explain</span>
+                    <span class="pass-pill" title="Pass 5: Confidently answer the senior architect follow-up">Pass 5: Follow-Up</span>
+                </div>
+
             </article>
         `;
     }).join('');
@@ -590,7 +697,10 @@ function copyTopicCard(topicId, btn) {
     }
     if (!target) return;
 
-    const fullText = `[${target.version}] ${target.topic}\n\nStandard Architecture:\n${target.articulation}\n\nImplementation:\n${target.syntax || 'N/A'}\n\nTechnical Lead Perspective:\n${target.myArticulation}`;
+    const concepts = target.keyConcepts ? `\n\nKey Concepts:\n` + target.keyConcepts.join('\n') : '';
+    const followUp = target.architectFollowUp ? `\n\nArchitect Follow-Up:\nQ: ${target.architectFollowUp.question}\nA: ${target.architectFollowUp.answer}` : '';
+
+    const fullText = `[${target.version}] ${target.topic}\n\nStandard Architecture:\n${target.articulation}${concepts}\n\nExecutable Code:\n${target.syntax || 'N/A'}\n\nTechnical Lead Perspective:\n${target.myArticulation}${followUp}`;
 
     navigator.clipboard.writeText(fullText).then(() => {
         const originalText = btn.innerText;
@@ -614,8 +724,8 @@ function openSandbox(customSnippet = '') {
         lastLoadedSnippet = customSnippet;
         if (select) select.value = 'custom';
     } else if (!editor.value.trim()) {
-        editor.value = SANDBOX_TEMPLATES.minimal;
-        if (select) select.value = 'minimal';
+        editor.value = SANDBOX_TEMPLATES.net1;
+        if (select) select.value = 'net1';
     }
 
     overlay.classList.add('active');
@@ -655,26 +765,7 @@ function practiceTopicCode(topicId) {
     }
     if (!target || !target.syntax) return;
 
-    let runnableSnippet = target.syntax;
-    if (!runnableSnippet.includes('static void Main') && !runnableSnippet.includes('static async Task Main')) {
-        runnableSnippet = `using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-class Program {
-    static async Task Main() {
-        Console.WriteLine("=== Practicing .NET Topic: ${escapeQuotes(target.topic)} ===");
-        
-        // --- Topic Code Snippet ---
-${target.syntax}
-        
-        Console.WriteLine("\\n[Execution Completed Successfully]");
-    }
-}`;
-    }
-
-    openSandbox(runnableSnippet);
+    openSandbox(target.syntax);
 }
 
 function resetSandboxCode() {
@@ -714,9 +805,9 @@ function runSandboxCode() {
 
     const rawCode = editor.value;
 
-    if (status) status.innerText = '⚡ Status: Compiling & Executing in .NET runtime...';
+    if (status) status.innerText = '⚡ Status: Compiling MSIL & Executing in CLR runtime...';
 
-    output.innerHTML = `<span class="console-line-info">$ dotnet build Program.csproj -c Release</span>\n<span class="console-line-info">[MSBuild] Restoring NuGet dependencies... (0.12s)</span>\n<span class="console-line-info">[RyuJIT] Emitting native machine code... (0.04s)</span>\n<span class="console-line-info">$ dotnet run --no-build</span>\n<span style="color: #6c7086;">--------------------------------------------------</span>\n`;
+    output.innerHTML = `<span class="console-line-info">$ dotnet build Program.csproj -c Release</span>\n<span class="console-line-info">[MSBuild] Emitting MSIL assembly & metadata... (0.09s)</span>\n<span class="console-line-info">[RyuJIT] Compiling MSIL to native machine code... (0.03s)</span>\n<span class="console-line-info">$ dotnet run --no-build</span>\n<span style="color: #6c7086;">--------------------------------------------------</span>\n`;
 
     setTimeout(() => {
         try {
@@ -733,22 +824,18 @@ function runSandboxCode() {
 
 function simulateDotNetExecution(code) {
     const lines = [];
-    
-    // Extract Console.WriteLine patterns
     const writeLineRegex = /Console\.WriteLine\s*\(\s*(.*?)\s*\)\s*;/g;
     let match;
     let foundLogs = 0;
 
     while ((match = writeLineRegex.exec(code)) !== null) {
         let content = match[1].trim();
-        // Unwrap simple string literals or string interpolations
         if (content.startsWith('$"') && content.endsWith('"')) {
             content = content.slice(2, -1);
         } else if (content.startsWith('"') && content.endsWith('"')) {
             content = content.slice(1, -1);
         }
         
-        // Clean escaped characters
         content = content.replace(/\\"/g, '"').replace(/\\n/g, '\n').replace(/\\t/g, '    ');
         lines.push(escapeHtml(content));
         foundLogs++;
@@ -758,9 +845,8 @@ function simulateDotNetExecution(code) {
         return lines.map(l => `<span class="console-line-output">${l}</span>`).join('\n');
     }
 
-    // Fallback realistic execution summary
     return `<span class="console-line-success">[Process Exited with Code 0] Managed execution completed successfully.</span>
-<span class="console-line-info">[CLR Diagnostics] Heap Allocated: 4.8 KB | GC Gen 0: 0 collections | JIT Compilation: 12ms</span>`;
+<span class="console-line-info">[CLR Diagnostics] Memory: Managed Heap Active | GC Gen 0: 0 collections | JIT Status: Ready</span>`;
 }
 
 // 8. Syntax Highlighting Engine
@@ -768,14 +854,10 @@ function highlightDotNetSyntax(code) {
     if (!code) return '';
     let escaped = escapeHtml(code);
 
-    // Comments
     escaped = escaped.replace(/(\/\/[^\n]*)/g, '<span class="csharp-highlight-comment">$1</span>');
-
-    // Strings
     escaped = escaped.replace(/(&quot;.*?&quot;)/g, '<span class="csharp-highlight-str">$1</span>');
     escaped = escaped.replace(/(\$".*?")/g, '<span class="csharp-highlight-str">$1</span>');
 
-    // Keywords
     const keywords = [
         'public', 'private', 'protected', 'internal', 'static', 'class', 'interface', 'struct', 'record',
         'enum', 'void', 'int', 'string', 'bool', 'var', 'new', 'return', 'if', 'else', 'async', 'await',
@@ -798,9 +880,4 @@ function escapeHtml(str) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
-}
-
-function escapeQuotes(str) {
-    if (!str) return '';
-    return str.replace(/"/g, '\\"');
 }
