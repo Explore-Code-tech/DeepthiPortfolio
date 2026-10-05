@@ -208,25 +208,29 @@ class Program {
 
     unions: `using System;
 
-// C# 15 Discriminated Unions / Sum Types Preview
-public abstract record OperationResult<T> {
-    public record Success(T Data) : OperationResult<T>;
-    public record Failure(string Error, int Code) : OperationResult<T>;
-}
+// C# 15 Native Union Types with .NET 11 Runtime Infrastructure
+public record Cat(string Name);
+public record Dog(string Name);
+public record Bird(string Name);
+
+// C# 15 Native Union declaration (emits [UnionAttribute] and implements IUnion in .NET 11)
+public union Pet(Cat, Dog, Bird);
 
 class Program {
     static void Main() {
-        Console.WriteLine("C# 15 Discriminated Unions & Exhaustive Pattern Matching");
+        Console.WriteLine("=== C# 15 Union Types & .NET 11 Runtime Support ===");
 
-        OperationResult<string> result = new OperationResult<string>.Success("Enterprise Azure SQL Pipeline Connected");
+        Pet myPet = new Cat("Shadow");
 
-        string message = result switch {
-            OperationResult<string>.Success s => $"✅ Success: {s.Data}",
-            OperationResult<string>.Failure f => $"❌ Failed (Code {f.Code}): {f.Error}",
-            _ => "Unknown result state"
+        // Compiler enforces exhaustive switch across all case types; no discard '_' needed:
+        string message = myPet switch {
+            Cat c  => $"🐱 Meow! Cat name: {c.Name}",
+            Dog d  => $"🐶 Woof! Dog name: {d.Name}",
+            Bird b => $"🐦 Chirp! Bird name: {b.Name}"
         };
 
-        Console.WriteLine(message);
+        Console.WriteLine("Exhaustive Switch Result: " + message);
+        Console.WriteLine("Runtime Metadata: [UnionAttribute] struct Pet : IUnion");
     }
 }`
 };

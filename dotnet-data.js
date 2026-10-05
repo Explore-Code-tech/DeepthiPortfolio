@@ -1114,7 +1114,7 @@ class Program {
   ".NET 11 & Horizon (2026+)": {
     "version": ".NET 11 & Horizon (2026+)",
     "meta": {
-      "title": "First-Class Discriminated Unions & NPU Kernels (2026+)",
+      "title": "C# 15 Native Union Types & .NET 11 Runtime Infrastructure (2026+)",
       "era": "modern-future",
       "icon": "🔮",
       "year": "2026+",
@@ -1124,52 +1124,61 @@ class Program {
       {
         "id": "net-110",
         "version": ".NET 11 & Horizon (2026+)",
-        "topic": ".NET 11 & Horizon: Discriminated Unions & Native NPU Acceleration",
+        "topic": ".NET 11: C# 15 Union Types & Runtime Support (UnionAttribute, IUnion)",
         "era": "modern-future",
         "whatsNew": [
-          "First-class Discriminated Unions / Sum Types emitted directly by the runtime",
-          "Native NPU (Neural Processing Unit) and GPU kernel dispatch for on-device AI models",
-          "Ultra-low latency memory architectures and advanced Native AOT code emission",
-          "Zero-overhead distributed state synchronization across edge devices"
+          "C# 15 introduces native Union Types via the 'union' keyword (e.g., 'public union Pet(Cat, Dog, Bird);')",
+          ".NET 11 provides the supporting runtime infrastructure with [UnionAttribute] and the IUnion interface contract",
+          "Roslyn compiler enforces exhaustive pattern matching across all union case types without needing a fallback discard branch",
+          "Replaces verbose abstract class/record hierarchies and library-based OneOf workarounds with clean language-level syntax"
         ],
-        "runtimeEngine": "First-class sum-type type system verification and direct heterogeneous hardware execution (CPU, GPU, NPU).",
+        "runtimeEngine": "C# 15 compiler lowers union declarations into structs decorated with [UnionAttribute] and implementing IUnion. In the standard compiler representation, contents are stored as a single object? reference (with value-type cases boxed by default, while custom unions can use alternative non-boxing storage).",
         "keyConcepts": [
-          "1. First-Class Discriminated Unions (Sum Types)",
-          "2. Exhaustive Pattern Matching Checked by Compiler",
-          "3. NPU Hardware Execution Kernels",
-          "4. Zero-Overhead Heterogeneous Computing",
-          "5. Next-Gen Enterprise Domain Modeling"
+          "1. Traditional Record / Class Hierarchies",
+          "2. OneOf Library-Based Workarounds",
+          "3. C# 15 Native 'union' Keyword",
+          "4. Union Case Types (e.g. Cat, Dog, Bird)",
+          "5. Pattern Matching & Compiler Exhaustiveness",
+          "6. .NET 11 [UnionAttribute] & IUnion Infrastructure"
         ],
-        "articulation": ".NET 11 brings algebraic sum types into the C# and .NET type system, ending decades of awkward class hierarchies for operation results, while dispatching AI workloads directly to specialized NPU silicon.",
-        "syntax": `// .NET 11 Horizon - Discriminated Unions (Sum Types)
+        "articulation": "C# 15 introduces native Union Types as a language feature, while .NET 11 supplies the supporting runtime infrastructure with [UnionAttribute] and IUnion. This allows domain models to express sum types directly, with the compiler enforcing exhaustive switch coverage without manual record inheritance.",
+        "syntax": `// C# 15 Native Union Types with .NET 11 Runtime Support
+// Evolution: 1. abstract record hierarchy -> 2. OneOf library -> 3. C# 15 native union -> 4. Case types -> 5. Exhaustive switch -> 6. .NET 11 [UnionAttribute] + IUnion
+
 using System;
 
-// Conceptual .NET 11 Discriminated Union
-public abstract record Result<T> {
-    public record Success(T Value) : Result<T>;
-    public record Error(string Message, int Code) : Result<T>;
-}
+// 1. Define individual case types
+public record Cat(string Name);
+public record Dog(string Name);
+public record Bird(string Name);
+
+// 2. C# 15 Native Union declaration
+// In .NET 11, the compiler emits a struct decorated with [UnionAttribute] and implements IUnion
+public union Pet(Cat, Dog, Bird);
 
 class Program {
     static void Main() {
-        Console.WriteLine("=== .NET 11 & Next-Gen Horizon ===");
+        Console.WriteLine("=== C# 15 Union Types & .NET 11 Runtime Support ===");
 
-        Result<string> op = new Result<string>.Success("ASC Compliance Certified");
-        
-        string status = op switch {
-            Result<string>.Success s => "SUCCESS: " + s.Value,
-            Result<string>.Error e => "ERROR #" + e.Code + ": " + e.Message,
-            _ => "UNKNOWN"
+        // Instantiate union with a specific case type
+        Pet myPet = new Cat("Shadow");
+
+        // 3. Compiler-enforced exhaustive pattern matching
+        // Roslyn verifies that all cases (Cat, Dog, Bird) are covered; no discard '_' needed!
+        string description = myPet switch {
+            Cat c  => $"🐱 Feline: {c.Name} says Meow",
+            Dog d  => $"🐶 Canine: {d.Name} says Woof",
+            Bird b => $"🐦 Avian:  {b.Name} says Chirp"
         };
 
-        Console.WriteLine("Exhaustive Switch Result: " + status);
-        Console.WriteLine("Target Silicon: CPU + NPU Neural Engine Accelerated.");
+        Console.WriteLine("Exhaustive Switch Result: " + description);
+        Console.WriteLine("Runtime Infrastructure: [UnionAttribute] struct Pet : IUnion");
     }
 }`,
-        "myArticulation": "Looking toward .NET 11, the introduction of Discriminated Unions completes the functional evolution of C#. We will no longer need clumsy OneOf libraries or inheritance workarounds to represent Success or Failure results. Coupled with native NPU execution, .NET will run edge AI inference with zero overhead.",
+        "myArticulation": "C# 15 introduces native Union Types, so scenarios previously modeled using libraries such as OneOf or inheritance-based union-like patterns can now be expressed directly using the language's union support. The key distinction is that 'union' is the C# 15 language construct with case types and exhaustive pattern matching, while .NET 11 provides the runtime-level UnionAttribute and IUnion infrastructure. The compiler verifies exhaustive switch coverage across case types, eliminating the need for a fallback discard branch. OneOf remains valuable historically and in existing applications, but C# 15 gives us standard language-level union syntax.",
         "architectFollowUp": {
-          "question": "Why are first-class Discriminated Unions in the CLR superior to existing library-based OneOf<T1, T2> packages?",
-          "answer": "Library-based solutions like OneOf use structs with multiple value fields and boxed object pointers, incurring memory bloat and runtime type checks. First-class runtime Discriminated Unions allow the CLR to allocate memory matching exactly the largest variant tag, verify exhaustive switch completeness at compile time, and generate compact jump tables with zero boxing or reflection."
+          "question": "How do C# 15 native Union Types and .NET 11 runtime support differ from library-based solutions like OneOf<T0, T1> or manual record hierarchies?",
+          "answer": "In C# 15, Union Types are a first-class language feature: you declare 'public union Pet(Cat, Dog, Bird);' and the compiler strictly enforces exhaustive pattern matching across all case types at compile time without requiring a fallback discard branch. Under the hood, .NET 11 decorates the generated type with [UnionAttribute] and implements IUnion. Regarding memory, the standard compiler-generated union is a struct storing a single object? reference, meaning reference-type cases require no extra allocation and value-type cases are boxed by default (though custom unions can adopt non-boxing storage). This provides a clean, standardized language representation over manual abstract record boilerplate or divergent third-party libraries."
         }
       }
     ]

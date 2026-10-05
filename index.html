@@ -533,23 +533,23 @@
                         <span class="csharp-year-badge">Roadmap</span>
                     </div>
                 </div>
-                <div class="csharp-card-title">Discriminated Unions & AI Hardware SIMD</div>
+                <div class="csharp-card-title">C# 15 Native Union Types & .NET 11 Runtime Infrastructure</div>
                 <ul class="csharp-feature-list">
-                    <li>Discriminated Unions / First-Class Sum Types (<code>enum class Result&lt;T&gt;</code>)</li>
-                    <li>Exhaustive Pattern Matching checked by compiler without reflection</li>
-                    <li>Zero-Overhead Hardware SIMD & Tensor primitives for on-device AI pipelines</li>
-                    <li>Native AOT code emission & ultra-low latency memory architectures</li>
+                    <li>Native Union Types via <code>public union Pet(Cat, Dog, Bird);</code> keyword</li>
+                    <li>Compiler-enforced exhaustive pattern matching across union case types</li>
+                    <li>.NET 11 runtime infrastructure via <code>[UnionAttribute]</code> and <code>IUnion</code></li>
+                    <li>Standard language-level sum types replacing third-party library workarounds</li>
                 </ul>
-                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// Discriminated Unions (Sum Types)</span>
-<span class="csharp-highlight-kw">public enum class</span> <span class="csharp-highlight-type">OperationResult</span>&lt;<span class="csharp-highlight-type">T</span>&gt; {
-    Success(<span class="csharp-highlight-type">T</span> Value),
-    Failure(<span class="csharp-highlight-type">string</span> Reason, <span class="csharp-highlight-type">int</span> ErrorCode)
-}
-<span class="csharp-highlight-kw">var</span> status = result <span class="csharp-highlight-kw">switch</span> {
-    OperationResult.Success(<span class="csharp-highlight-kw">var</span> val) =&gt; $<span class="csharp-highlight-str">"Success: {val}"</span>,
-    OperationResult.Failure(<span class="csharp-highlight-kw">var</span> err, _) =&gt; $<span class="csharp-highlight-str">"Failed: {err}"</span>
+                <div class="csharp-code-box"><code><span class="csharp-highlight-comment">// C# 15 Native Union Types with .NET 11 Runtime Infrastructure</span>
+<span class="csharp-highlight-kw">public union</span> <span class="csharp-highlight-type">Pet</span>(Cat, Dog, Bird);
+
+<span class="csharp-highlight-kw">var</span> sound = myPet <span class="csharp-highlight-kw">switch</span> {
+    Cat c  =&gt; $<span class="csharp-highlight-str">"Meow: {c.Name}"</span>,
+    Dog d  =&gt; $<span class="csharp-highlight-str">"Woof: {d.Name}"</span>,
+    Bird b =&gt; $<span class="csharp-highlight-str">"Chirp: {b.Name}"</span>
+    <span class="csharp-highlight-comment">// Exhaustive: No discard (_) needed!</span>
 };</code></div>
-                <div class="csharp-card-footer"><span>Architectural Value:</span> Type-safe algebraic sum types & high-density AI acceleration pipelines.</div>
+                <div class="csharp-card-footer"><span>Architectural Value:</span> First-class language sum types with compiler-checked exhaustiveness and [UnionAttribute] / IUnion runtime support.</div>
             </div>
 
         </div>

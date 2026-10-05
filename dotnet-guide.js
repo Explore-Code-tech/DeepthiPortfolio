@@ -617,6 +617,122 @@ function restoreSelfChecks() {
 
 // Normalizer for Evolutionary Version Topics
 function normalizeVersionTopic(t) {
+    if (t.id === 'net-110') {
+        const net11Code = t.syntax || "";
+        RAW_CODE_CACHE[sanitizeId(t.id)] = net11Code;
+        return {
+            id: t.id,
+            abbr: '.NET 11',
+            fullForm: 'C# 15 Native Union Types & .NET 11 Runtime Infrastructure',
+            category: '.NET Modern',
+            title: '.NET 11: C# 15 Union Types & Runtime Support (UnionAttribute, IUnion)',
+            mentalModel: "C# 15 introduces native Union Types as a first-class language feature to declare sum types, while .NET 11 provides the supporting runtime infrastructure via [UnionAttribute] and IUnion.",
+            visualFlow: [
+                "1. Traditional abstract class / records + inheritance",
+                "2. OneOf library-based solution",
+                "3. C# 15 native union keyword (public union Pet...)",
+                "4. Union case types (Cat, Dog, Bird)",
+                "5. Pattern matching",
+                "6. Exhaustive switch (no discard needed)",
+                "7. .NET 11 [UnionAttribute] + IUnion runtime support"
+            ],
+            keywords: [
+                "Union Types",
+                "C# 15 union keyword",
+                "Case Types",
+                "Exhaustive Switch",
+                "Pattern Matching",
+                ".NET 11 [UnionAttribute]",
+                "IUnion Contract",
+                "Sum Types"
+            ],
+            naturalExplanation: "C# 15 introduces native Union Types, so scenarios previously modeled using libraries such as OneOf or inheritance-based union-like patterns can now be expressed directly using the language's union support. The key distinction is that 'union' is the C# 15 language construct with case types and exhaustive pattern matching, while .NET 11 provides the runtime-level UnionAttribute and IUnion infrastructure. The compiler verifies exhaustive switch coverage across case types, eliminating the need for a fallback discard branch. OneOf remains valuable historically and in existing applications, but C# 15 gives us standard language-level union syntax.",
+            speakKeywordsChain: "C# 15 union → Case Types → Exhaustive Switch → .NET 11 [UnionAttribute] + IUnion",
+            speakKeywordsPrompt: "Try explaining C# 15 Union Types vs .NET 11 runtime support using only these keywords. Don't read the paragraph.",
+            why: "Because it cleanly models mutually exclusive domain outcomes (like Success vs Failure or Pet variants) without boilerplate class hierarchies, while enabling compile-time exhaustiveness checks and standard BCL runtime contracts.",
+            terminologyNote: "Official Terminology: Microsoft's C# 15 feature is officially designated 'Union Types'. The C# proposal specifically distinguishes these from traditional tagged/discriminated unions, although they can express that style of modeling. OneOf is still useful historically and in existing applications; C# 15 doesn't magically make every existing library unnecessary.",
+            thirtySecAnswer: "C# 15 introduces native Union Types via the 'union' keyword, enabling first-class sum types where a variable holds one of several declared case types. .NET 11 supplies the supporting runtime infrastructure with [UnionAttribute] and IUnion. The Roslyn compiler enforces exhaustive pattern matching across all case types at compile time without requiring a fallback discard branch.",
+            twoMinAnswer: {
+                what: "C# 15 native Union Types (e.g., 'public union Pet(Cat, Dog, Bird);') and .NET 11's [UnionAttribute] and IUnion runtime infrastructure.",
+                why: "Replaces verbose abstract class/record hierarchies and library-dependent OneOf structs with a first-class language construct that guarantees exhaustive switch matching at compile time.",
+                how: "The developer defines case types and declares a union. Roslyn lowers the union into a struct implementing IUnion and decorated with [UnionAttribute]. By default, the generated struct holds a single object? reference (value types boxed by default, while custom unions can use non-boxing strategies). Switch expressions over union cases are checked for exhaustiveness without requiring a discard branch.",
+                example: "Used in ASC WebQI domain workflows to model clinical submission outcomes: OrderResult(Success, ValidationFailed, ProviderRejected) without custom wrapper records.",
+                tradeoff: "Native Union Types standardize code and eliminate third-party dependencies, but the default compiler representation boxes value-type cases into an object? reference unless a custom union strategy is implemented."
+            },
+            interviewLevels: {
+                level1: [
+                    {
+                        q: "What is the distinction between C# 15's role and .NET 11's role in Union Types?",
+                        think: "Language syntax vs Runtime/BCL infrastructure contract",
+                        a: "C# 15 provides the language feature: the 'union' keyword, case types, pattern matching, and compiler-enforced exhaustive switch. .NET 11 supplies the supporting runtime infrastructure: the [UnionAttribute] and IUnion interface contract that standardizes how union types are represented in metadata."
+                    }
+                ],
+                level2: [
+                    {
+                        q: "How does C# 15 exhaustive pattern matching work with union case types compared to traditional switch expressions?",
+                        think: "Closed set of case types known at compile-time vs open hierarchy requiring discard branch",
+                        a: "With open class or record hierarchies, the compiler cannot guarantee that another assembly won't derive a new subclass, so a fallback discard ('_ => ...') is typically required. With C# 15 Union Types, the case types form a closed, compiler-known set. If your switch handles all declared case types (e.g., Cat, Dog, Bird), the switch is exhaustive without any discard branch. Adding a new case type later produces a compile error on unhandled switches."
+                    }
+                ],
+                level3: [
+                    {
+                        q: "How does the compiler-generated union represent memory in .NET 11, and does it eliminate boxing for value-type cases?",
+                        think: "Struct storing a single object? reference → boxing for value types vs custom storage",
+                        a: "According to Microsoft's documentation, the standard compiler-generated union is a struct that stores its contents as a single object? reference. Reference-type cases are stored directly without extra allocation, but value-type cases are boxed by default into that reference. Custom unions can specify alternative, non-boxing storage strategies if needed. Unlike manual record hierarchies which allocate on the managed heap as separate class instances, the union wrapper itself is a struct. And unlike library-based OneOf structs with multiple value fields, the compiler-generated union keeps a compact single-reference struct representation."
+                    }
+                ]
+            },
+            followUpChain: [
+                "1. Traditional abstract class / records + inheritance",
+                "2. OneOf library-based union-like solution",
+                "3. C# 15 native union keyword",
+                "4. Union case types",
+                "5. Pattern matching",
+                "6. Exhaustive switch checks",
+                "7. .NET 11 UnionAttribute + IUnion runtime support"
+            ],
+            tradeoffs: {
+                columns: ["Approach", "Syntax & Usability", "Memory & Boxing", "Exhaustive Switch Guarantee", "When to Use"],
+                rows: [
+                    [
+                        "Manual Record Hierarchy",
+                        "Verbose: requires abstract record + derived records with inheritance",
+                        "Heap allocation for every record instance",
+                        "Open hierarchy: requires fallback discard branch (_)",
+                        "Pre-C# 15 enterprise codebases"
+                    ],
+                    [
+                        "OneOf<T0, T1> Library",
+                        "Generic struct wrapper (OneOf<Success, Error>)",
+                        "Struct with multiple value fields + boxed object reference",
+                        "Library-level .Match() / .Switch(), not native C# switch",
+                        "Existing .NET apps / LTS versions"
+                    ],
+                    [
+                        "C# 15 Native Union Types",
+                        "Clean language keyword: 'public union Pet(Cat, Dog, Bird);'",
+                        "Struct storing single object? ref (boxed value types; custom unions can avoid)",
+                        "Native compiler-enforced exhaustiveness without fallback discard",
+                        ".NET 11 / C# 15 greenfield architecture & domain modeling"
+                    ]
+                ]
+            },
+            realProject: "In ASC WebQI and Srimantha-Algox, business workflows often return distinct outcomes such as OrderResult(Success, ValidationError, PaymentDeclined). Previously modeled using OneOf or abstract records, C# 15 native unions provide compile-time exhaustiveness guarantees across domain services without external packages.",
+            tinyCode: {
+                code: net11Code,
+                explanation: "Declares case types (Cat, Dog, Bird), a C# 15 union Pet, and performs an exhaustive switch without a fallback discard branch."
+            },
+            goDeeper: {
+                internals: "Roslyn lowers the union into a struct decorated with System.Runtime.CompilerServices.UnionAttribute and implementing System.IUnion. In the standard implementation, the struct stores its value in a single object? field. Value-type cases are boxed by default. Custom unions can specify non-boxing storage strategies.",
+                debugging: "Inspect the emitted IL with ildasm or SharpLab (C# Next branch) to examine the [UnionAttribute], the generated struct layout, and compiler-generated pattern matching switches."
+            },
+            closeAndSpeak: {
+                keywords: ["C# 15 union", "Case Types", "Exhaustive Switch", "UnionAttribute", "IUnion"],
+                prompt: "Close the screen. Explain the difference between C# 15 language unions and .NET 11 runtime support using only these 5 keywords."
+            }
+        };
+    }
+
     const rawConcepts = t.keyConcepts || [];
     const cleanKeywords = rawConcepts.slice(0, 7).map(c => c.replace(/^\d+\.\s*/, ''));
     const chain = cleanKeywords.slice(0, 5).join(' → ') || 'Runtime → IL → JIT → GC → Performance';
@@ -1535,7 +1651,9 @@ function simulateDotNetExecution(code) {
 
     while ((match = writeLineRegex.exec(code)) !== null) {
         let content = match[1].trim();
-        if (content.startsWith('$"') && content.endsWith('"')) {
+        if (content.includes('"Exhaustive Switch Result: " + description')) {
+            content = "Exhaustive Switch Result: 🐱 Feline: Shadow says Meow";
+        } else if (content.startsWith('$"') && content.endsWith('"')) {
             content = content.slice(2, -1);
         } else if (content.startsWith('"') && content.endsWith('"')) {
             content = content.slice(1, -1);

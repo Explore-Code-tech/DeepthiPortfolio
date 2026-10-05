@@ -2523,9 +2523,9 @@ const CSHARP_DATA = {
         "id": "291",
         "version": "C# 15",
         "topic": "Union Types",
-        "articulation": "Union = OR\n\nSuccess OR Error\nPatientFound OR PatientNotFound\nCash OR Card",
-        "syntax": "`union Result = Success",
-        "myArticulation": "A union type represents a value that can be one of several predefined alternatives. It is useful when a method can return different well-defined outcomes, because the possible cases are explicitly modeled instead of using loosely typed values such as object"
+        "articulation": "Union = OR\n\nSuccess OR Error\nCat OR Dog OR Bird\nCash OR Card",
+        "syntax": "public union Pet(Cat, Dog, Bird);",
+        "myArticulation": "A union type represents a value that can be one of several predefined alternatives. In C# 15, native union types are declared with the union keyword (e.g., 'public union Pet(Cat, Dog, Bird);') and supported in .NET 11 via [UnionAttribute] and IUnion."
       },
       {
         "id": "292",
