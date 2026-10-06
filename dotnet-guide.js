@@ -308,9 +308,8 @@ function switchViewMode(mode) {
         if (abbrCategoryBar) abbrCategoryBar.style.display = 'flex';
         if (sandboxLhsBtn) sandboxLhsBtn.classList.remove('active');
     } else if (mode === 'sandbox') {
-        if (abbrCategoryBar) abbrCategoryBar.style.display = 'none';
-        if (sandboxLhsBtn) sandboxLhsBtn.classList.add('active');
-        if (allLhsBtn) allLhsBtn.classList.remove('active');
+        window.location.href = 'sandbox-guide.html';
+        return;
     } else { // 'all'
         if (abbrCategoryBar) abbrCategoryBar.style.display = 'flex';
         if (sandboxLhsBtn) sandboxLhsBtn.classList.remove('active');
