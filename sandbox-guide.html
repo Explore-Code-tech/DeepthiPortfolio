@@ -43,6 +43,9 @@
             <a href="sandbox-guide.html" class="btn-nav-action nav-link-active" title="Sandbox Integration Guide & Live Runner">
                 <span>⚡ Sandbox Integration</span>
             </a>
+            <a href="forms-auth-guide.html" class="btn-nav-action" title="Open Forms Authentication Architecture Guide">
+                <span>🔐 Forms Authentication</span>
+            </a>
             <button class="btn-nav-action btn-nav-sandbox" onclick="openSandbox()" title="Open Interactive Fullscreen Sandbox">
                 <span>⚡ Live Sandbox</span>
             </button>
@@ -86,6 +89,8 @@
                         <option value="net9_hybrid">🔮 .NET 9: HybridCache & Server GC DATAS</option>
                         <option value="net10_tensor">🔮 .NET 10: AI Tensor&lt;T&gt; Hardware SIMD</option>
                         <option value="net11_union" selected>🔮 .NET 11: Native Union Types & Exhaustive Switch</option>
+                        <option value="forms_auth_ticket">🔐 ASP.NET Forms Auth: Ticket &amp; Cookie Issuer</option>
+                        <option value="forms_auth_revocation">🔐 ASP.NET Forms Auth: Redis Revocation Blacklist</option>
                     </select>
                     <button class="btn-card-practice" onclick="openSandboxFromEmbedded()" title="Open in Fullscreen Modal">
                         <span>⛶ Fullscreen Modal</span>
@@ -406,6 +411,8 @@ app.MapPost("/api/sandbox/execute", async ([FromBody] CodeRequest req) => {
                         <option value="net9_hybrid">🔮 .NET 9: HybridCache & Server GC DATAS</option>
                         <option value="net10_tensor">🔮 .NET 10: AI Tensor&lt;T&gt; Hardware SIMD</option>
                         <option value="net11_union">🔮 .NET 11: Native Union Types & Exhaustive Switch</option>
+                        <option value="forms_auth_ticket">🔐 ASP.NET Forms Auth: Ticket &amp; Cookie Issuer</option>
+                        <option value="forms_auth_revocation">🔐 ASP.NET Forms Auth: Redis Revocation Blacklist</option>
                     </select>
                     <a href="https://dotnetfiddle.net/" target="_blank" class="btn-open-external" title="Open full Roslyn & .NET compiler in .NET Fiddle">
                         <span>🌐 .NET Fiddle ↗</span>

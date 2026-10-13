@@ -232,6 +232,50 @@ class Program {
         PaymentMethod.Crypto cr     => $"Processed Web3 Crypto transfer: {cr.Amount} ETH",
         PaymentMethod.Cash ca       => $"Processed Cash tender: {ca.Amount:C}"
     };
+}`,
+
+    forms_auth_ticket: `using System;
+
+// ASP.NET Forms Authentication Ticket & Cookie Simulator
+class Program {
+    static void Main() {
+        Console.WriteLine("=== ASP.NET Forms Authentication Ticket Simulation ===");
+        
+        string userEmail = "arjuna@enterprise.org";
+        string roles = "Admin,SecurityLead,BillingApprover";
+        DateTime issueDate = DateTime.UtcNow;
+        DateTime expiration = issueDate.AddMinutes(30);
+        bool isPersistent = false;
+
+        Console.WriteLine($"[1] User: {userEmail}");
+        Console.WriteLine($"[2] Issued: {issueDate:u} | Expires: {expiration:u}");
+        Console.WriteLine($"[3] Encrypting with MachineKey AES-256 + HMAC-SHA256...");
+        Console.WriteLine($"[4] Cookie: .ASPXAUTH (HttpOnly=True, Secure=True, SameSite=Lax)");
+        Console.WriteLine($"[5] UserData Packed Roles: [{roles}]");
+        Console.WriteLine("Identity validated successfully in Application_PostAuthenticateRequest!");
+    }
+}`,
+
+    forms_auth_revocation: `using System;
+using System.Collections.Generic;
+
+// Distributed Redis Session Revocation Pattern
+class Program {
+    static HashSet<string> RevocationBlacklist = new HashSet<string>();
+
+    static void Main() {
+        Console.WriteLine("=== Distributed Redis Session Revocation Pattern ===");
+        
+        string ticketId = Guid.NewGuid().ToString("N");
+        Console.WriteLine($"Active Session Ticket JTI: {ticketId}");
+        Console.WriteLine($"Is Revoked in Redis? {RevocationBlacklist.Contains(ticketId)} (Allowed)");
+
+        Console.WriteLine("\n[ACTION] User triggers Logout / Password Reset!");
+        RevocationBlacklist.Add(ticketId);
+
+        Console.WriteLine($"Checking Redis Blacklist on next request: {RevocationBlacklist.Contains(ticketId)}");
+        Console.WriteLine("Security Result: HTTP 401 Unauthorized - Stolen / Cached Ticket Denied!");
+    }
 }`
 };
 
