@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrome Developer Tool — Complete 10-Tab Visual & Practical Guide | Deepthi T</title>
+    <meta name="description" content="Master all 10 Chrome Developer Tool tabs (Elements, Console, Sources, Network, Performance, Memory, Application, Security, Lighthouse, Recorder) with visual infographics, step-by-step usage guides, and practical real-world debugging examples.">
+    <link rel="stylesheet" href="csharp-guide.css">
+    <link rel="stylesheet" href="devtools-guide.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠</text></svg>">
+</head>
+<body>
+    <a href="#devtools-content" class="skip-link">Skip to lesson content</a>
+
+    <!-- Top Navigation Bar -->
+    <nav class="guide-nav" aria-label="Site">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <button class="btn-devtools-mobile-sidebar" id="btn-devtools-open-sidebar" aria-controls="devtools-lhs" aria-expanded="false">☰ 10 DevTools Tabs</button>
+            <a href="index.html" class="logo-link">
+                <span class="logo-text">Deepthi T</span>
+                <span class="logo-badge">Chrome Developer Tool</span>
+            </a>
+        </div>
+        <div class="nav-actions">
+            <a href="csharp-guide.html" class="btn-nav-action" title="Open C# 1 to 15 Language Guide"><span>⚡ C# 1–15</span></a>
+            <a href="dotnet-guide.html" class="btn-nav-action" title="Open .NET Architecture &amp; Ecosystem Guide"><span>🌐 .NET</span></a>
+            <a href="sandbox-guide.html" class="btn-nav-action" title="Open Sandbox Integration Guide"><span>⚡ Sandbox Integration</span></a>
+            <a href="forms-auth-guide.html" class="btn-nav-action" title="Open Forms Authentication Guide"><span>🔐 Forms Authentication</span></a>
+            <a href="devtools-guide.html" class="btn-nav-action active" aria-current="page" title="Current Chrome Developer Tool Master Guide" style="background: #6366f1; color: white;"><span>🛠 Chrome Developer Tool</span></a>
+            <a href="index.html" class="btn-nav-action">← Portfolio</a>
+        </div>
+    </nav>
+
+    <main class="master-layout devtools-layout" id="master-layout">
+
+        <!-- LHS: 10 Chrome Developer Tool Tabs -->
+        <aside class="lhs-ribbon devtools-lhs" id="devtools-lhs" aria-label="Chrome Developer Tool 10 Tabs">
+            <button class="devtools-sidebar-close-btn" id="btn-devtools-close-sidebar" aria-label="Close lessons menu">✕</button>
+            <div class="lhs-header">
+                <div class="lhs-title-row">
+                    <span class="lhs-title">🛠 Chrome Developer Tool (10 Tabs)</span>
+                </div>
+                <div>
+                    <div class="devtools-progress-bar-wrap" role="progressbar" aria-label="Overall learning progress" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="devtools-progress-wrap">
+                        <div class="devtools-progress-bar" id="devtools-progress-bar"></div>
+                    </div>
+                    <div class="devtools-progress-label" id="devtools-progress-label">0 / 10 tabs complete</div>
+                </div>
+            </div>
+            <ul class="devtools-tab-list" id="devtools-tab-list" role="tablist" aria-orientation="vertical">
+                <!-- Injected by devtools-guide.js -->
+            </ul>
+            <button class="btn-lhs-expand-toggle" id="btn-devtools-reset" title="Clear saved progress and quiz answers">↺ Reset progress</button>
+        </aside>
+        <div class="devtools-sidebar-overlay" id="devtools-sidebar-overlay"></div>
+
+        <!-- RHS: Lesson Content -->
+        <section class="rhs-container devtools-rhs-content" id="devtools-content" tabindex="-1">
+            <header class="devtools-intro">
+                <div class="devtools-intro-top">
+                    <div>
+                        <div class="devtools-eyebrow">🛠 Complete Visual &amp; Practical Engineering Reference · 10 Tabs · 10 Superpowers</div>
+                        <h1 class="devtools-page-title">Chrome Developer Tool — From Beginner to Technical Lead</h1>
+                        <p class="devtools-page-subtitle">Master all 10 Chrome DevTools panels with interactive visual infographics, numbered UI walkthroughs, practical real-world debugging stories (ASCWebQI &amp; enterprise web apps), full-stack C#/.NET &amp; JS code fixes, and interview playbooks.</p>
+                    </div>
+                    <div class="devtools-intro-actions">
+                        <button type="button" class="btn-master-infographic-toggle" id="btn-toggle-master-map" aria-expanded="false">
+                            🗺️ View All-in-One 10-Tab Infographic
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Jump Bar for All 10 Tabs -->
+                <div class="devtools-quick-pills" id="devtools-quick-pills" aria-label="Quick jump to any of the 10 DevTools tabs">
+                    <!-- Injected by devtools-guide.js -->
+                </div>
+
+                <!-- Collapsible Master 10-Tab Overview Infographic -->
+                <div class="devtools-master-map-drawer" id="devtools-master-map-drawer" hidden>
+                    <div class="devtools-master-map-header">
+                        <div>
+                            <strong>🗺️ Chrome DevTools Complete Developer Guide — All 10 Tabs at a Glance</strong>
+                            <span>Click the infographic below to open full-screen zoomable view, or click any tab on the left to dive into its dedicated visual guide &amp; real-world lab.</span>
+                        </div>
+                        <div style="display:flex; gap:0.5rem; align-items:center;">
+                            <button type="button" class="btn-zoom-infographic" data-zoom-src="assets/devtools/devtools-complete-overview.png" data-zoom-title="Chrome DevTools: A Complete Guide for Developers (All 10 Tabs)">🔍 Full-Screen Zoom</button>
+                            <button type="button" class="btn-close-master-map" id="btn-close-master-map">✕ Hide</button>
+                        </div>
+                    </div>
+                    <div class="devtools-master-map-img-wrap">
+                        <img src="assets/devtools/devtools-complete-overview.png" alt="Chrome DevTools Complete Developer Guide Infographic covering Elements, Console, Sources, Network, Performance, Memory, Application, Security, Lighthouse, and Recorder" class="devtools-zoomable-img" data-zoom-src="assets/devtools/devtools-complete-overview.png" data-zoom-title="Chrome DevTools: A Complete Guide for Developers (All 10 Tabs)" loading="lazy">
+                    </div>
+                </div>
+            </header>
+
+            <div class="devtools-rhs-header">
+                <div>
+                    <div class="devtools-rhs-title" id="devtools-rhs-title">Loading…</div>
+                    <div class="devtools-rhs-meta" id="devtools-rhs-meta"></div>
+                </div>
+                <div class="devtools-rhs-actions">
+                    <button class="btn-toggle-all" id="btn-expand-all">Expand all sections</button>
+                    <button class="btn-toggle-all" id="btn-collapse-all">Collapse all</button>
+                </div>
+            </div>
+
+            <div id="devtools-lesson-host" role="tabpanel" aria-live="polite">
+                <noscript><p>This learning center requires JavaScript to render lessons.</p></noscript>
+            </div>
+        </section>
+    </main>
+
+    <!-- Full-Screen Image Lightbox Modal -->
+    <div class="devtools-lightbox" id="devtools-lightbox" role="dialog" aria-modal="true" aria-label="Full resolution infographic viewer" hidden>
+        <div class="devtools-lightbox-backdrop" id="devtools-lightbox-backdrop"></div>
+        <div class="devtools-lightbox-dialog">
+            <div class="devtools-lightbox-bar">
+                <span class="devtools-lightbox-title" id="devtools-lightbox-title">Visual Guide</span>
+                <div class="devtools-lightbox-controls">
+                    <button type="button" class="btn-lightbox-ctrl" id="btn-zoom-out" title="Zoom out">➖</button>
+                    <button type="button" class="btn-lightbox-ctrl" id="btn-zoom-reset" title="Reset zoom">100%</button>
+                    <button type="button" class="btn-lightbox-ctrl" id="btn-zoom-in" title="Zoom in">➕</button>
+                    <a class="btn-lightbox-ctrl" id="btn-open-newtab" href="#" target="_blank" rel="noopener" title="Open original image in new tab">↗ Raw Image</a>
+                    <button type="button" class="btn-lightbox-close" id="btn-lightbox-close" aria-label="Close full screen view">✕ Close (Esc)</button>
+                </div>
+            </div>
+            <div class="devtools-lightbox-stage" id="devtools-lightbox-stage">
+                <img src="" alt="" id="devtools-lightbox-img" class="devtools-lightbox-img">
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-floating-top" id="btn-back-to-top" title="Back to top" aria-label="Back to top">↑</button>
+
+    <script src="devtools-data-elements.js"></script>
+    <script src="devtools-data-panels.js"></script>
+    <script src="devtools-guide.js"></script>
+</body>
+</html>
