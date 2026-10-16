@@ -26,29 +26,21 @@
 
     <!-- Top Navigation Bar -->
     <nav class="guide-nav">
-        <div style="display: flex; align-items: center; gap: 1rem;">
+        <div class="guide-brand">
             <a href="index.html" class="logo-link">
                 <span class="logo-text">Deepthi T</span>
-                <span class="logo-badge">Sandbox Integration Guide</span>
+                <span class="logo-badge">Sandbox Guide</span>
             </a>
         </div>
         
         <div class="nav-actions">
-            <a href="csharp-guide.html" class="btn-nav-action" title="Open C# 1 to 15 Language Guide">
-                <span>⚡ C# 1–15</span>
-            </a>
-            <a href="dotnet-guide.html" class="btn-nav-action" title="Open .NET Architecture & Ecosystem Guide">
-                <span>🌐 .NET</span>
-            </a>
-            <a href="sandbox-guide.html" class="btn-nav-action nav-link-active" title="Sandbox Integration Guide & Live Runner">
-                <span>⚡ Sandbox Integration</span>
-            </a>
-            <a href="forms-auth-guide.html" class="btn-nav-action" title="Open Forms Authentication Architecture Guide">
-                <span>🔐 Forms Authentication</span>
-            </a>
-            <a href="devtools-guide.html" class="btn-nav-action" title="Open Chrome Developer Tool Master Guide">
-                <span>🛠 Chrome Developer Tool</span>
-            </a>
+            <div class="nav-hub-dock" role="navigation" aria-label="Technical Guides">
+                <a href="csharp-guide.html" class="nav-hub-tab" title="Open C# 1 to 15 Language Guide">⚡ C# 1–15</a>
+                <a href="dotnet-guide.html" class="nav-hub-tab" title="Open .NET Architecture &amp; Ecosystem Guide">🌐 .NET</a>
+                <a href="sandbox-guide.html" class="nav-hub-tab active" aria-current="page" title="Sandbox Integration Guide &amp; Live Runner">🧪 Sandbox</a>
+                <a href="forms-auth-guide.html" class="nav-hub-tab" title="Open Forms Authentication Architecture Guide">🔐 Forms Auth</a>
+                <a href="devtools-guide.html" class="nav-hub-tab" title="Open Chrome Developer Tool Master Guide">🛠 Chrome DevTools</a>
+            </div>
             <button class="btn-nav-action btn-nav-sandbox" onclick="openSandbox()" title="Open Interactive Fullscreen Sandbox">
                 <span>⚡ Live Sandbox</span>
             </button>

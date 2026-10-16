@@ -63,19 +63,22 @@ body::after {
 
 /* Sticky Glassmorphic Navbars */
 #desktop-nav, #hamburger-nav {
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.72);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
-    height: 12vh;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.16);
+    box-shadow: 0 4px 24px rgba(30, 27, 75, 0.05);
+    min-height: 72px;
+    height: auto;
     width: 100%;
     position: sticky;
     top: 0;
     z-index: 1000;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
+    gap: 1.25rem;
+    padding: 0.6rem 2.5rem;
     transition: all 0.3s ease;
 }
 
@@ -83,18 +86,33 @@ body::after {
     display: none;
 }
 
+.desktop-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    flex-wrap: nowrap;
+}
+
 /* Navigation Links & Interactions */
 .nav-links {
     display: flex;
-    gap: 2.5rem;
+    align-items: center;
+    gap: 1.35rem;
     list-style: none;
+    flex-wrap: nowrap;
+}
+
+.nav-links li {
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 a {
     color: #4a3e43;
     text-decoration: none;
-    font-size: 1.1rem;
+    font-size: 0.96rem;
     font-weight: 500;
+    white-space: nowrap;
     transition: color 0.3s ease;
     position: relative;
     padding: 0.2rem 0;
@@ -119,9 +137,51 @@ a:hover::after {
     width: 100%;
 }
 
+/* Segmented Tech Guides Dock in Portfolio Navbar */
+.nav-hub-dock {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.26rem;
+    border-radius: 999px;
+    background: rgba(248, 250, 252, 0.9);
+    border: 1px solid rgba(99, 102, 241, 0.22);
+    box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 14px rgba(99, 102, 241, 0.07);
+    flex-shrink: 0;
+}
+
+.nav-hub-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    color: #334155;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.nav-hub-tab::after {
+    display: none !important;
+}
+
+.nav-hub-tab:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 60%, #A7727D 100%);
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(99, 102, 241, 0.28);
+}
+
 .logo {
-    font-size: 1.8rem;
+    font-size: 1.65rem;
     font-weight: 700;
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1.1;
     background: linear-gradient(135deg, #A7727D 0%, #6366f1 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
