@@ -22,16 +22,56 @@
             </a>
         </div>
         <div class="nav-actions">
-            <div class="nav-hub-dock" role="navigation" aria-label="Technical Guides">
-                <a href="csharp-guide.html" class="nav-hub-tab" title="Open C# 1 to 15 Language Guide">⚡ C# 1–15</a>
-                <a href="dotnet-guide.html" class="nav-hub-tab" title="Open .NET Architecture &amp; Ecosystem Guide">🌐 .NET</a>
-                <a href="sandbox-guide.html" class="nav-hub-tab" title="Open Sandbox Integration Guide">🧪 Sandbox</a>
-                <a href="forms-auth-guide.html" class="nav-hub-tab" title="Open Forms Authentication Guide">🔐 Forms Auth</a>
-                <a href="devtools-guide.html" class="nav-hub-tab active" aria-current="page" title="Current Chrome Developer Tool Master Guide">🛠 Chrome DevTools</a>
+            <div class="nav-hub-dock-wrap">
+                <button type="button" class="nav-dock-arrow prev" aria-label="Scroll guides left" title="Scroll left">‹</button>
+                <div class="nav-hub-dock" role="navigation" aria-label="Technical Guides">
+                    <a href="csharp-guide.html" class="nav-hub-tab" title="Open C# 1 to 15 Language Guide">⚡ C# 1–15</a>
+                    <a href="dotnet-guide.html" class="nav-hub-tab" title="Open .NET Architecture &amp; Ecosystem Guide">🌐 .NET</a>
+                    <a href="sandbox-guide.html" class="nav-hub-tab" title="Open Sandbox Integration Guide">🧪 Sandbox</a>
+                    <a href="forms-auth-guide.html" class="nav-hub-tab" title="Open Forms Authentication Guide">🔐 Forms Auth</a>
+                    <a href="devtools-guide.html" class="nav-hub-tab active" aria-current="page" title="Current Chrome Developer Tool Master Guide">🛠 Chrome DevTools</a>
+                </div>
+                <button type="button" class="nav-dock-arrow next" aria-label="Scroll guides right" title="Scroll right">›</button>
             </div>
             <a href="index.html" class="btn-nav-action">← Portfolio</a>
         </div>
     </nav>
+    <script>
+        (function () {
+            document.querySelectorAll('.nav-hub-dock-wrap').forEach(function (wrap) {
+                var dock = wrap.querySelector('.nav-hub-dock');
+                var prev = wrap.querySelector('.nav-dock-arrow.prev');
+                var next = wrap.querySelector('.nav-dock-arrow.next');
+                if (!dock || !prev || !next) return;
+                function sync() {
+                    var overflow = dock.scrollWidth > dock.clientWidth + 2;
+                    var hasSixPlus = dock.querySelectorAll('.nav-hub-tab').length >= 6;
+                    wrap.classList.toggle('is-scrollable', overflow || hasSixPlus);
+                    prev.disabled = dock.scrollLeft <= 2;
+                    next.disabled = dock.scrollLeft + dock.clientWidth >= dock.scrollWidth - 2;
+                }
+                prev.addEventListener('click', function () { dock.scrollBy({ left: -220, behavior: 'smooth' }); });
+                next.addEventListener('click', function () { dock.scrollBy({ left: 220, behavior: 'smooth' }); });
+                dock.addEventListener('scroll', sync, { passive: true });
+                dock.addEventListener('wheel', function (e) {
+                    if (dock.scrollWidth > dock.clientWidth && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                        e.preventDefault();
+                        dock.scrollLeft += e.deltaY;
+                    }
+                }, { passive: false });
+                window.addEventListener('resize', sync);
+                var active = dock.querySelector('.active, .nav-link-active');
+                if (active && active.scrollIntoView) {
+                    requestAnimationFrame(function () {
+                        active.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'instant' });
+                        sync();
+                    });
+                } else {
+                    sync();
+                }
+            });
+        })();
+    </script>
 
     <main class="master-layout devtools-layout" id="master-layout">
 
