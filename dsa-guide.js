@@ -2,6 +2,7 @@
  * DSA Guide Interactive Engine
  * Day 1: Understanding Big O Notation
  * Application: Magician Technical Training
+ * Split Layout: LHS Ribbon + RHS Content
  * Deepthi T Portfolio
  */
 
@@ -12,14 +13,33 @@ const STORAGE_KEY_CODE_PREFIX = 'dsa_solution_';
 let completedPrograms = [];
 let currentPracticeChallengeId = null;
 let activeFilterGroup = 'all';
+let isSidebarCollapsed = false;
+let areAllLhsDaysExpanded = true;
+let activeSelectedDay = 1;
+
+// Subtopic quick navigation links for Day 1
+const DSA_DAY1_SUBTOPICS = [
+    { title: "⚡ Day 1 Dashboard", targetId: "day1-hero" },
+    { title: "📊 5 Complexity Tiers", targetId: "complexity-overview" },
+    { title: "📖 Master Article: Big O", targetId: "article-content" },
+    { title: "  ▸ Section 1: O(1) Constant", targetId: "section-o1", nested: true },
+    { title: "  ▸ Section 2: O(n) Linear", targetId: "section-on", nested: true },
+    { title: "  ▸ Section 3: O(log n) Logarithmic", targetId: "section-ologn", nested: true },
+    { title: "  ▸ Section 4: O(n log n) Linearithmic", targetId: "section-onlogn", nested: true },
+    { title: "  ▸ Section 5: O(n²) Quadratic", targetId: "section-on2", nested: true },
+    { title: "📈 Growth Chart & Benchmark", targetId: "section-comparison" },
+    { title: "🏢 Architectural Study (O(n+m))", targetId: "section-architect" },
+    { title: "💻 Practice Lab (15 C# Programs)", targetId: "practice-lab", hasBadge: true },
+    { title: "🎯 Key Takeaways & Mindset", targetId: "day1-summary" }
+];
 
 // Initialize on DOM Ready
 document.addEventListener('DOMContentLoaded', () => {
     loadCompletedState();
+    initLhsRibbon();
     renderComplexityCards();
     renderPracticeLab();
     initBigOChart();
-    initRoadmapModal();
     updateProgressDisplays();
     setupKeyboardShortcuts();
 });
@@ -63,7 +83,6 @@ function toggleChallengeCompletion(challengeId, forceStatus = null) {
     saveCompletedState();
     syncChallengeCardUI(challengeId);
 
-    // Update modal button if currently open
     if (currentPracticeChallengeId === challengeId) {
         syncPracticeModalState(challengeId);
     }
@@ -102,10 +121,190 @@ function updateProgressDisplays() {
 
     if (labCountEl) labCountEl.textContent = `${count} / ${total}`;
     if (labBarEl) labBarEl.style.width = `${pct}%`;
+
+    // LHS Ribbon Badge
+    const lhsLabBadge = document.getElementById('lhs-lab-badge');
+    if (lhsLabBadge) lhsLabBadge.textContent = `${count}/${total}`;
 }
 
 // --------------------------------------------------------------------------
-// 2. Render Complexity Cards
+// 2. LHS Ribbon Architecture & Navigation
+// --------------------------------------------------------------------------
+function initLhsRibbon() {
+    const container = document.getElementById('lhs-days-tree');
+    if (!container || typeof DSA_ROADMAP === 'undefined') return;
+
+    renderLhsDaysList(DSA_ROADMAP);
+}
+
+function renderLhsDaysList(days) {
+    const container = document.getElementById('lhs-days-tree');
+    if (!container) return;
+
+    container.innerHTML = days.map(d => {
+        if (d.day === 1) {
+            // Day 1: Prominent Active Day with Subtopics
+            return `
+                <div class="dsa-day-nav-card active ${areAllLhsDaysExpanded ? 'expanded' : ''}" id="lhs-day-1">
+                    <div class="dsa-day-nav-head" onclick="toggleLhsDayItem(1)">
+                        <div class="dsa-day-nav-left">
+                            <span class="dsa-day-tag active">Day 1</span>
+                            <div class="dsa-day-title-wrap">
+                                <span class="dsa-day-nav-title">Understanding Big O Notation</span>
+                                <span class="dsa-day-badge-live">Active • Available</span>
+                            </div>
+                        </div>
+                        <span class="dsa-day-arrow">▼</span>
+                    </div>
+                    <div class="dsa-day-subtopics" id="lhs-day-subtopics-1">
+                        ${DSA_DAY1_SUBTOPICS.map(s => `
+                            <a href="#${s.targetId}" class="dsa-subtopic-link ${s.nested ? 'sub-nested' : ''}" onclick="selectDay(1)">
+                                <span>${s.title}</span>
+                                ${s.hasBadge ? `<span class="dsa-subtopic-badge" id="lhs-lab-badge">${completedPrograms.length}/15</span>` : ''}
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        } else {
+            // Days 2 to 90: Upcoming Days
+            const isSelected = activeSelectedDay === d.day;
+            return `
+                <div class="dsa-day-nav-card ${isSelected ? 'active' : ''} coming-soon" id="lhs-day-${d.day}" onclick="selectDay(${d.day})">
+                    <div class="dsa-day-nav-head">
+                        <div class="dsa-day-nav-left">
+                            <span class="dsa-day-tag">Day ${d.day}</span>
+                            <div class="dsa-day-title-wrap">
+                                <span class="dsa-day-nav-title">${d.title}</span>
+                                <span class="dsa-day-phase-text">${d.phase}</span>
+                            </div>
+                        </div>
+                        <span class="dsa-day-status-pill">Coming Soon</span>
+                    </div>
+                </div>
+            `;
+        }
+    }).join('');
+}
+
+function toggleLhsDayItem(dayNum) {
+    if (dayNum === 1) {
+        const card = document.getElementById('lhs-day-1');
+        if (card) {
+            card.classList.toggle('expanded');
+        }
+        selectDay(1);
+    } else {
+        selectDay(dayNum);
+    }
+}
+
+function selectDay(dayNum) {
+    activeSelectedDay = dayNum;
+
+    // Update active class across all LHS cards
+    document.querySelectorAll('.dsa-day-nav-card').forEach(c => c.classList.remove('active'));
+    const activeCard = document.getElementById(`lhs-day-${dayNum}`);
+    if (activeCard) activeCard.classList.add('active');
+
+    const day1Container = document.getElementById('day1-content-container');
+    const previewContainer = document.getElementById('upcoming-day-preview-container');
+
+    if (dayNum === 1) {
+        if (day1Container) day1Container.style.display = 'flex';
+        if (previewContainer) {
+            previewContainer.style.display = 'none';
+            previewContainer.classList.remove('active');
+        }
+    } else {
+        // Show upcoming day preview in RHS
+        const dayObj = DSA_ROADMAP.find(d => d.day === dayNum);
+        if (!dayObj) return;
+
+        if (day1Container) day1Container.style.display = 'none';
+        if (previewContainer) {
+            previewContainer.style.display = 'flex';
+            previewContainer.classList.add('active');
+
+            const titleEl = document.getElementById('preview-day-title');
+            const phaseEl = document.getElementById('preview-day-phase');
+            const descEl = document.getElementById('preview-day-desc');
+
+            if (titleEl) titleEl.textContent = `Day ${dayObj.day}: ${dayObj.title}`;
+            if (phaseEl) phaseEl.textContent = `Phase: ${dayObj.phase}`;
+            if (descEl) {
+                descEl.innerHTML = `
+                    <strong>Day ${dayObj.day}</strong> is part of our comprehensive 90-day DSA curriculum and is actively in development.
+                    <br/><br/>
+                    Currently, <strong>Day 1: Understanding Big O Notation</strong> is fully unlocked with 5 complexity tiers, an interactive SVG growth chart, real-world Magician Technical Training architectural benchmarks, and 15 practical C# programming challenges.
+                `;
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+}
+
+function toggleLhsSidebar() {
+    isSidebarCollapsed = !isSidebarCollapsed;
+    const layout = document.getElementById('master-layout');
+    const toggleIcon = document.getElementById('sidebar-toggle-icon');
+    const toggleText = document.getElementById('sidebar-toggle-text');
+
+    if (layout) {
+        if (isSidebarCollapsed) {
+            layout.classList.add('sidebar-collapsed');
+            if (toggleIcon) toggleIcon.innerText = '▶';
+            if (toggleText) toggleText.innerText = 'Sidebar (Show)';
+        } else {
+            layout.classList.remove('sidebar-collapsed');
+            if (toggleIcon) toggleIcon.innerText = '◀';
+            if (toggleText) toggleText.innerText = 'Sidebar (Hide)';
+        }
+    }
+}
+
+function toggleAllLhsDays() {
+    areAllLhsDaysExpanded = !areAllLhsDaysExpanded;
+    const day1Card = document.getElementById('lhs-day-1');
+    const btn = document.getElementById('btn-lhs-expand-all');
+
+    if (day1Card) {
+        day1Card.classList.toggle('expanded', areAllLhsDaysExpanded);
+    }
+    if (btn) {
+        btn.textContent = areAllLhsDaysExpanded ? '📁 Collapse' : '📂 Expand';
+    }
+}
+
+function filterLhsDays(query) {
+    const q = query.toLowerCase().trim();
+    if (!q) {
+        renderLhsDaysList(DSA_ROADMAP);
+        return;
+    }
+    const filtered = DSA_ROADMAP.filter(d => 
+        d.title.toLowerCase().includes(q) ||
+        d.phase.toLowerCase().includes(q) ||
+        `day ${d.day}`.includes(q)
+    );
+    renderLhsDaysList(filtered);
+}
+
+function filterLhsPhase(phasePrefix, btn) {
+    document.querySelectorAll('.dsa-phase-pill').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+
+    if (phasePrefix === 'all') {
+        renderLhsDaysList(DSA_ROADMAP);
+        return;
+    }
+
+    const filtered = DSA_ROADMAP.filter(d => d.phase.toLowerCase().includes(phasePrefix.toLowerCase()));
+    renderLhsDaysList(filtered);
+}
+
+// --------------------------------------------------------------------------
+// 3. Render Complexity Cards
 // --------------------------------------------------------------------------
 function renderComplexityCards() {
     const grid = document.getElementById('dsa-complexity-grid');
@@ -142,13 +341,12 @@ function renderComplexityCards() {
 }
 
 // --------------------------------------------------------------------------
-// 3. Render Practice Lab
+// 4. Render Practice Lab
 // --------------------------------------------------------------------------
 function renderPracticeLab() {
     const container = document.getElementById('practice-lab-cards-container');
     if (!container) return;
 
-    // Group challenges
     const groups = [
         { slug: 'o1', name: 'Group 1: O(1) – Constant Time', badge: 'O(1)', color: '#10b981' },
         { slug: 'on', name: 'Group 2: O(n) – Linear Time', badge: 'O(n)', color: '#f59e0b' },
@@ -242,7 +440,7 @@ function filterChallenges(groupSlug, btn) {
 }
 
 // --------------------------------------------------------------------------
-// 4. Dedicated Coding Practice Panel Modal
+// 5. Dedicated Coding Practice Panel Modal
 // --------------------------------------------------------------------------
 function openPracticePanel(challengeId, event) {
     if (event) event.stopPropagation();
@@ -252,7 +450,6 @@ function openPracticePanel(challengeId, event) {
 
     currentPracticeChallengeId = challengeId;
 
-    // Populate modal elements
     const titleEl = document.getElementById('practice-modal-title');
     const compEl = document.getElementById('practice-modal-complexity');
     const diffEl = document.getElementById('practice-modal-difficulty');
@@ -269,7 +466,6 @@ function openPracticePanel(challengeId, event) {
     if (stmtEl) stmtEl.textContent = challenge.statement;
     if (scenEl) scenEl.textContent = challenge.scenario;
 
-    // Load saved code draft or fallback to starter code
     let savedCode = null;
     try {
         savedCode = localStorage.getItem(STORAGE_KEY_CODE_PREFIX + challengeId);
@@ -289,7 +485,6 @@ function openPracticePanel(challengeId, event) {
 }
 
 function closePracticePanel() {
-    // Auto-save current code before closing
     if (currentPracticeChallengeId) {
         saveCurrentEditorDraft();
     }
@@ -363,7 +558,7 @@ function copyEditorCode() {
 }
 
 // --------------------------------------------------------------------------
-// 5. Reset Progress Workflow
+// 6. Reset Progress Workflow
 // --------------------------------------------------------------------------
 function promptResetProgress() {
     const modal = document.getElementById('dsa-confirm-modal');
@@ -384,7 +579,6 @@ function confirmResetProgress() {
         });
     } catch (e) {}
 
-    // Re-sync UI
     DSA_DAY1_CHALLENGES.forEach(c => syncChallengeCardUI(c.id));
     updateProgressDisplays();
     closeConfirmModal();
@@ -392,15 +586,13 @@ function confirmResetProgress() {
 }
 
 // --------------------------------------------------------------------------
-// 6. Interactive Big O Growth Chart
+// 7. Interactive Big O Growth Chart
 // --------------------------------------------------------------------------
 function initBigOChart() {
     const svg = document.getElementById('dsa-bigo-svg');
     const tooltip = document.getElementById('chart-tooltip');
     if (!svg || !tooltip) return;
 
-    // Points at N = 10, 20, 30, 40, 50, 60, 70, 80, 90, 100
-    // We bind hover listeners to lines and interactive points
     const lines = svg.querySelectorAll('.chart-line');
     lines.forEach(line => {
         line.addEventListener('mouseenter', (e) => {
@@ -439,68 +631,6 @@ function toggleChartSeries(complexityKey, legendEl) {
 }
 
 // --------------------------------------------------------------------------
-// 7. 90-Day Roadmap Modal
-// --------------------------------------------------------------------------
-function initRoadmapModal() {
-    const listContainer = document.getElementById('roadmap-list-container');
-    if (!listContainer || typeof DSA_ROADMAP === 'undefined') return;
-
-    renderRoadmapList(DSA_ROADMAP);
-}
-
-function renderRoadmapList(days) {
-    const listContainer = document.getElementById('roadmap-list-container');
-    if (!listContainer) return;
-
-    listContainer.innerHTML = days.map(d => `
-        <div class="roadmap-item ${d.active ? 'active' : ''}">
-            <div class="roadmap-item-left">
-                <span class="roadmap-day-badge">Day ${d.day}</span>
-                <div>
-                    <span class="roadmap-day-title">${d.title}</span>
-                    <span class="roadmap-day-phase">(${d.phase})</span>
-                </div>
-            </div>
-            <div>
-                <span class="roadmap-status-pill ${d.status === 'Available' ? 'status-available' : 'status-coming-soon'}">
-                    ${d.status === 'Available' ? '✓ Available Now' : 'Coming Soon'}
-                </span>
-            </div>
-        </div>
-    `).join('');
-}
-
-function openRoadmapModal() {
-    const modal = document.getElementById('roadmap-modal');
-    if (modal) {
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function closeRoadmapModal() {
-    const modal = document.getElementById('roadmap-modal');
-    if (modal) {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-}
-
-function filterRoadmapDays(query) {
-    const q = query.toLowerCase().trim();
-    if (!q) {
-        renderRoadmapList(DSA_ROADMAP);
-        return;
-    }
-    const filtered = DSA_ROADMAP.filter(d => 
-        d.title.toLowerCase().includes(q) ||
-        d.phase.toLowerCase().includes(q) ||
-        `day ${d.day}`.includes(q)
-    );
-    renderRoadmapList(filtered);
-}
-
-// --------------------------------------------------------------------------
 // 8. General Helpers & Keyboard Shortcuts
 // --------------------------------------------------------------------------
 function copyCode(btn, rawCode) {
@@ -533,7 +663,6 @@ function showToast(message) {
 }
 
 function setupKeyboardShortcuts() {
-    // Handle tab key inside code editor
     const editor = document.getElementById('practice-code-editor');
     if (editor) {
         editor.addEventListener('keydown', function(e) {
@@ -547,11 +676,12 @@ function setupKeyboardShortcuts() {
         });
     }
 
-    // Escape closes modals
     window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+            e.preventDefault();
+            toggleLhsSidebar();
+        } else if (e.key === 'Escape') {
             closePracticePanel();
-            closeRoadmapModal();
             closeConfirmModal();
         }
     });
