@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA 90-Day Learning Journey | Day 1: Big O Notation | Deepthi T</title>
+    <link rel="stylesheet" href="csharp-guide.css">
+    <link rel="stylesheet" href="dsa-guide.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <nav class="guide-nav">
+        <div class="guide-brand">
+            <a href="index.html" class="logo-link">
+                <span class="logo-text">Deepthi T</span>
+                <span class="logo-badge">DSA 90-Day Hub</span>
+            </a>
+        </div>
+        
+        <div class="nav-actions">
+            <div class="nav-hub-dock-wrap">
+                <button type="button" class="nav-dock-arrow prev" aria-label="Scroll guides left" title="Scroll left">‹</button>
+                <div class="nav-hub-dock" role="navigation" aria-label="Technical Guides">
+                    <a href="csharp-guide.html" class="nav-hub-tab" title="Open C# 1 to 15 Language Guide">⚡ C# 1–15</a>
+                    <a href="dotnet-guide.html" class="nav-hub-tab" title="Open .NET Architecture &amp; Ecosystem Guide">🌐 .NET</a>
+                    <a href="dsa-guide.html" class="nav-hub-tab active" aria-current="page" title="Current DSA 90-Day Learning Journey">🧠 DSA</a>
+                    <a href="sandbox-guide.html" class="nav-hub-tab" title="Open Sandbox Integration Guide &amp; Live Runner">🧪 Sandbox</a>
+                    <a href="forms-auth-guide.html" class="nav-hub-tab" title="Open Forms Authentication Architecture Guide">🔐 Forms Auth</a>
+                    <a href="devtools-guide.html" class="nav-hub-tab" title="Open Chrome Developer Tool Master Guide">🛠 Chrome DevTools</a>
+                </div>
+                <button type="button" class="nav-dock-arrow next" aria-label="Scroll guides right" title="Scroll right">›</button>
+            </div>
+            <a href="index.html" class="btn-nav-action">← Portfolio</a>
+        </div>
+    </nav>
+
+    <script>
+        (function () {
+            document.querySelectorAll('.nav-hub-dock-wrap').forEach(function (wrap) {
+                var dock = wrap.querySelector('.nav-hub-dock');
+                var prev = wrap.querySelector('.nav-dock-arrow.prev');
+                var next = wrap.querySelector('.nav-dock-arrow.next');
+                if (!dock || !prev || !next) return;
+                function sync() {
+                    var overflow = dock.scrollWidth > dock.clientWidth + 2;
+                    var hasSixPlus = dock.querySelectorAll('.nav-hub-tab').length >= 6;
+                    wrap.classList.toggle('is-scrollable', overflow || hasSixPlus);
+                    prev.disabled = dock.scrollLeft <= 2;
+                    next.disabled = dock.scrollLeft + dock.clientWidth >= dock.scrollWidth - 2;
+                }
+                prev.addEventListener('click', function () { dock.scrollBy({ left: -220, behavior: 'smooth' }); });
+                next.addEventListener('click', function () { dock.scrollBy({ left: 220, behavior: 'smooth' }); });
+                dock.addEventListener('scroll', sync, { passive: true });
+                dock.addEventListener('wheel', function (e) {
+                    if (dock.scrollWidth > dock.clientWidth && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                        e.preventDefault();
+                        dock.scrollLeft += e.deltaY;
+                    }
+                }, { passive: false });
+                window.addEventListener('resize', sync);
+                var active = dock.querySelector('.active, .nav-link-active');
+                if (active && active.scrollIntoView) {
+                    requestAnimationFrame(function () {
+                        active.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'instant' });
+                        sync();
+                    });
+                } else {
+                    sync();
+                }
+            });
+        })();
+    </script>
+
+    <!-- Main Content Container -->
+    <main class="dsa-page-wrapper">
+
+        <!-- 1. Dashboard Hero Banner -->
+        <header class="dsa-hero-card">
+            <div class="dsa-hero-top-ribbon">
+                <div class="dsa-badge-day1">
+                    <span class="dsa-badge-pulse"></span>
+                    <span>Day 1 Available • 90-Day DSA Journey</span>
+                </div>
+                <div class="dsa-domain-badge">
+                    <span>🏢 Real-World Domain: Magician Technical Training</span>
+                </div>
+            </div>
+
+            <h1 class="dsa-hero-title">Day 1: Understanding Big O Notation</h1>
+            <p class="dsa-hero-subtitle">Understanding how algorithms perform as input data grows. An architectural guide and interactive C# practice lab tailored for Senior .NET Developers and Technical Architects.</p>
+
+            <!-- Metrics Dashboard & Progress Bar -->
+            <div class="dsa-progress-dashboard">
+                <div class="dsa-metric-box">
+                    <span class="dsa-metric-label">90-Day Curriculum</span>
+                    <div class="dsa-metric-value-row">
+                        <span class="dsa-metric-num">Day 1</span>
+                        <span class="dsa-metric-desc">of 90 Days</span>
+                    </div>
+                    <span style="font-size: 0.8rem; color: #10b981; font-weight: 600;">Day 1 Available (Days 2–90 Coming Soon)</span>
+                </div>
+
+                <div class="dsa-metric-box">
+                    <span class="dsa-metric-label">Day 1 Practice Progress</span>
+                    <div class="dsa-metric-value-row">
+                        <span class="dsa-metric-num" id="hero-completed-count">0 / 15</span>
+                        <span class="dsa-metric-desc" id="hero-completed-pct">0% Solved</span>
+                    </div>
+                    <div class="dsa-progress-bar-track">
+                        <div class="dsa-progress-bar-fill" id="hero-progress-bar" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div class="dsa-metric-box">
+                    <span class="dsa-metric-label">Complexity Focus</span>
+                    <div class="dsa-metric-value-row">
+                        <span class="dsa-metric-num">5</span>
+                        <span class="dsa-metric-desc">Asymptotic Tiers</span>
+                    </div>
+                    <span style="font-size: 0.8rem; color: #64748b;">O(1) • O(log n) • O(n) • O(n log n) • O(n²)</span>
+                </div>
+            </div>
+
+            <div class="dsa-hero-actions">
+                <button type="button" class="btn-dsa-primary" onclick="openRoadmapModal()">
+                    <span>🗺 Explore 90-Day Curriculum Roadmap</span>
+                </button>
+                <a href="#practice-lab" class="btn-dsa-secondary">
+                    <span>💻 Jump to 15 C# Challenges</span>
+                </a>
+                <a href="#article-content" class="btn-dsa-secondary">
+                    <span>📖 Read Day 1 Master Article</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- 2. Five Complexity Categories Section -->
+        <section class="dsa-section-container" id="complexity-overview">
+            <div class="dsa-section-header">
+                <span class="dsa-section-pretitle">Algorithmic Growth Spectrum</span>
+                <h2 class="dsa-section-title">The Five Fundamental Complexity Categories</h2>
+                <p class="dsa-section-subtitle">How execution time and memory footprints scale as the input size (n) increases in enterprise platforms like <strong>Magician Technical Training</strong>.</p>
+            </div>
+
+            <div class="dsa-complexity-grid" id="dsa-complexity-grid">
+                <!-- Dynamically rendered from dsa-data.js -->
+            </div>
+        </section>
+
+        <!-- 3. Day 1 Detailed Learning Content (Article Style) -->
+        <article class="dsa-article-container" id="article-content">
+            <div class="dsa-section-header">
+                <span class="dsa-section-pretitle">Master Architecture Article</span>
+                <h2 class="dsa-section-title" style="font-size: 2.1rem;">Big O Notation: Understanding How Code Performs as Data Grows</h2>
+            </div>
+
+            <div class="dsa-article-intro">
+                <p>Writing code that works is important. Writing code that performs well at scale is what makes the difference.</p>
+                <p>As developers, we often focus on getting the expected output. But have we considered what happens when our application grows from handling 10 records to 10,000 or even 1 million?</p>
+                <p>This is where Big O Notation becomes important.</p>
+                <p><strong>Big O Notation</strong> helps us understand how an algorithm's time or memory requirements grow as the input size increases. Below, we examine the five major Big O categories through practical C# scenarios from our enterprise platform, <strong>Magician Technical Training</strong>.</p>
+            </div>
+
+            <!-- Section 1: O(1) -->
+            <section class="dsa-content-section" id="section-o1">
+                <div class="dsa-section-badge-row">
+                    <span class="dsa-section-num-pill">Section 1</span>
+                    <span class="complexity-code-tag" style="background: #10b9811a; color: #10b981; border: 1px solid #10b98140;">O(1)</span>
+                </div>
+                <h3 class="dsa-complexity-header-title">O(1) – Constant Time Complexity</h3>
+
+                <div class="dsa-theory-block">
+                    <p><strong>Explanation:</strong> The operation takes approximately the same amount of time regardless of the input size. Whether the underlying collection holds 5 elements or 5,000,000 elements, execution executes in a predictable, single-step operation.</p>
+                </div>
+
+                <div class="dsa-scenario-callout">
+                    <span class="dsa-scenario-tag">Magician Technical Training Scenario</span>
+                    <p>Retrieving a course using its array index from the scheduled training catalog.</p>
+                </div>
+
+                <div class="dsa-code-wrapper">
+                    <div class="dsa-code-header">
+                        <div class="dsa-code-lang">
+                            <div class="dsa-code-dots">
+                                <span class="dsa-code-dot red"></span>
+                                <span class="dsa-code-dot yellow"></span>
+                                <span class="dsa-code-dot green"></span>
+                            </div>
+                            <span>C# • Direct Array Indexing</span>
+                        </div>
+                        <button type="button" class="btn-copy-code" onclick="copyCode(this, `int[] courseIds = { 101, 102, 103, 104, 105 };\n\nint courseId = courseIds[2];`)">
+                            <span>📋 Copy Code</span>
+                        </button>
+                    </div>
+                    <div class="dsa-code-body">
+<pre><code><span style="color: #cba6f7;">int</span>[] courseIds = { <span style="color: #fab387;">101</span>, <span style="color: #fab387;">102</span>, <span style="color: #fab387;">103</span>, <span style="color: #fab387;">104</span>, <span style="color: #fab387;">105</span> };
+
+<span style="color: #cba6f7;">int</span> courseId = courseIds[<span style="color: #fab387;">2</span>];</code></pre>
+                    </div>
+                </div>
+
+                <ul class="dsa-bullet-points">
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Direct Index Access:</strong> In .NET arrays, elements reside in contiguous memory slots. The CLR computes the target memory address with simple arithmetic: <code>Address = BaseAddress + (Index * ElementSize)</code>.</span>
+                    </li>
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Why Input Size Does Not Affect Lookup Complexity:</strong> Because calculating the memory address requires exactly one multiplication and one addition, accessing element 2 takes the exact same CPU cycles whether the array size is 5 or 5,000,000.</span>
+                    </li>
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Time Complexity:</strong> <code style="color: #10b981; font-weight: 700;">O(1)</code> – Constant Time.</span>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Section 2: O(n) -->
+            <section class="dsa-content-section" id="section-on">
+                <div class="dsa-section-badge-row">
+                    <span class="dsa-section-num-pill">Section 2</span>
+                    <span class="complexity-code-tag" style="background: #f59e0b1a; color: #f59e0b; border: 1px solid #f59e0b40;">O(n)</span>
+                </div>
+                <h3 class="dsa-complexity-header-title">O(n) – Linear Time Complexity</h3>
+
+                <div class="dsa-theory-block">
+                    <p><strong>Explanation:</strong> Execution time grows proportionally with the number of input elements. If the input dataset doubles in size, the algorithm's running time also doubles in the worst case.</p>
+                </div>
+
+                <div class="dsa-scenario-callout">
+                    <span class="dsa-scenario-tag">Magician Technical Training Scenario</span>
+                    <p>Finding a particular course in an unsorted course collection.</p>
+                </div>
+
+                <div class="dsa-code-wrapper">
+                    <div class="dsa-code-header">
+                        <div class="dsa-code-lang">
+                            <div class="dsa-code-dots">
+                                <span class="dsa-code-dot red"></span>
+                                <span class="dsa-code-dot yellow"></span>
+                                <span class="dsa-code-dot green"></span>
+                            </div>
+                            <span>C# • Linear Search</span>
+                        </div>
+                        <button type="button" class="btn-copy-code" onclick="copyCode(this, `int[] courseIds = { 101, 105, 108, 112, 120 };\n\nint searchId = 108;\n\nforeach (int id in courseIds)\n{\n    if (id == searchId)\n    {\n        Console.WriteLine(\"Course found\");\n        break;\n    }\n}`)">
+                            <span>📋 Copy Code</span>
+                        </button>
+                    </div>
+                    <div class="dsa-code-body">
+<pre><code><span style="color: #cba6f7;">int</span>[] courseIds = { <span style="color: #fab387;">101</span>, <span style="color: #fab387;">105</span>, <span style="color: #fab387;">108</span>, <span style="color: #fab387;">112</span>, <span style="color: #fab387;">120</span> };
+
+<span style="color: #cba6f7;">int</span> searchId = <span style="color: #fab387;">108</span>;
+
+<span style="color: #cba6f7;">foreach</span> (<span style="color: #cba6f7;">int</span> id <span style="color: #cba6f7;">in</span> courseIds)
+{
+    <span style="color: #cba6f7;">if</span> (id == searchId)
+    {
+        Console.WriteLine(<span style="color: #a6e3a1;">"Course found"</span>);
+        <span style="color: #cba6f7;">break</span>;
+    }
+}</code></pre>
+                    </div>
+                </div>
+
+                <ul class="dsa-bullet-points">
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Linear Traversal:</strong> Because the collection is unsorted, the algorithm has no foreknowledge of where the target ID lives and must evaluate elements sequentially from index 0 to n - 1.</span>
+                    </li>
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Best Case vs. Worst Case:</strong> Best case is <code>O(1)</code> if the target course ID happens to be the very first item. Worst case is <code>O(n)</code> if the target is the last element or does not exist at all in the catalog.</span>
+                    </li>
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Time Complexity:</strong> <code style="color: #f59e0b; font-weight: 700;">O(n)</code> – Linear Time.</span>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Section 3: O(log n) -->
+            <section class="dsa-content-section" id="section-ologn">
+                <div class="dsa-section-badge-row">
+                    <span class="dsa-section-num-pill">Section 3</span>
+                    <span class="complexity-code-tag" style="background: #06b6d41a; color: #06b6d4; border: 1px solid #06b6d440;">O(log n)</span>
+                </div>
+                <h3 class="dsa-complexity-header-title">O(log n) – Logarithmic Time Complexity</h3>
+
+                <div class="dsa-theory-block">
+                    <p><strong>Explanation:</strong> The algorithm reduces the search space with every iteration. Instead of checking items one-by-one, each decision eliminates half of the remaining elements.</p>
+                </div>
+
+                <div class="dsa-scenario-callout">
+                    <span class="dsa-scenario-tag">Magician Technical Training Scenario</span>
+                    <p>Finding a course ID in a sorted course collection using Binary Search.</p>
+                </div>
+
+                <div class="dsa-code-wrapper">
+                    <div class="dsa-code-header">
+                        <div class="dsa-code-lang">
+                            <div class="dsa-code-dots">
+                                <span class="dsa-code-dot red"></span>
+                                <span class="dsa-code-dot yellow"></span>
+                                <span class="dsa-code-dot green"></span>
+                            </div>
+                            <span>C# • Binary Search</span>
+                        </div>
+                        <button type="button" class="btn-copy-code" onclick="copyCode(this, `int[] courseIds = { 101, 105, 108, 112, 120, 125, 130 };\n\nint result = Array.BinarySearch(courseIds, 112);`)">
+                            <span>📋 Copy Code</span>
+                        </button>
+                    </div>
+                    <div class="dsa-code-body">
+<pre><code><span style="color: #cba6f7;">int</span>[] courseIds = { <span style="color: #fab387;">101</span>, <span style="color: #fab387;">105</span>, <span style="color: #fab387;">108</span>, <span style="color: #fab387;">112</span>, <span style="color: #fab387;">120</span>, <span style="color: #fab387;">125</span>, <span style="color: #fab387;">130</span> };
+
+<span style="color: #cba6f7;">int</span> result = Array.BinarySearch(courseIds, <span style="color: #fab387;">112</span>);</code></pre>
+                    </div>
+                </div>
+
+                <ul class="dsa-bullet-points">
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Bisection Principle:</strong> Binary Search probes the middle element. If the target is smaller, the entire upper half is discarded; if greater, the entire lower half is discarded.</span>
+                    </li>
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Why Sorted Data is Required:</strong> The elimination rule relies strictly on ordering invariants. If items were unsorted, discarding half the array would risk discarding the target.</span>
+                    </li>
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Scale Comparison:</strong> Searching through <strong>1,024 elements</strong> takes at most ~10 steps (log₂ 1024 = 10). Searching through <strong>1,000,000 elements</strong> takes only ~20 steps (log₂ 1000000 ≈ 19.93).</span>
+                    </li>
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Time Complexity:</strong> <code style="color: #06b6d4; font-weight: 700;">O(log n)</code> – Logarithmic Time.</span>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Section 4: O(n log n) -->
+            <section class="dsa-content-section" id="section-onlogn">
+                <div class="dsa-section-badge-row">
+                    <span class="dsa-section-num-pill">Section 4</span>
+                    <span class="complexity-code-tag" style="background: #6366f11a; color: #6366f1; border: 1px solid #6366f140;">O(n log n)</span>
+                </div>
+                <h3 class="dsa-complexity-header-title">O(n log n) – Linearithmic Time Complexity</h3>
+
+                <div class="dsa-theory-block">
+                    <p><strong>Explanation:</strong> This complexity commonly appears in efficient sorting algorithms. It represents performing an O(log n) operation (such as dividing or tree traversal) for each of the n elements.</p>
+                </div>
+
+                <div class="dsa-scenario-callout">
+                    <span class="dsa-scenario-tag">Magician Technical Training Scenario</span>
+                    <p>Sorting course assessment scores.</p>
+                </div>
+
+                <div class="dsa-code-wrapper">
+                    <div class="dsa-code-header">
+                        <div class="dsa-code-lang">
+                            <div class="dsa-code-dots">
+                                <span class="dsa-code-dot red"></span>
+                                <span class="dsa-code-dot yellow"></span>
+                                <span class="dsa-code-dot green"></span>
+                            </div>
+                            <span>C# • Efficient Sorting</span>
+                        </div>
+                        <button type="button" class="btn-copy-code" onclick="copyCode(this, `int[] scores = { 75, 92, 60, 88, 95, 70 };\n\nArray.Sort(scores);`)">
+                            <span>📋 Copy Code</span>
+                        </button>
+                    </div>
+                    <div class="dsa-code-body">
+<pre><code><span style="color: #cba6f7;">int</span>[] scores = { <span style="color: #fab387;">75</span>, <span style="color: #fab387;">92</span>, <span style="color: #fab387;">60</span>, <span style="color: #fab387;">88</span>, <span style="color: #fab387;">95</span>, <span style="color: #fab387;">70</span> };
+
+Array.Sort(scores);</code></pre>
+                    </div>
+                </div>
+
+                <ul class="dsa-bullet-points">
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Merge Sort:</strong> Divides the array into two halves recursively (depth of log n) and merges the sorted subarrays in linear time (n operations per level), yielding guaranteed O(n log n) time.</span>
+                    </li>
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Efficient Sorting:</strong> Comparison sorting has a mathematical lower bound of Ω(n log n). Modern .NET <code>Array.Sort</code> employs Introsort (Quick Sort with fallbacks to Heap Sort and Insertion Sort).</span>
+                    </li>
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Course Ranking & Assessment Scores:</strong> Ordering 10,000 learner exam scores for platform leaderboard generation executes in mere milliseconds.</span>
+                    </li>
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Time Complexity:</strong> <code style="color: #6366f1; font-weight: 700;">O(n log n)</code> for Merge Sort and typical efficient comparison sorting.</span>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Section 5: O(n²) -->
+            <section class="dsa-content-section" id="section-on2">
+                <div class="dsa-section-badge-row">
+                    <span class="dsa-section-num-pill">Section 5</span>
+                    <span class="complexity-code-tag" style="background: #ef44441a; color: #ef4444; border: 1px solid #ef444440;">O(n²)</span>
+                </div>
+                <h3 class="dsa-complexity-header-title">O(n²) – Quadratic Time Complexity</h3>
+
+                <div class="dsa-theory-block">
+                    <p><strong>Explanation:</strong> The number of operations grows approximately with the square of the input size. Typically caused by nested loops iterating over the same dataset.</p>
+                </div>
+
+                <div class="dsa-scenario-callout">
+                    <span class="dsa-scenario-tag">Magician Technical Training Scenario</span>
+                    <p>Comparing every course ID with every other course ID to identify duplicates.</p>
+                </div>
+
+                <div class="dsa-code-wrapper">
+                    <div class="dsa-code-header">
+                        <div class="dsa-code-lang">
+                            <div class="dsa-code-dots">
+                                <span class="dsa-code-dot red"></span>
+                                <span class="dsa-code-dot yellow"></span>
+                                <span class="dsa-code-dot green"></span>
+                            </div>
+                            <span>C# • Nested Loop Comparison</span>
+                        </div>
+                        <button type="button" class="btn-copy-code" onclick="copyCode(this, `int[] courseIds = { 101, 105, 108, 101, 120 };\n\nfor (int i = 0; i < courseIds.Length; i++)\n{\n    for (int j = i + 1; j < courseIds.Length; j++)\n    {\n        if (courseIds[i] == courseIds[j])\n        {\n            Console.WriteLine(\n                $\"Duplicate course ID: {courseIds[i]}\");\n        }\n    }\n}`)">
+                            <span>📋 Copy Code</span>
+                        </button>
+                    </div>
+                    <div class="dsa-code-body">
+<pre><code><span style="color: #cba6f7;">int</span>[] courseIds = { <span style="color: #fab387;">101</span>, <span style="color: #fab387;">105</span>, <span style="color: #fab387;">108</span>, <span style="color: #fab387;">101</span>, <span style="color: #fab387;">120</span> };
+
+<span style="color: #cba6f7;">for</span> (<span style="color: #cba6f7;">int</span> i = <span style="color: #fab387;">0</span>; i &lt; courseIds.Length; i++)
+{
+    <span style="color: #cba6f7;">for</span> (<span style="color: #cba6f7;">int</span> j = i + <span style="color: #fab387;">1</span>; j &lt; courseIds.Length; j++)
+    {
+        <span style="color: #cba6f7;">if</span> (courseIds[i] == courseIds[j])
+        {
+            Console.WriteLine(
+                <span style="color: #a6e3a1;">$"Duplicate course ID: {courseIds[i]}"</span>);
+        }
+    }
+}</code></pre>
+                    </div>
+                </div>
+
+                <ul class="dsa-bullet-points">
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Nested Loops:</strong> For each of the n items in the outer loop, the inner loop executes up to n times. Total comparisons equal n(n - 1) / 2.</span>
+                    </li>
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Rapid Increase in Comparisons:</strong> At n = 1,000, operations reach ~500,000. At n = 100,000, operations skyrocket to ~5,000,000,000, freezing servers and causing thread pool starvation.</span>
+                    </li>
+                    <li class="dsa-bullet-item">
+                        <span class="dsa-bullet-icon">▸</span>
+                        <span><strong>Time Complexity:</strong> <code style="color: #ef4444; font-weight: 700;">O(n²)</code> – Quadratic Time.</span>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Section 6: Complexity Comparison -->
+            <section class="dsa-content-section" id="section-comparison">
+                <div class="dsa-section-badge-row">
+                    <span class="dsa-section-num-pill">Section 6</span>
+                    <span class="dsa-section-pretitle">Benchmark Matrix</span>
+                </div>
+                <h3 class="dsa-complexity-header-title">Complexity Comparison & Growth Visualization</h3>
+                <p style="color: #475569; font-size: 0.95rem; line-height: 1.6;">A side-by-side comparison of the five asymptotic tiers and their runtime characteristics across Magician Technical Training workflows.</p>
+
+                <div class="dsa-comparison-table-wrapper">
+                    <table class="dsa-comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Complexity</th>
+                                <th>Growth Pattern</th>
+                                <th>Magician Platform Example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="complexity-code-tag" style="background: #10b98118; color: #10b981;">O(1)</span></td>
+                                <td><strong>Constant</strong> (Flat runtime)</td>
+                                <td>Array index access (<code>courseIds[2]</code>)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="complexity-code-tag" style="background: #06b6d418; color: #06b6d4;">O(log n)</span></td>
+                                <td><strong>Logarithmic</strong> (Divisive growth)</td>
+                                <td>Binary Search (<code>Array.BinarySearch</code>)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="complexity-code-tag" style="background: #f59e0b18; color: #f59e0b;">O(n)</span></td>
+                                <td><strong>Linear</strong> (Proportional growth)</td>
+                                <td>Linear Search across unsorted courses</td>
+                            </tr>
+                            <tr>
+                                <td><span class="complexity-code-tag" style="background: #6366f118; color: #6366f1;">O(n log n)</span></td>
+                                <td><strong>Linearithmic</strong> (Optimal comparison sort)</td>
+                                <td>Merge Sort &amp; Assessment score ordering</td>
+                            </tr>
+                            <tr>
+                                <td><span class="complexity-code-tag" style="background: #ef444418; color: #ef4444;">O(n²)</span></td>
+                                <td><strong>Quadratic</strong> (Explosive parabolic growth)</td>
+                                <td>Nested-loop comparisons for duplicate detection</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Visual Big O Growth Chart -->
+                <div class="dsa-chart-container">
+                    <div class="dsa-chart-header">
+                        <span class="dsa-chart-title">Big O Operations vs. Input Size (n) Growth Chart</span>
+                        <div class="dsa-chart-legend">
+                            <div class="legend-item" onclick="toggleChartSeries('o1', this)">
+                                <span class="legend-color-dot" style="background: #10b981;"></span>
+                                <span>O(1)</span>
+                            </div>
+                            <div class="legend-item" onclick="toggleChartSeries('ologn', this)">
+                                <span class="legend-color-dot" style="background: #06b6d4;"></span>
+                                <span>O(log n)</span>
+                            </div>
+                            <div class="legend-item" onclick="toggleChartSeries('on', this)">
+                                <span class="legend-color-dot" style="background: #f59e0b;"></span>
+                                <span>O(n)</span>
+                            </div>
+                            <div class="legend-item" onclick="toggleChartSeries('onlogn', this)">
+                                <span class="legend-color-dot" style="background: #6366f1;"></span>
+                                <span>O(n log n)</span>
+                            </div>
+                            <div class="legend-item" onclick="toggleChartSeries('on2', this)">
+                                <span class="legend-color-dot" style="background: #ef4444;"></span>
+                                <span>O(n²)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dsa-svg-chart-wrap">
+                        <svg viewBox="0 0 760 340" class="dsa-svg-chart" id="dsa-bigo-svg">
+                            <!-- Background Grid Lines -->
+                            <line x1="60" y1="280" x2="720" y2="280" stroke="#e2e8f0" stroke-width="1.5" />
+                            <line x1="60" y1="220" x2="720" y2="220" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4,4" />
+                            <line x1="60" y1="160" x2="720" y2="160" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4,4" />
+                            <line x1="60" y1="100" x2="720" y2="100" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4,4" />
+                            <line x1="60" y1="40" x2="720" y2="40" stroke="#f1f5f9" stroke-width="1" stroke-dasharray="4,4" />
+
+                            <line x1="60" y1="280" x2="60" y2="30" stroke="#cbd5e1" stroke-width="2" />
+                            <line x1="60" y1="280" x2="720" y2="280" stroke="#cbd5e1" stroke-width="2" />
+
+                            <!-- Axis Labels -->
+                            <text x="390" y="315" text-anchor="middle" fill="#64748b" font-size="12" font-weight="600">Input Size (n) →</text>
+                            <text x="25" y="150" text-anchor="middle" fill="#64748b" font-size="12" font-weight="600" transform="rotate(-90 25 150)">Operations (Time) →</text>
+
+                            <!-- Tick Labels -->
+                            <text x="60" y="296" text-anchor="middle" fill="#94a3b8" font-size="11">0</text>
+                            <text x="225" y="296" text-anchor="middle" fill="#94a3b8" font-size="11">25</text>
+                            <text x="390" y="296" text-anchor="middle" fill="#94a3b8" font-size="11">50</text>
+                            <text x="555" y="296" text-anchor="middle" fill="#94a3b8" font-size="11">75</text>
+                            <text x="710" y="296" text-anchor="middle" fill="#94a3b8" font-size="11">100</text>
+
+                            <!-- Curves with Tooltips and Data Attributes -->
+                            <!-- O(1): Constant (Green) -->
+                            <path id="chart-line-o1" class="chart-line" data-label="O(1) – Constant Time" data-formula="f(n) = 1" d="M 60,268 L 710,268" fill="none" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" />
+                            
+                            <!-- O(log n): Logarithmic (Cyan) -->
+                            <path id="chart-line-ologn" class="chart-line" data-label="O(log n) – Logarithmic Time" data-formula="f(n) = log2(n)" d="M 60,278 Q 200,245 710,230" fill="none" stroke="#06b6d4" stroke-width="3.5" stroke-linecap="round" />
+
+                            <!-- O(n): Linear (Amber) -->
+                            <path id="chart-line-on" class="chart-line" data-label="O(n) – Linear Time" data-formula="f(n) = n" d="M 60,280 L 710,130" fill="none" stroke="#f59e0b" stroke-width="3.5" stroke-linecap="round" />
+
+                            <!-- O(n log n): Linearithmic (Indigo) -->
+                            <path id="chart-line-onlogn" class="chart-line" data-label="O(n log n) – Linearithmic Time" data-formula="f(n) = n * log2(n)" d="M 60,280 Q 300,235 680,45" fill="none" stroke="#6366f1" stroke-width="3.5" stroke-linecap="round" />
+
+                            <!-- O(n²): Quadratic (Red) -->
+                            <path id="chart-line-on2" class="chart-line" data-label="O(n²) – Quadratic Time" data-formula="f(n) = n²" d="M 60,280 Q 220,270 340,35" fill="none" stroke="#ef4444" stroke-width="4" stroke-linecap="round" />
+
+                            <!-- Zone Annotations -->
+                            <rect x="520" y="45" width="180" height="42" rx="6" fill="#fee2e2" fill-opacity="0.85" stroke="#ef4444" stroke-width="1" />
+                            <text x="610" y="62" text-anchor="middle" fill="#b91c1c" font-size="11" font-weight="700">Horrible (Avoid at Scale)</text>
+                            <text x="610" y="77" text-anchor="middle" fill="#7f1d1d" font-size="10">O(n²) Quadratic Explosion</text>
+
+                            <rect x="520" y="222" width="180" height="42" rx="6" fill="#dcfce7" fill-opacity="0.85" stroke="#10b981" stroke-width="1" />
+                            <text x="610" y="239" text-anchor="middle" fill="#15803d" font-size="11" font-weight="700">Optimal (Scales Infinitely)</text>
+                            <text x="610" y="254" text-anchor="middle" fill="#14532d" font-size="10">O(1) &amp; O(log n) Region</text>
+                        </svg>
+                        <div class="chart-tooltip" id="chart-tooltip"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 7: Architectural Perspective -->
+            <section class="dsa-content-section" id="section-architect">
+                <div class="dsa-architect-card">
+                    <div class="architect-badge-row">
+                        <span class="architect-badge">Architectural Perspective</span>
+                        <span style="font-size: 0.82rem; color: #4338ca; font-weight: 700;">Performance Engineering at Scale</span>
+                    </div>
+
+                    <h3 style="font-size: 1.55rem; color: #1e1b4b; margin-bottom: 0.85rem; font-weight: 800;">Optimizing O(n²) in Magician Technical Training</h3>
+
+                    <div class="dsa-scenario-callout" style="background: rgba(255, 255, 255, 0.9); margin-bottom: 1.25rem;">
+                        <span class="dsa-scenario-tag">Enterprise Training Platform Context</span>
+                        <p>In <strong>Magician Technical Training</strong>:</p>
+                        <ul style="margin: 0.5rem 0 0.5rem 1.4rem; color: #334155; line-height: 1.6;">
+                            <li><strong>1,000 registered learners</strong> (n = 1,000)</li>
+                            <li><strong>10,000 course enrolment records</strong> (m = 10,000)</li>
+                        </ul>
+                        <p>Requirement: Identify which courses each registered learner has enrolled in.</p>
+                    </div>
+
+                    <div class="architect-comparison-grid">
+                        <div class="architect-approach-box approach-bad">
+                            <div class="approach-title">
+                                <span>Naive Nested-Loop Approach</span>
+                                <span class="approach-complexity-pill">O(n × m)</span>
+                            </div>
+                            <p style="font-size: 0.88rem; color: #7f1d1d; line-height: 1.55; margin-bottom: 0.6rem;">
+                                For every learner, iterate through the entire enrollment list of 10,000 records.
+                            </p>
+                            <ul style="font-size: 0.84rem; color: #991b1b; padding-left: 1.2rem; line-height: 1.5;">
+                                <li><strong>1,000 × 10,000 = 10,000,000 comparisons</strong> in worst-case full scan.</li>
+                                <li>High CPU cycles and memory bus contention.</li>
+                                <li>If enrollments grow to 100,000, comparisons explode to 100,000,000.</li>
+                            </ul>
+                        </div>
+
+                        <div class="architect-approach-box approach-good">
+                            <div class="approach-title">
+                                <span>Engineered Dictionary / HashSet</span>
+                                <span class="approach-complexity-pill">Expected O(n + m)</span>
+                            </div>
+                            <p style="font-size: 0.88rem; color: #14532d; line-height: 1.55; margin-bottom: 0.6rem;">
+                                Build a lookup structure <code>Dictionary&lt;int, List&lt;int&gt;&gt;</code> grouped by LearnerId, then query in O(1) average time.
+                            </p>
+                            <ul style="font-size: 0.84rem; color: #166534; padding-left: 1.2rem; line-height: 1.5;">
+                                <li>One pass to construct lookup (10,000 ops) + one pass to query learners (1,000 ops) = <strong>11,000 operations total</strong>.</li>
+                                <li><strong>~900× faster</strong> execution and reduced GC memory pressure.</li>
+                                <li>Linear scalability as dataset expands to millions of enrollments.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="architect-quote-banner">
+                        <p class="architect-quote-text">
+                            “Sometimes improving application performance is not about writing fewer lines of code. It is about choosing the right data structure and algorithm.”
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </article>
+
+        <!-- 4. Practice Lab – 15 Real-World C# Programs -->
+        <section class="dsa-practice-lab-container" id="practice-lab">
+            <div class="dsa-section-header">
+                <span class="dsa-section-pretitle">Hands-On Engineering</span>
+                <h2 class="dsa-section-title">Practice Lab – 15 Real-World Programs</h2>
+                <p class="dsa-section-subtitle">Apply the five Big O complexity concepts through practical C# exercises. Initially, problem statements and expected complexities are shown so you can formulate and write each solution yourself.</p>
+            </div>
+
+            <!-- Toolbar & Filter Controls -->
+            <div class="practice-lab-toolbar">
+                <div class="lab-progress-group">
+                    <div class="lab-counter-display">
+                        <span class="lab-counter-number" id="lab-completed-count">0 / 15</span>
+                        <span class="lab-counter-total">Completed</span>
+                    </div>
+                    <div class="lab-progress-track">
+                        <div class="lab-progress-fill" id="lab-progress-bar" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div class="lab-toolbar-actions">
+                    <button type="button" class="btn-reset-progress" onclick="promptResetProgress()">
+                        <span>↺ Reset Progress</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="challenge-filter-tabs">
+                <button type="button" class="challenge-filter-btn active" onclick="filterChallenges('all', this)">All 15 Programs</button>
+                <button type="button" class="challenge-filter-btn" onclick="filterChallenges('o1', this)">Group 1: O(1)</button>
+                <button type="button" class="challenge-filter-btn" onclick="filterChallenges('on', this)">Group 2: O(n)</button>
+                <button type="button" class="challenge-filter-btn" onclick="filterChallenges('ologn', this)">Group 3: O(log n)</button>
+                <button type="button" class="challenge-filter-btn" onclick="filterChallenges('onlogn', this)">Group 4: O(n log n)</button>
+                <button type="button" class="challenge-filter-btn" onclick="filterChallenges('on2', this)">Group 5: O(n²)</button>
+            </div>
+
+            <!-- Challenges Accordion Grid -->
+            <div id="practice-lab-cards-container">
+                <!-- Dynamically rendered from dsa-data.js -->
+            </div>
+        </section>
+
+        <!-- 5. Day 1 Learning Summary & Key Takeaways -->
+        <footer class="dsa-summary-card">
+            <div class="dsa-section-header">
+                <span class="dsa-section-pretitle">Architecture Review</span>
+                <h2 class="dsa-section-title">Key Takeaways &amp; Architectural Mindset</h2>
+            </div>
+
+            <div class="takeaways-grid">
+                <div class="takeaway-item-card">
+                    <span class="takeaway-icon">🎯</span>
+                    <span class="takeaway-text"><strong>Understand input size before choosing an algorithm.</strong> Measure expected peak scale in production before committing to an architecture.</span>
+                </div>
+
+                <div class="takeaway-item-card">
+                    <span class="takeaway-icon">🔍</span>
+                    <span class="takeaway-text"><strong>Identify unnecessary nested loops.</strong> Eliminate O(n²) bottlenecks through single-pass hash indexing or pre-sorting.</span>
+                </div>
+
+                <div class="takeaway-item-card">
+                    <span class="takeaway-icon">🏗</span>
+                    <span class="takeaway-text"><strong>Select appropriate data structures.</strong> Master Dictionary, HashSet, List, and Array characteristics inside the .NET runtime.</span>
+                </div>
+
+                <div class="takeaway-item-card">
+                    <span class="takeaway-icon">⚖</span>
+                    <span class="takeaway-text"><strong>Consider both time complexity and space complexity.</strong> Balance memory allocations and garbage collection overhead against raw CPU cycles.</span>
+                </div>
+
+                <div class="takeaway-item-card">
+                    <span class="takeaway-icon">🚀</span>
+                    <span class="takeaway-text"><strong>Design algorithms with scalability in mind.</strong> Build components capable of handling 100× traffic surges without code refactoring.</span>
+                </div>
+            </div>
+
+            <div class="summary-closing-banner">
+                <div class="summary-closing-title">Senior Technical Architect Core Principle</div>
+                <blockquote class="summary-closing-quote">
+                    “A solution that works for 10 records should also be designed with 10 million records in mind.”
+                </blockquote>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- 6. Dedicated Coding Practice Panel Modal -->
+    <div class="practice-panel-modal" id="practice-panel-modal" role="dialog" aria-modal="true" aria-labelledby="practice-modal-title">
+        <div class="practice-panel-content">
+            <div class="practice-panel-header">
+                <div class="practice-panel-title-group">
+                    <span style="font-size: 1.3rem;">💻</span>
+                    <span class="practice-panel-title" id="practice-modal-title">Program Practice</span>
+                    <span class="challenge-difficulty-pill" id="practice-modal-difficulty">Easy</span>
+                </div>
+                <button type="button" class="btn-close-modal" onclick="closePracticePanel()" aria-label="Close Practice Panel">✕</button>
+            </div>
+
+            <div class="practice-panel-body">
+                <div class="practice-info-banner">
+                    <div class="practice-info-meta">
+                        <span id="practice-modal-complexity" style="font-family: 'Consolas', monospace; font-size: 0.85rem; font-weight: 700; color: #4338ca;">
+                            Expected Complexity: O(1)
+                        </span>
+                    </div>
+                    <p class="practice-info-statement" id="practice-modal-statement">Problem Statement</p>
+                    <div style="margin-top: 0.5rem; font-size: 0.84rem; color: #64748b; font-style: italic;" id="practice-modal-scenario">
+                        Scenario
+                    </div>
+                </div>
+
+                <div class="practice-editor-container">
+                    <div class="practice-editor-header">
+                        <div class="practice-editor-label">
+                            <span>📝 C# Solution Editor (Write your solution below)</span>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button type="button" class="btn-copy-code" onclick="copyEditorCode()">📋 Copy</button>
+                            <button type="button" class="btn-copy-code" onclick="resetEditorToStarter()">↺ Reset Starter Code</button>
+                        </div>
+                    </div>
+                    <textarea class="practice-code-area" id="practice-code-editor" spellcheck="false" placeholder="// Write your C# solution here..."></textarea>
+                </div>
+            </div>
+
+            <div class="practice-panel-footer">
+                <span class="practice-footer-status" id="practice-modal-status-text">Status: In Progress</span>
+                <div class="practice-footer-actions">
+                    <button type="button" class="btn-dsa-secondary" onclick="closePracticePanel()">Close</button>
+                    <button type="button" class="btn-checkpoint" id="btn-modal-checkpoint" onclick="handleModalCheckpoint()">
+                        <span>✓ Mark as Completed</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. 90-Day Curriculum Roadmap Modal -->
+    <div class="practice-panel-modal" id="roadmap-modal" role="dialog" aria-modal="true" aria-labelledby="roadmap-modal-title">
+        <div class="practice-panel-content roadmap-modal-content">
+            <div class="practice-panel-header">
+                <div class="practice-panel-title-group">
+                    <span style="font-size: 1.3rem;">🗺</span>
+                    <span class="practice-panel-title" id="roadmap-modal-title">90-Day DSA Curriculum Roadmap</span>
+                </div>
+                <button type="button" class="btn-close-modal" onclick="closeRoadmapModal()" aria-label="Close Roadmap">✕</button>
+            </div>
+
+            <div class="practice-panel-body">
+                <div class="roadmap-search-box">
+                    <input type="text" class="roadmap-search-input" placeholder="🔍 Search any day, topic, or phase (e.g., Big O, Binary Trees, Dynamic Programming)..." oninput="filterRoadmapDays(this.value)">
+                </div>
+
+                <div class="roadmap-grid" id="roadmap-list-container">
+                    <!-- Dynamically populated from dsa-data.js -->
+                </div>
+            </div>
+
+            <div class="practice-panel-footer">
+                <span style="font-size: 0.85rem; color: #64748b;">Day 1 is Available Now. Days 2 to 90 are actively in development.</span>
+                <button type="button" class="btn-dsa-primary" onclick="closeRoadmapModal()">Close Roadmap</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. Reset Progress Confirmation Modal -->
+    <div class="dsa-confirm-modal" id="dsa-confirm-modal" role="dialog" aria-modal="true">
+        <div class="dsa-confirm-box">
+            <div class="confirm-icon">⚠️</div>
+            <h3 class="confirm-title">Reset Practice Lab Progress?</h3>
+            <p class="confirm-msg">This will clear your completed status and saved solution drafts for all 15 Day 1 programs. This action cannot be undone.</p>
+            <div class="confirm-actions">
+                <button type="button" class="btn-confirm-cancel" onclick="closeConfirmModal()">Cancel</button>
+                <button type="button" class="btn-confirm-delete" onclick="confirmResetProgress()">Yes, Reset Progress</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="dsa-data.js"></script>
+    <script src="dsa-guide.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,1685 @@
+/* ==========================================================================
+   DSA Learning Guide Stylesheet
+   Day 1: Big O Notation & 15 C# Practice Challenges
+   Deepthi T Portfolio
+   ========================================================================== */
+
+/* Main Container Wrapper */
+.dsa-page-wrapper {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+}
+
+/* Glassmorphism Surface Base */
+.dsa-glass-card {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(99, 102, 241, 0.16);
+    border-radius: 1.25rem;
+    box-shadow: 0 10px 30px rgba(30, 27, 75, 0.04);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* --------------------------------------------------------------------------
+   1. Hero Banner & Progress Dashboard
+   -------------------------------------------------------------------------- */
+.dsa-hero-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 249, 255, 0.92) 50%, rgba(246, 230, 237, 0.5) 100%);
+    border: 1px solid rgba(167, 114, 125, 0.28);
+    border-radius: 1.5rem;
+    padding: 2.5rem 2.8rem;
+    box-shadow: 0 16px 40px rgba(99, 102, 241, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.dsa-hero-card::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(167, 114, 125, 0.08) 50%, transparent 70%);
+    pointer-events: none;
+    border-radius: 50%;
+}
+
+.dsa-hero-top-ribbon {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.dsa-badge-day1 {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    color: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.45rem 1.1rem;
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+}
+
+.dsa-badge-pulse {
+    width: 8px;
+    height: 8px;
+    background: #34d399;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7);
+    animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(52, 211, 153, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+}
+
+.dsa-domain-badge {
+    background: rgba(167, 114, 125, 0.12);
+    color: #8b5d67;
+    border: 1px solid rgba(167, 114, 125, 0.3);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.dsa-hero-title {
+    font-size: 2.35rem;
+    font-weight: 800;
+    line-height: 1.25;
+    background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 50%, #7e22ce 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.65rem;
+}
+
+.dsa-hero-subtitle {
+    color: #4b5563;
+    font-size: 1.15rem;
+    line-height: 1.6;
+    max-width: 900px;
+    margin-bottom: 1.8rem;
+}
+
+/* Dashboard Metrics & Progress Bar */
+.dsa-progress-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: 1rem;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.5rem;
+}
+
+.dsa-metric-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.dsa-metric-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.dsa-metric-value-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.dsa-metric-num {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #1e1b4b;
+}
+
+.dsa-metric-desc {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.dsa-progress-bar-track {
+    width: 100%;
+    height: 9px;
+    background: #e2e8f0;
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 0.4rem;
+}
+
+.dsa-progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4f46e5, #06b6d4, #10b981);
+    border-radius: 999px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dsa-hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 0.8rem;
+}
+
+.btn-dsa-primary {
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    color: #ffffff;
+    border: none;
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 0.7rem 1.4rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.btn-dsa-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+.btn-dsa-secondary {
+    background: rgba(255, 255, 255, 0.85);
+    color: #334155;
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 0.7rem 1.4rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.btn-dsa-secondary:hover {
+    background: #ffffff;
+    color: #4f46e5;
+    border-color: #4f46e5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(30, 27, 75, 0.06);
+}
+
+/* --------------------------------------------------------------------------
+   2. Day 1 Complexity Cards (5 Categories)
+   -------------------------------------------------------------------------- */
+.dsa-section-header {
+    margin-bottom: 1.5rem;
+}
+
+.dsa-section-pretitle {
+    color: #4f46e5;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: inline-block;
+    margin-bottom: 0.35rem;
+}
+
+.dsa-section-title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1e1b4b;
+    margin-bottom: 0.4rem;
+}
+
+.dsa-section-subtitle {
+    color: #64748b;
+    font-size: 0.98rem;
+    max-width: 850px;
+    line-height: 1.6;
+}
+
+.dsa-complexity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.4rem;
+}
+
+.dsa-complexity-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(99, 102, 241, 0.16);
+    border-radius: 1.15rem;
+    padding: 1.5rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    box-shadow: 0 6px 20px rgba(30, 27, 75, 0.04);
+    transition: all 0.25s ease;
+}
+
+.dsa-complexity-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 32px rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.35);
+}
+
+.complexity-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.complexity-notation-pill {
+    font-family: 'Consolas', 'Fira Code', monospace;
+    font-size: 1.25rem;
+    font-weight: 800;
+    padding: 0.35rem 0.85rem;
+    border-radius: 0.6rem;
+    letter-spacing: -0.02em;
+}
+
+.complexity-rating-pill {
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.complexity-card-name {
+    font-size: 1.12rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.45rem;
+}
+
+.complexity-card-explanation {
+    font-size: 0.88rem;
+    color: #475569;
+    line-height: 1.55;
+    margin-bottom: 1rem;
+}
+
+.complexity-example-box {
+    background: rgba(248, 250, 252, 0.85);
+    border-left: 3px solid #6366f1;
+    border-radius: 0.4rem;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.82rem;
+    color: #334155;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.complexity-example-label {
+    font-weight: 700;
+    color: #4338ca;
+    display: block;
+    margin-bottom: 0.2rem;
+}
+
+.complexity-card-footer {
+    border-top: 1px solid rgba(226, 232, 240, 0.8);
+    padding-top: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.growth-mini-chart-wrap {
+    width: 80px;
+    height: 32px;
+}
+
+.growth-mini-chart {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.btn-card-learn-more {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #4f46e5;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.3rem 0;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: color 0.2s ease;
+}
+
+.btn-card-learn-more:hover {
+    color: #312e81;
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   3. Detailed Article Learning Content
+   -------------------------------------------------------------------------- */
+.dsa-article-container {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(99, 102, 241, 0.18);
+    border-radius: 1.35rem;
+    padding: 2.6rem 2.8rem;
+    box-shadow: 0 10px 30px rgba(30, 27, 75, 0.04);
+}
+
+.dsa-article-intro {
+    background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(245, 243, 255, 0.6) 100%);
+    border-left: 4px solid #4f46e5;
+    border-radius: 0.75rem;
+    padding: 1.5rem 1.8rem;
+    margin-bottom: 2.5rem;
+}
+
+.dsa-article-intro p {
+    font-size: 1.02rem;
+    color: #334155;
+    line-height: 1.7;
+    margin-bottom: 0.9rem;
+}
+
+.dsa-article-intro p:last-child {
+    margin-bottom: 0;
+}
+
+.dsa-content-section {
+    padding: 2rem 0;
+    border-top: 1px solid #e2e8f0;
+}
+
+.dsa-content-section:first-of-type {
+    border-top: none;
+    padding-top: 0;
+}
+
+.dsa-section-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.dsa-section-num-pill {
+    background: #eef2ff;
+    color: #4f46e5;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+}
+
+.dsa-complexity-header-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #1e1b4b;
+    margin-bottom: 0.85rem;
+}
+
+.dsa-theory-block {
+    margin-bottom: 1.25rem;
+}
+
+.dsa-theory-block p {
+    font-size: 0.97rem;
+    color: #334155;
+    line-height: 1.65;
+    margin-bottom: 0.75rem;
+}
+
+.dsa-scenario-callout {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    padding: 1.1rem 1.4rem;
+    margin-bottom: 1.25rem;
+}
+
+.dsa-scenario-tag {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #6366f1;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.35rem;
+    display: block;
+}
+
+.dsa-scenario-callout p {
+    font-size: 0.93rem;
+    color: #1e293b;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Syntax Highlighted Code Box */
+.dsa-code-wrapper {
+    background: #181825;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0.9rem;
+    overflow: hidden;
+    margin: 1.25rem 0 1.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.dsa-code-header {
+    background: #11111b;
+    padding: 0.65rem 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dsa-code-lang {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Consolas', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #cdd6f4;
+}
+
+.dsa-code-dots {
+    display: flex;
+    gap: 0.35rem;
+}
+
+.dsa-code-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+.dsa-code-dot.red { background: #f38ba8; }
+.dsa-code-dot.yellow { background: #f9e2af; }
+.dsa-code-dot.green { background: #a6e3a1; }
+
+.btn-copy-code {
+    background: rgba(255, 255, 255, 0.1);
+    color: #cdd6f4;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-family: inherit;
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 0.3rem 0.75rem;
+    border-radius: 0.45rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: all 0.2s ease;
+}
+
+.btn-copy-code:hover {
+    background: rgba(99, 102, 241, 0.4);
+    color: #ffffff;
+}
+
+.dsa-code-body {
+    padding: 1.1rem 1.3rem;
+    overflow-x: auto;
+}
+
+.dsa-code-body pre {
+    margin: 0;
+}
+
+.dsa-code-body code {
+    font-family: 'Consolas', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #cdd6f4;
+    white-space: pre;
+}
+
+.dsa-bullet-points {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 1rem;
+}
+
+.dsa-bullet-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    font-size: 0.94rem;
+    color: #334155;
+    line-height: 1.6;
+}
+
+.dsa-bullet-icon {
+    color: #4f46e5;
+    font-weight: 800;
+    margin-top: 0.15rem;
+    flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   4. Section 6: Comparison Table & Interactive Growth Chart
+   -------------------------------------------------------------------------- */
+.dsa-comparison-table-wrapper {
+    overflow-x: auto;
+    border-radius: 0.85rem;
+    border: 1px solid #e2e8f0;
+    margin: 1.5rem 0 2rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
+}
+
+.dsa-comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.92rem;
+    background: #ffffff;
+}
+
+.dsa-comparison-table th {
+    background: #f8fafc;
+    color: #1e1b4b;
+    font-weight: 700;
+    padding: 0.9rem 1.2rem;
+    border-bottom: 2px solid #e2e8f0;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+}
+
+.dsa-comparison-table td {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+}
+
+.dsa-comparison-table tr:last-child td {
+    border-bottom: none;
+}
+
+.dsa-comparison-table tr:hover td {
+    background: #faf5ff;
+}
+
+.complexity-code-tag {
+    font-family: 'Consolas', 'Fira Code', monospace;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 0.4rem;
+    display: inline-block;
+}
+
+/* Big O Interactive Chart Container */
+.dsa-chart-container {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.8rem;
+    margin: 1.8rem 0;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+}
+
+.dsa-chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+.dsa-chart-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1e1b4b;
+}
+
+.dsa-chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.2s ease;
+}
+
+.legend-color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+.dsa-svg-chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 380px;
+}
+
+.dsa-svg-chart {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.chart-tooltip {
+    position: absolute;
+    background: #181825;
+    color: #cdd6f4;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.5rem;
+    padding: 0.6rem 0.85rem;
+    font-size: 0.8rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    z-index: 20;
+    line-height: 1.45;
+}
+
+/* --------------------------------------------------------------------------
+   5. Section 7: Architectural Perspective & Lesson
+   -------------------------------------------------------------------------- */
+.dsa-architect-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 243, 255, 0.85) 100%);
+    border: 2px solid rgba(99, 102, 241, 0.3);
+    border-radius: 1.25rem;
+    padding: 2.2rem 2.4rem;
+    margin: 2rem 0;
+    box-shadow: 0 12px 36px rgba(99, 102, 241, 0.08);
+}
+
+.architect-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.85rem;
+}
+
+.architect-badge {
+    background: linear-gradient(135deg, #312e81 0%, #4338ca 100%);
+    color: #ffffff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.8rem;
+    border-radius: 999px;
+}
+
+.architect-comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.4rem;
+    margin: 1.5rem 0;
+}
+
+.architect-approach-box {
+    border-radius: 1rem;
+    padding: 1.4rem 1.5rem;
+    border: 1px solid;
+}
+
+.approach-bad {
+    background: rgba(254, 242, 242, 0.75);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.approach-good {
+    background: rgba(240, 253, 244, 0.8);
+    border-color: rgba(34, 197, 94, 0.35);
+}
+
+.approach-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.approach-bad .approach-title { color: #991b1b; }
+.approach-good .approach-title { color: #166534; }
+
+.approach-complexity-pill {
+    font-family: 'Consolas', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    border-radius: 0.35rem;
+}
+
+.approach-bad .approach-complexity-pill {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.approach-good .approach-complexity-pill {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.architect-quote-banner {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+    color: #ffffff;
+    border-radius: 0.9rem;
+    padding: 1.5rem 2rem;
+    margin-top: 1.5rem;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 8px 24px rgba(30, 27, 75, 0.2);
+}
+
+.architect-quote-text {
+    font-size: 1.15rem;
+    font-weight: 600;
+    font-style: italic;
+    line-height: 1.6;
+    margin: 0;
+    color: #e0e7ff;
+}
+
+/* --------------------------------------------------------------------------
+   6. Practice Lab – 15 Practical Challenges
+   -------------------------------------------------------------------------- */
+.dsa-practice-lab-container {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(99, 102, 241, 0.18);
+    border-radius: 1.35rem;
+    padding: 2.6rem 2.8rem;
+    box-shadow: 0 10px 30px rgba(30, 27, 75, 0.04);
+}
+
+.practice-lab-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    padding: 1.1rem 1.4rem;
+    margin-bottom: 2rem;
+}
+
+.lab-progress-group {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.lab-counter-display {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+}
+
+.lab-counter-number {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #4f46e5;
+}
+
+.lab-counter-total {
+    font-size: 0.95rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.lab-progress-track {
+    width: 180px;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.lab-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4f46e5, #10b981);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+
+.lab-toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.btn-reset-progress {
+    background: #fff1f2;
+    color: #e11d48;
+    border: 1px solid #fecdd3;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.5rem 0.95rem;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.btn-reset-progress:hover {
+    background: #ffe4e6;
+    border-color: #fda4af;
+}
+
+/* Filter Tabs for Challenges */
+.challenge-filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.challenge-filter-btn {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.challenge-filter-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.challenge-filter-btn.active {
+    background: #4f46e5;
+    color: #ffffff;
+    border-color: #4f46e5;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+}
+
+/* Challenge Accordion Card */
+.challenge-group-block {
+    margin-bottom: 2rem;
+}
+
+.challenge-group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.challenge-group-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e1b4b;
+}
+
+.challenge-group-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+}
+
+.challenge-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.challenge-card:hover {
+    border-color: rgba(99, 102, 241, 0.4);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.06);
+}
+
+.challenge-card.completed {
+    border-color: rgba(34, 197, 94, 0.4);
+    background: rgba(240, 253, 244, 0.35);
+}
+
+.challenge-card-header {
+    padding: 1.1rem 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+    gap: 1rem;
+}
+
+.challenge-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.challenge-num-badge {
+    background: #f1f5f9;
+    color: #334155;
+    font-weight: 800;
+    font-size: 0.8rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.challenge-card.completed .challenge-num-badge {
+    background: #10b981;
+    color: #ffffff;
+}
+
+.challenge-title-text {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.challenge-complexity-badge {
+    font-family: 'Consolas', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    border-radius: 0.4rem;
+}
+
+.challenge-difficulty-pill {
+    font-size: 0.74rem;
+    font-weight: 600;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+}
+.diff-easy { background: #dcfce7; color: #15803d; }
+.diff-medium { background: #fef3c7; color: #b45309; }
+.diff-hard { background: #fee2e2; color: #b91c1c; }
+
+.challenge-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.btn-start-practice {
+    background: #4f46e5;
+    color: #ffffff;
+    border: none;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.btn-start-practice:hover {
+    background: #4338ca;
+    transform: translateY(-1px);
+}
+
+.challenge-toggle-arrow {
+    font-size: 0.85rem;
+    color: #64748b;
+    transition: transform 0.25s ease;
+}
+
+.challenge-card.expanded .challenge-toggle-arrow {
+    transform: rotate(180deg);
+}
+
+.challenge-card-body {
+    display: none;
+    padding: 1.25rem 1.4rem;
+    border-top: 1px solid #f1f5f9;
+    background: #fafafa;
+}
+
+.challenge-card.expanded .challenge-card-body {
+    display: block;
+}
+
+.challenge-statement-box {
+    margin-bottom: 1.1rem;
+}
+
+.challenge-statement-text {
+    font-size: 0.95rem;
+    color: #334155;
+    line-height: 1.6;
+    margin-bottom: 0.6rem;
+}
+
+.challenge-scenario-text {
+    font-size: 0.88rem;
+    color: #64748b;
+    line-height: 1.55;
+    font-style: italic;
+    background: #ffffff;
+    border-left: 3px solid #6366f1;
+    padding: 0.65rem 0.9rem;
+    border-radius: 0.35rem;
+}
+
+.challenge-card-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.challenge-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+}
+
+.challenge-checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: #10b981;
+    cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   7. Dedicated Coding Practice Panel Modal / Drawer
+   -------------------------------------------------------------------------- */
+.practice-panel-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.practice-panel-modal.active {
+    display: flex;
+}
+
+.practice-panel-content {
+    background: #ffffff;
+    border-radius: 1.25rem;
+    width: 100%;
+    max-width: 950px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalSlideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.practice-panel-header {
+    background: #1e1b4b;
+    color: #ffffff;
+    padding: 1.2rem 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.practice-panel-title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.practice-panel-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.btn-close-modal {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: #ffffff;
+    font-size: 1.25rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.btn-close-modal:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.practice-panel-body {
+    padding: 1.5rem 1.8rem;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.practice-info-banner {
+    background: #f8fafc;
+    border-left: 4px solid #4f46e5;
+    border-radius: 0.5rem;
+    padding: 1rem 1.2rem;
+}
+
+.practice-info-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.practice-info-statement {
+    font-size: 0.95rem;
+    color: #1e293b;
+    line-height: 1.6;
+}
+
+.practice-editor-container {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #334155;
+    border-radius: 0.85rem;
+    overflow: hidden;
+    background: #181825;
+}
+
+.practice-editor-header {
+    background: #11111b;
+    padding: 0.6rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.practice-editor-label {
+    font-family: 'Consolas', monospace;
+    font-size: 0.8rem;
+    color: #cdd6f4;
+    font-weight: 600;
+}
+
+.practice-code-area {
+    width: 100%;
+    height: 320px;
+    background: #181825;
+    color: #cdd6f4;
+    font-family: 'Consolas', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 0.88rem;
+    line-height: 1.55;
+    padding: 1rem 1.2rem;
+    border: none;
+    resize: vertical;
+    outline: none;
+    white-space: pre;
+    tab-size: 4;
+}
+
+.practice-panel-footer {
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    padding: 1rem 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.practice-footer-status {
+    font-size: 0.88rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.practice-footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.btn-checkpoint {
+    background: #10b981;
+    color: #ffffff;
+    border: none;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s ease;
+}
+
+.btn-checkpoint:hover {
+    background: #059669;
+}
+
+/* --------------------------------------------------------------------------
+   8. 90-Day Roadmap Modal
+   -------------------------------------------------------------------------- */
+.roadmap-modal-content {
+    max-width: 900px;
+    max-height: 85vh;
+}
+
+.roadmap-search-box {
+    margin-bottom: 1rem;
+}
+
+.roadmap-search-input {
+    width: 100%;
+    padding: 0.65rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.6rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.roadmap-search-input:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.roadmap-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.roadmap-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 1.1rem;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.65rem;
+    transition: all 0.2s ease;
+}
+
+.roadmap-item.active {
+    background: #eef2ff;
+    border-color: #6366f1;
+}
+
+.roadmap-item-left {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.roadmap-day-badge {
+    font-size: 0.76rem;
+    font-weight: 800;
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.4rem;
+    background: #f1f5f9;
+    color: #475569;
+    white-space: nowrap;
+}
+
+.roadmap-item.active .roadmap-day-badge {
+    background: #4f46e5;
+    color: #ffffff;
+}
+
+.roadmap-day-title {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.roadmap-day-phase {
+    font-size: 0.76rem;
+    color: #64748b;
+    margin-left: 0.5rem;
+}
+
+.roadmap-status-pill {
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.status-available {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status-coming-soon {
+    background: #f1f5f9;
+    color: #94a3b8;
+}
+
+/* --------------------------------------------------------------------------
+   9. Day 1 Learning Summary & Key Takeaways
+   -------------------------------------------------------------------------- */
+.dsa-summary-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(246, 230, 237, 0.6) 100%);
+    border: 1px solid rgba(167, 114, 125, 0.28);
+    border-radius: 1.35rem;
+    padding: 2.5rem 2.8rem;
+    box-shadow: 0 10px 30px rgba(30, 27, 75, 0.04);
+}
+
+.takeaways-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+    margin: 1.5rem 0 2rem;
+}
+
+.takeaway-item-card {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(99, 102, 241, 0.16);
+    border-radius: 1rem;
+    padding: 1.25rem 1.4rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    box-shadow: 0 4px 14px rgba(30, 27, 75, 0.02);
+}
+
+.takeaway-icon {
+    font-size: 1.35rem;
+    flex-shrink: 0;
+}
+
+.takeaway-text {
+    font-size: 0.94rem;
+    color: #1e293b;
+    line-height: 1.55;
+    font-weight: 500;
+}
+
+.summary-closing-banner {
+    background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 60%, #7e22ce 100%);
+    color: #ffffff;
+    border-radius: 1rem;
+    padding: 1.8rem 2.2rem;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(67, 56, 202, 0.25);
+}
+
+.summary-closing-title {
+    font-size: 0.84rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #c7d2fe;
+    margin-bottom: 0.5rem;
+}
+
+.summary-closing-quote {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.5;
+    margin: 0;
+    color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   10. Confirmation Dialog (Reset Progress)
+   -------------------------------------------------------------------------- */
+.dsa-confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(6px);
+    z-index: 3000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.dsa-confirm-modal.active {
+    display: flex;
+}
+
+.dsa-confirm-box {
+    background: #ffffff;
+    border-radius: 1.15rem;
+    max-width: 440px;
+    width: 100%;
+    padding: 1.8rem;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.confirm-icon {
+    font-size: 2.2rem;
+    margin-bottom: 0.75rem;
+}
+
+.confirm-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e1b4b;
+    margin-bottom: 0.5rem;
+}
+
+.confirm-msg {
+    font-size: 0.92rem;
+    color: #64748b;
+    line-height: 1.55;
+    margin-bottom: 1.4rem;
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.85rem;
+}
+
+.btn-confirm-cancel {
+    background: #f1f5f9;
+    color: #475569;
+    border: none;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.6rem;
+    cursor: pointer;
+}
+
+.btn-confirm-delete {
+    background: #e11d48;
+    color: #ffffff;
+    border: none;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.6rem;
+    cursor: pointer;
+}
+
+/* Toast Notification */
+.dsa-toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #1e1b4b;
+    color: #ffffff;
+    padding: 0.75rem 1.4rem;
+    border-radius: 0.75rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.25s ease;
+    z-index: 4000;
+    pointer-events: none;
+}
+
+.dsa-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive Media Queries
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+    .dsa-page-wrapper {
+        padding: 1.25rem 1rem 4rem;
+        gap: 1.75rem;
+    }
+
+    .dsa-hero-card,
+    .dsa-article-container,
+    .dsa-practice-lab-container,
+    .dsa-summary-card {
+        padding: 1.6rem 1.4rem;
+    }
+
+    .dsa-hero-title {
+        font-size: 1.85rem;
+    }
+
+    .dsa-hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .dsa-svg-chart-wrap {
+        height: 280px;
+    }
+
+    .practice-editor-header {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .dsa-hero-title {
+        font-size: 1.55rem;
+    }
+
+    .challenge-header-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.4rem;
+    }
+
+    .practice-panel-content {
+        max-height: 95vh;
+        border-radius: 0.9rem;
+    }
+
+    .practice-code-area {
+        height: 240px;
+    }
+}
